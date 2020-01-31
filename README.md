@@ -2,3 +2,4 @@
 
 Team Members:
   * Andrew Butler-Boudakian
+  * Farukh Saidmuratov 
