@@ -1,7 +1,7 @@
 from selenium import webdriver
-from arron import *
+# from arron import *
 import requests
-import bs4
+# import bs4
 import io
 import pandas as pd
 
@@ -39,8 +39,9 @@ def parseCsvData(uri):
 	return pd.read_csv(io.StringIO(page.text))
 
 def parseCBPIncomeData(uri):
-	# Need to reconcile CBP datasets, as format changes throughout the years, new counties  included, etc.
-	return parseCsvDat(uri)
+	# Need to reconcile CBP datasets, as format changes throughout the years, new counties included, etc.
+	page = requests.get(uri)
+	return pd.read_csv(io.StringIO(page.text), encoding = "ISO-8859-1")
 
 def parseZillowRentData(uri):
 	return parseCsvData(uri)
