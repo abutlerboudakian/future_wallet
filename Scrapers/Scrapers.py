@@ -38,6 +38,10 @@ def parseCsvData(uri):
 	page = requests.get(uri)
 	return pd.read_csv(io.StringIO(page.text))
 
+def parseCBPIncomeData(uri):
+	# Need to reconcile CBP datasets, as format changes throughout the years, new counties  included, etc.
+	return parseCsvDat(uri)
+
 def parseZillowRentData(uri):
 	return parseCsvData(uri)
 
@@ -60,6 +64,7 @@ if __name__ == "__main__":
 	# HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
 	# CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
 	# BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
+	# IncomeData = parseCBPIncomeData("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17cd.xlsx?#")
 	CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
 	SAdata = parseSavingsAcctData('https://www.fdic.gov/regulations/resources/rates/previous.html')
 	# RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
