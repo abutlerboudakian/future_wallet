@@ -1,2 +1,5 @@
 TK_Test
 Dockerfile
+.DS_Store
+.idea/
+.iml 
