@@ -13,17 +13,23 @@ def parseTBondData(uri):
 	driver.quit()
 	return pd.read_html(table)
 
-def parseZillowRentData(uri):
+def parseCsvData(uri):
 	page = requests.get(uri)
 	return pd.read_csv(io.StringIO(page.text))
 
+def parseZillowRentData(uri):
+	return parseCsvData(uri)
+
 def parseHousingIndexData(uri):
-	page = requests.get(uri)
-	return pd.read_csv(io.StringIO(page.text))
+	return parseCsvData(uri)
+
+def parseCDData(uri):
+	return parseCsvData(uri)
 
 if __name__ == "__main__":
 	# TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates')
 	# ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
-	HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
-	print(HIdata)
+	# HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
+	CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
+	print(CDdata)
 	
