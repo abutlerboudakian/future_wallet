@@ -1,4 +1,5 @@
 from selenium import webdriver
+from arron import *
 import requests
 import io
 import pandas as pd
@@ -51,7 +52,8 @@ if __name__ == "__main__":
 	# HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
 	# CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
 	# BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
-	CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
+	# CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
 	# RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
-	print(CpiData)
+	# print(CpiData)
+	stockData = parseStockData("https://dividata.com/")
 	
