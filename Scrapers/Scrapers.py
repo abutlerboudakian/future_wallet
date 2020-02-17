@@ -27,6 +27,7 @@ def parseCDData(uri):
 	return parseCsvData(uri)
 
 if __name__ == "__main__":
+	# Alpha Vantage API Key: IJA5ZUY00CVDSFBK
 	# TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates')
 	# ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
 	# HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
