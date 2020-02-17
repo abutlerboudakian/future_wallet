@@ -13,6 +13,18 @@ def parseTBondData(uri):
 	driver.quit()
 	return pd.read_html(table)
 
+def parseCpiData(uri):
+	options = webdriver.ChromeOptions()
+	options.add_argument('headless')
+	driver = webdriver.Chrome(chrome_options=options)
+	driver.get(uri)
+	driver.find_element_by_xpath("//select[@name='startYear']/option[@value='1990']").click()
+	driver.find_element_by_xpath("//input[@id='dv-submit']").click()
+	tableData = driver.find_element_by_id('seriesDataTable1')
+	table = tableData.get_attribute('outerHTML')
+	driver.quit()
+	return pd.read_html(table)
+
 def parseCsvData(uri):
 	page = requests.get(uri)
 	return pd.read_csv(io.StringIO(page.text))
@@ -25,12 +37,21 @@ def parseHousingIndexData(uri):
 
 def parseCDData(uri):
 	return parseCsvData(uri)
+	
+def parseBondData(uri):
+	return parseCsvData(uri)
+	
+def parseRaremetalData(uri):
+	return parseCsvData(uri)
 
 if __name__ == "__main__":
 	# Alpha Vantage API Key: IJA5ZUY00CVDSFBK
 	# TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates')
 	# ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
 	# HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
-	CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
-	print(CDdata)
+	# CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
+	# BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
+	CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
+	# RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
+	print(CpiData)
 	
