@@ -1,6 +1,7 @@
 from selenium import webdriver
 from arron import *
 import requests
+import bs4
 import io
 import pandas as pd
 
@@ -13,6 +14,13 @@ def parseTBondData(uri):
 	table = tableData.get_attribute('outerHTML')
 	driver.quit()
 	return pd.read_html(table)
+
+def parseSAData(uri):
+	options = webdriver.ChromeOptions()
+	options.add_argument('headless')
+	driver = webdriver.Chrome(chrome_options=options)
+	driver.get(uri)
+
 
 def parseCpiData(uri):
 	options = webdriver.ChromeOptions()
@@ -52,7 +60,8 @@ if __name__ == "__main__":
 	# HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
 	# CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
 	# BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
-	# CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
+	CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
+	SAdata = parseSavingsAcctData('https://www.fdic.gov/regulations/resources/rates/previous.html')
 	# RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
 	# print(CpiData)
 	stockData = parseStockData("https://dividata.com/")
