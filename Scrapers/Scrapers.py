@@ -52,7 +52,7 @@ def parseTBondData(uri, driver):
 	driver.get(uri)
 	tableData = driver.find_element_by_id('GraphTable')
 	table = tableData.get_attribute('outerHTML')
-	return pd.read_html(table)
+	return pd.read_html(table)[0]
 
 
 def parseSAData(uri, root, driver, depth=0):
@@ -90,7 +90,7 @@ def parseCpiData(uri, driver):
 	driver.find_element_by_xpath("//input[@id='dv-submit']").click()
 	tableData = driver.find_element_by_id('seriesDataTable1')
 	table = tableData.get_attribute('outerHTML')
-	return pd.read_html(table)
+	return pd.read_html(table)[0]
 
 def parseCsvData(uri):
 	page = requests.get(uri)
