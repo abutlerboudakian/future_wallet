@@ -1,3 +1,19 @@
+'''
+	NOTE: This library requires an installation of Chromedriver present in the program directory to function as intended.
+
+	Scrapers.py:
+		Scraper Library with driver block for testing purposes.
+		Acquires data from various FutureWallet determined data sources and formats them as
+		pandas DataFrames for export to our DB.
+
+	Authors:
+		Andrew Butler-Boudakian
+		Arron Look
+		Farukh Saidmuratov
+		Wendi Zheng
+'''
+
+# Import statements
 from selenium import webdriver
 # from arron import *
 import requests
