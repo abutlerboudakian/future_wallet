@@ -123,28 +123,78 @@ def parseCpiData(uri, driver):
 	table = tableData.get_attribute('outerHTML')
 	return pd.read_html(table)[0]
 
+
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseCsvData(uri):
 	page = requests.get(uri)
 	return pd.read_csv(io.StringIO(page.text))
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseCBPIncomeData(uri):
 	# Need to reconcile CBP datasets, as format changes throughout the years, new counties included, etc.
 	page = requests.get(uri)
 	return pd.read_csv(io.StringIO(page.text), encoding = "ISO-8859-1")
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseZillowRentData(uri):
 	return parseCsvData(uri)
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseHousingIndexData(uri):
 	return parseCsvData(uri)
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseCDData(uri):
 	return parseCsvData(uri)
-	
+
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''	
 def parseBondData(uri):
 	return parseCsvData(uri)
-	
-def parseRaremetalData(uri):
+
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''	
+def parseRareMetalData(uri):
 	return parseCsvData(uri)
 
 if __name__ == "__main__":
@@ -159,7 +209,7 @@ if __name__ == "__main__":
 	# CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
 	SAdata = parseSAData('https://www.fdic.gov/regulations/resources/rates/previous.html', 'https://www.fdic.gov/regulations/resources/rates/', driver)
 	print(SAdata)
-	# RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
+	# RaremetalData = parseRareMetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
 	# print(CpiData)
 	# stockData = parseStockData("https://dividata.com/")
 	driver.quit()
