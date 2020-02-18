@@ -67,22 +67,40 @@ def parseTBondData(uri, driver):
 	@returns:	tuple of 2 pandas DataFrame objects
 '''
 def parseSAData(uri, root, driver, depth=0):
+
+	# Initialize empty Non-Jumbo and Jumbo Deposit DataFrames
 	njdf = pd.DataFrame()
 	jdf = pd.DataFrame()
+
+	# Load Current webpage and get main content div
 	driver.get(uri)
 	div = driver.find_element_by_id('content')
 	soup = BeautifulSoup(div.get_attribute('outerHTML'), 'lxml')
+
+	# Attempt to locate tables in content div
 	tables = soup.find_all('table')
+
+	# If tables have been located:
 	if len(tables) > 0:
+
+		# Scrape tables and record date
 		njdf = pd.read_html(str(tables[0]))[0]
 		jdf = pd.read_html(str(tables[1]))[0]
 		njdf['Date'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
 		jdf['Date'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
+	
+	# If tables have not been located and current recursion depth is less than 2:
 	elif depth <= 1:
+
+		# Get all links in main reference list
 		ul = soup.find_all('ul')[0]
 		items = ul.find_all('li')
+
+		# Loop through links
 		for item in items:
 			link = root + item.find('a')['href']
+
+			# Access current link recursively and append result to local DataFrames
 			(nj, j) = parseSAData(link, root, driver, depth+1)
 			if njdf.empty:
 				njdf = pd.DataFrame(nj)
@@ -92,6 +110,8 @@ def parseSAData(uri, root, driver, depth=0):
 				jdf = pd.DataFrame(j)
 			else:
 				jdf = jdf.append(j)
+
+	# Return DataFrames
 	return (njdf, jdf)
 
 
