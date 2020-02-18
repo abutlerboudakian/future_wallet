@@ -21,6 +21,13 @@ from bs4 import BeautifulSoup
 import io
 import pandas as pd
 
+'''
+	@params:	headless(optional) - Determines whether chromedriver is a headless instance or not, enabled by default
+	@requires:	chromedriver.exe is available in the current directory
+	@modifies:	None
+	@effects:	Creates a new chromedriver object (headless or not) and returns a reference to it.
+	@returns:	New chromedriver object
+'''
 def initChromeDriver(headless=True):
 	if headless:
 		options = webdriver.ChromeOptions()
@@ -31,12 +38,22 @@ def initChromeDriver(headless=True):
 		driver = webdriver.Chrome(chrome_options=options)
 		return driver
 
+'''
+	@params:	uri - The weblink to scrape
+				driver - Reference to chromedriver object
+	@requires:	uri is an instantiated string representing a valid webpage containing a table with id GraphTable,
+				driver is an instantiated chromedriver instance
+	@modifies:	None
+	@effects:	Scrapes table with id GraphTable at the uri provided and returns a dataframe representing the table
+	@returns:	pandas DataFrame object
 
+'''
 def parseTBondData(uri, driver):
 	driver.get(uri)
 	tableData = driver.find_element_by_id('GraphTable')
 	table = tableData.get_attribute('outerHTML')
 	return pd.read_html(table)
+
 
 def parseSAData(uri, root, driver, depth=0):
 	njdf = pd.DataFrame()
