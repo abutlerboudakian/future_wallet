@@ -1,3 +1,19 @@
+'''
+	NOTE: This library requires an installation of Chromedriver present in the program directory to function as intended.
+
+	Scrapers.py:
+		Scraper Library with driver block for testing purposes.
+		Acquires data from various FutureWallet determined data sources and formats them as
+		pandas DataFrames for export to our DB.
+
+	Authors:
+		Andrew Butler-Boudakian
+		Arron Look
+		Farukh Saidmuratov
+		Wendi Zheng
+'''
+
+# Import statements
 from selenium import webdriver
 import requests
 import bs4
@@ -5,7 +21,16 @@ import io
 import pandas as pd
 
 from os import listdir
+import time
+from random import randrange
 
+'''
+	@params:	headless(optional) - Determines whether chromedriver is a headless instance or not, enabled by default
+	@requires:	chromedriver.exe is available in the current directory
+	@modifies:	None
+	@effects:	Creates a new chromedriver object (headless or not) and returns a reference to it.
+	@returns:	New chromedriver object
+'''
 def initChromeDriver(headless=True):
   if headless:
     options = webdriver.ChromeOptions()
@@ -17,30 +42,69 @@ def initChromeDriver(headless=True):
     driver = webdriver.Chrome(chrome_options=options)
     return driver
 
+'''
+	@params:	uri - The weblink to scrape
+				driver - Reference to chromedriver object
+	@requires:	uri is an instantiated string representing a valid webpage containing a table with id GraphTable,
+				driver is an instantiated chromedriver instance
+	@modifies:	None
+	@effects:	Scrapes table with id GraphTable at the uri provided and returns a dataframe representing the table
+	@returns:	pandas DataFrame object
 
+'''
 def parseTBondData(uri, driver):
 	driver.get(uri)
 	tableData = driver.find_element_by_id('GraphTable')
 	table = tableData.get_attribute('outerHTML')
-	return pd.read_html(table)
+	return pd.read_html(table)[0]
 
+'''
+	@params:	uri - The weblink to scrape
+				root - The root directory to concatenate local hyperlinks with
+				driver - Reference to chromedriver object
+				depth(optional) - Current recursion depth
+	@requires:	uri is an instantiated string representing a valid webpage containing either 2 tables of data or an unordered list of hyperlinks,
+				root is an instantiated string representing the root directory for all possible local hyperlinks searched in function,
+				driver is an instantiated chromedriver instance
+	@modifies:	None
+	@effects:	Scrapes 2 tables contained at the uri provided, or recursively searches an unordered list of hyperlinks if no tables are present up to a recursion depth of 2
+	@returns:	tuple of 2 pandas DataFrame objects
+'''
 def parseSAData(uri, root, driver, depth=0):
+
+	# Initialize empty Non-Jumbo and Jumbo Deposit DataFrames
 	njdf = pd.DataFrame()
 	jdf = pd.DataFrame()
+
+	# Load Current webpage and get main content div
 	driver.get(uri)
 	div = driver.find_element_by_id('content')
 	soup = BeautifulSoup(div.get_attribute('outerHTML'), 'lxml')
+
+	# Attempt to locate tables in content div
 	tables = soup.find_all('table')
+
+	# If tables have been located:
 	if len(tables) > 0:
+
+		# Scrape tables and record date
 		njdf = pd.read_html(str(tables[0]))[0]
 		jdf = pd.read_html(str(tables[1]))[0]
 		njdf['Date'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
 		jdf['Date'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
+	
+	# If tables have not been located and current recursion depth is less than 2:
 	elif depth <= 1:
+
+		# Get all links in main reference list
 		ul = soup.find_all('ul')[0]
 		items = ul.find_all('li')
+
+		# Loop through links
 		for item in items:
 			link = root + item.find('a')['href']
+
+			# Access current link recursively and append result to local DataFrames
 			(nj, j) = parseSAData(link, root, driver, depth+1)
 			if njdf.empty:
 				njdf = pd.DataFrame(nj)
@@ -50,6 +114,8 @@ def parseSAData(uri, root, driver, depth=0):
 				jdf = pd.DataFrame(j)
 			else:
 				jdf = jdf.append(j)
+
+	# Return DataFrames
 	return (njdf, jdf)
 
 
@@ -59,42 +125,92 @@ def parseCpiData(uri, driver):
 	driver.find_element_by_xpath("//input[@id='dv-submit']").click()
 	tableData = driver.find_element_by_id('seriesDataTable1')
 	table = tableData.get_attribute('outerHTML')
-	return pd.read_html(table)
+	return pd.read_html(table)[0]
 
+
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseCsvData(uri):
   page = requests.get(uri)
   return pd.read_csv(io.StringIO(page.text))
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseCBPIncomeData(uri):
   # Need to reconcile CBP datasets, as format changes throughout the years, new counties  included, etc.
   return parseCsvDat(uri)
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseZillowRentData(uri):
   return parseCsvData(uri)
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseHousingIndexData(uri):
   return parseCsvData(uri)
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''
 def parseCDData(uri):
-  return parseCsvData(uri)
-  
-def parseBondData(uri):
-  return parseCsvData(uri)
-  
-def parseRaremetalData(uri):
-  return parseCsvData(uri)
+	return parseCsvData(uri)
 
-def parseStockData(uri, absPath, driver=None):
-  """
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''	
+def parseBondData(uri):
+	return parseCsvData(uri)
+
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''	
+def parseRareMetalData(uri):
+	return parseCsvData(uri)
+
+"""
   @param uri is a string denoting the default location of the dividend website
-             namely https://dividata.com/ since https://dividata.com/stock/<ticker>
+             namely https://dividata.com/ since https://dividata.com/stock/<ticker>/dividend
              gives us historic dividend data
   @param absPath is a string denoting the absolute path to the directory
                  containing a list of files of the format <ticker>.<market>.txt
   @param driver is the optional chromedriver
   @returns a dataframe containing Ticker | Market | Date | Dividend Amount
            for each stock listed in the absPath directory
-  """
+"""
+def parseStockDividend(uri, absPath, driver=None):
   close = None
   if driver is None:
     close = True
@@ -103,11 +219,12 @@ def parseStockData(uri, absPath, driver=None):
   # Get the list of stocks from what's in the folder
   # or     /stock/<acronym>/dividend
   # I downloaded the Kaggle data here "/mnt/d/price-volume-data-for-all-us-stocks-etfs/Stocks"
+  filenames = listdir(absPath)
   all_data = pd.DataFrame()
-  count = 0
-  for filename in listdir(absPath): # For each stock
+  for i in range(len(filenames)): # For each stock
+    filename = filenames[i]
     stock, market = filename.split(".")[:2]
-    driver.get(uri + "/stock/" + stock)
+    driver.get(uri + "/" + stock + "/dividend")
     tableData = driver.find_elements_by_tag_name("table")
     if len(tableData) != 0: # If stock has dividends
       table = tableData[-1].get_attribute('outerHTML')
@@ -117,14 +234,32 @@ def parseStockData(uri, absPath, driver=None):
       data = data.rename(columns={"Ex-Dividend Date":"Date"})
       data.insert(0, "Market", [market]*numEntries, True)
       data.insert(0, "Ticker", [stock]*numEntries, True)
-      count += 1
-      if (count % 100) == 0:
-        print(stock)
-
-    all_data = pd.concat([all_data, data]) # add stock dividends to 
+      if (i % 100) == 0: # Print every 100 to show progress
+        print(i, stock)
+      all_data = pd.concat([all_data, data]) # add stock dividends to 
+    time.sleep(randrange(1, 15)) # introduce some lag in between to reduce the number of requests
   
-  if Close is not None:
+  if close is not None:
     driver.quit()
+  return all_data
+
+"""
+  @param absPath is a string denoting the absolute path to /Stock or /ETF from the kaggle dataset
+  @returns a panda dataframe of Ticker | Market | Date | Opening price | High | Low | Close | Volume | OpenInt
+"""
+def parseStockData(absPath):
+  all_data = pd.DataFrame()
+  for filename in listdir(absPath):
+    stock, market = filename.split(".")[:2]
+    with open(absPath + "\\" + filename) as file:
+      try:
+        data = pd.read_csv(file)
+        numEntries = data.shape[0]
+        data.insert(0, "Market", [market]*numEntries, True)
+        data.insert(0, "Ticker", [stock]*numEntries, True)
+        all_data = pd.concat([all_data, data])
+      except pd.errors.EmptyDataError:
+        pass
   return all_data
 
 if __name__ == "__main__":
@@ -136,11 +271,16 @@ if __name__ == "__main__":
   # CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
   # BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
   # IncomeData = parseCBPIncomeData("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17cd.xlsx?#")
-  # CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0', driver)
+  # CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
   # SAdata = parseSAData('https://www.fdic.gov/regulations/resources/rates/previous.html', 'https://www.fdic.gov/regulations/resources/rates/', driver)
   # print(SAdata)
-  # RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
+  # RaremetalData = parseRareMetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
   # print(CpiData)
-  stockData = parseStockData("https://dividata.com/", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver)
-  print(stockData)
+  # stockData = parseStockDividend("https://dividata.com/stock", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver) # There are around 7000 stocks to take note of
+  # print(stockData, stockData.shape)
+  # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
+  # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
   driver.quit()
+
+
+# 5 min, 15 min | 10:45pm
