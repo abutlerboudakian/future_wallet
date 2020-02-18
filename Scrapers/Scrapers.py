@@ -54,7 +54,18 @@ def parseTBondData(uri, driver):
 	table = tableData.get_attribute('outerHTML')
 	return pd.read_html(table)[0]
 
-
+'''
+	@params:	uri - The weblink to scrape
+				root - The root directory to concatenate local hyperlinks with
+				driver - Reference to chromedriver object
+				depth(optional) - Current recursion depth
+	@requires:	uri is an instantiated string representing a valid webpage containing either 2 tables of data or an unordered list of hyperlinks,
+				root is an instantiated string representing the root directory for all possible local hyperlinks searched in function,
+				driver is an instantiated chromedriver instance
+	@modifies:	None
+	@effects:	Scrapes 2 tables contained at the uri provided, or recursively searches an unordered list of hyperlinks if no tables are present up to a recursion depth of 2
+	@returns:	tuple of 2 pandas DataFrame objects
+'''
 def parseSAData(uri, root, driver, depth=0):
 	njdf = pd.DataFrame()
 	jdf = pd.DataFrame()
