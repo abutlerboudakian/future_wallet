@@ -962,6 +962,14 @@ QtGui/qcolor.h
 QtGui/qbrush.h
 -
 
+C:/Qt/5.14.1/msvc2017/include/QtGui/qpen.h
+QtGui/qtguiglobal.h
+-
+QtGui/qcolor.h
+-
+QtGui/qbrush.h
+-
+
 C:/Qt/5.14.1/msvc2017/include/QtGui/qpixelformat.h
 QtGui/qtguiglobal.h
 -
@@ -1016,6 +1024,62 @@ C:/Qt/5.14.1/msvc2017/include/QtGui/qrgba64.h
 QtGui/qtguiglobal.h
 -
 QtCore/qprocessordetection.h
+-
+
+C:/Qt/5.14.1/msvc2017/include/QtGui/qtextcursor.h
+QtGui/qtguiglobal.h
+-
+QtCore/qstring.h
+-
+QtCore/qshareddata.h
+-
+QtGui/qtextformat.h
+-
+
+C:/Qt/5.14.1/msvc2017/include/QtGui/qtextdocument.h
+QtGui/qtguiglobal.h
+-
+QtCore/qobject.h
+-
+QtCore/qsize.h
+-
+QtCore/qrect.h
+-
+QtCore/qvariant.h
+-
+QtGui/qfont.h
+-
+QtCore/qurl.h
+-
+
+C:/Qt/5.14.1/msvc2017/include/QtGui/qtextformat.h
+QtGui/qtguiglobal.h
+-
+QtGui/qcolor.h
+-
+QtGui/qfont.h
+-
+QtCore/qshareddata.h
+-
+QtCore/qvector.h
+-
+QtCore/qvariant.h
+-
+QtGui/qpen.h
+-
+QtGui/qbrush.h
+-
+QtGui/qtextoption.h
+-
+
+C:/Qt/5.14.1/msvc2017/include/QtGui/qtextoption.h
+QtGui/qtguiglobal.h
+-
+QtCore/qnamespace.h
+-
+QtCore/qchar.h
+-
+QtCore/qmetatype.h
 -
 
 C:/Qt/5.14.1/msvc2017/include/QtGui/qtgui-config.h
@@ -1086,13 +1150,37 @@ C:/Qt/5.14.1/msvc2017/include/QtWidgets/QMenuBar
 qmenubar.h
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/qmenubar.h
 
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/QPushButton
+qpushbutton.h
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qpushbutton.h
+
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/QStatusBar
 qstatusbar.h
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/qstatusbar.h
 
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/QTextBrowser
+qtextbrowser.h
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtextbrowser.h
+
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/QWidget
 qwidget.h
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/qwidget.h
+
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qabstractbutton.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtGui/qicon.h
+-
+QtGui/qkeysequence.h
+-
+QtWidgets/qwidget.h
+-
+
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qabstractscrollarea.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qframe.h
+-
 
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/qaction.h
 QtWidgets/qtwidgetsglobal.h
@@ -1140,6 +1228,12 @@ QtWidgets/qtwidgetsglobal.h
 QtWidgets/qwidget.h
 -
 
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qframe.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qwidget.h
+-
+
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/qmainwindow.h
 QtWidgets/qtwidgetsglobal.h
 -
@@ -1166,6 +1260,12 @@ QtWidgets/qtwidgetsglobal.h
 QtWidgets/qmenu.h
 -
 
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qpushbutton.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qabstractbutton.h
+-
+
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/qsizepolicy.h
 QtWidgets/qtwidgetsglobal.h
 -
@@ -1186,6 +1286,28 @@ QtWidgets/qtwidgetsglobal.h
 QtWidgets/qwidget.h
 -
 QtGui/qicon.h
+-
+
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtextbrowser.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qtextedit.h
+-
+QtCore/qurl.h
+-
+
+C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtextedit.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qabstractscrollarea.h
+-
+QtGui/qtextdocument.h
+-
+QtGui/qtextoption.h
+-
+QtGui/qtextcursor.h
+-
+QtGui/qtextformat.h
 -
 
 C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtwidgets-config.h
@@ -1228,12 +1350,6 @@ QtGui/qkeysequence.h
 QtGui/qevent.h
 -
 
-F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/FutureWalletDemo/main.cpp
-mainwindow.h
-F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/FutureWalletDemo/mainwindow.h
-QApplication
--
-
 F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/FutureWalletDemo/mainwindow.cpp
 mainwindow.h
 F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/FutureWalletDemo/mainwindow.h
@@ -1244,20 +1360,6 @@ F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/FutureWalletDemo/mainwin
 QMainWindow
 -
 
-F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/build-FutureWalletDemo-Desktop_x86_windows_msvc2015_pe_32bit-Debug/FutureWalletDemo_autogen/EWIEGA46WW/moc_mainwindow.cpp
-memory
--
-mainwindow.h
-F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/build-FutureWalletDemo-Desktop_x86_windows_msvc2015_pe_32bit-Debug/FutureWalletDemo_autogen/EWIEGA46WW/mainwindow.h
-QtCore/qbytearray.h
--
-QtCore/qmetatype.h
--
-
-F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/build-FutureWalletDemo-Desktop_x86_windows_msvc2015_pe_32bit-Debug/FutureWalletDemo_autogen/mocs_compilation.cpp
-EWIEGA46WW/moc_mainwindow.cpp
-F:/Libraries/Documents/GitHub/future_wallet/QT GUI Demo/build-FutureWalletDemo-Desktop_x86_windows_msvc2015_pe_32bit-Debug/FutureWalletDemo_autogen/EWIEGA46WW/moc_mainwindow.cpp
-
 FutureWalletDemo_autogen/include/ui_mainwindow.h
 QtCore/QVariant
 -
@@ -1267,7 +1369,11 @@ QtWidgets/QMainWindow
 -
 QtWidgets/QMenuBar
 -
+QtWidgets/QPushButton
+-
 QtWidgets/QStatusBar
+-
+QtWidgets/QTextBrowser
 -
 QtWidgets/QWidget
 -

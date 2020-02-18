@@ -17,5 +17,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+    void btnPieChartClicked();
+    void btnChangeGraphClicked();
 };
+
 #endif // MAINWINDOW_H
