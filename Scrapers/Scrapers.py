@@ -1,85 +1,103 @@
 from selenium import webdriver
-# from arron import *
 import requests
-# import bs4
+import bs4
 import io
 import pandas as pd
 
-def initChromeDriver(headless=True):
-	if headless:
-		options = webdriver.ChromeOptions()
-		options.add_argument('headless')
-		driver = webdriver.Chrome(chrome_options=options)
-		return driver
-	else:
-		driver = webdriver.Chrome(chrome_options=options)
-		return driver
+from os import listdir
+
+def parseTBondData(uri):
+  options = webdriver.ChromeOptions()
+  options.add_argument('headless')
+  driver = webdriver.Chrome(chrome_options=options)
+  driver.get(uri)
+  tableData = driver.find_element_by_id('GraphTable')
+  table = tableData.get_attribute('outerHTML')
+  driver.quit()
+  return pd.read_html(table)
+
+def parseSAData(uri):
+  options = webdriver.ChromeOptions()
+  options.add_argument('headless')
+  driver = webdriver.Chrome(chrome_options=options)
+  driver.get(uri)
 
 
-def parseTBondData(uri, driver):
-	driver.get(uri)
-	tableData = driver.find_element_by_id('GraphTable')
-	table = tableData.get_attribute('outerHTML')
-	driver.quit()
-	return pd.read_html(table)
+def parseCpiData(uri):
+  options = webdriver.ChromeOptions()
+  options.add_argument('headless')
+  driver = webdriver.Chrome(chrome_options=options)
+  driver.get(uri)
+  driver.find_element_by_xpath("//select[@name='startYear']/option[@value='1990']").click()
+  driver.find_element_by_xpath("//input[@id='dv-submit']").click()
+  tableData = driver.find_element_by_id('seriesDataTable1')
+  table = tableData.get_attribute('outerHTML')
+  driver.quit()
+  return pd.read_html(table)
 
-def parseSAData(uri, driver):
-	driver.get(uri)
-	div = driver.find_element_by_id('content')
-	soup = BeautifulSoup(div.get_attribute('outerHTML'))
-	tables = soup.find_all('table')
-	if len(tables) > 0:
-		
-	else:
-		ul = soup.find_all('ul')[0]
-		items = ul.
+def parseStockData(uri):
+#  Create the Chrome Driver
+  options = webdriver.ChromeOptions()
+  options.add_argument('headless')
+  driver = webdriver.Chrome(chrome_options=options)
+  driver.get(uri)
+
+  # Get the list of stocks from what's in the folder
+  # or     /stock/<acronym>/dividend
+  # I downloaded the Kaggle data here "/mnt/d/price-volume-data-for-all-us-stocks-etfs/Stocks"
+  #all_data = 
+  # for stock in listdir("/mnt/d/price-volume-data-for-all-us-stocks-etfs/Stocks"):
+  stock = "a.us.txt"
+  driver.get(uri + "/stock/" + stock.split(".")[0])
+  tableData = driver.find_elements_by_tag_name("table")
+  if len(tableData) != 0:
+    table = tableData[-1].get_attribute('outerHTML')
+    data = pd.read_html(table) # pd dataframe acquired for this stock
+    print(data)
+      # break
 
 
-def parseCpiData(uri, driver):
-	driver.get(uri)
-	driver.find_element_by_xpath("//select[@name='startYear']/option[@value='1990']").click()
-	driver.find_element_by_xpath("//input[@id='dv-submit']").click()
-	tableData = driver.find_element_by_id('seriesDataTable1')
-	table = tableData.get_attribute('outerHTML')
-	driver.quit()
-	return pd.read_html(table)
+
+  # 
+  # tableData = driver.find_element_by_id('GraphTable')
+  # table = tableData.get_attribute('outerHTML')
+  driver.quit()
+  # return pd.read_html(table)
 
 def parseCsvData(uri):
-	page = requests.get(uri)
-	return pd.read_csv(io.StringIO(page.text))
+  page = requests.get(uri)
+  return pd.read_csv(io.StringIO(page.text))
 
 def parseCBPIncomeData(uri):
-	# Need to reconcile CBP datasets, as format changes throughout the years, new counties included, etc.
-	page = requests.get(uri)
-	return pd.read_csv(io.StringIO(page.text), encoding = "ISO-8859-1")
+  # Need to reconcile CBP datasets, as format changes throughout the years, new counties  included, etc.
+  return parseCsvDat(uri)
 
 def parseZillowRentData(uri):
-	return parseCsvData(uri)
+  return parseCsvData(uri)
 
 def parseHousingIndexData(uri):
-	return parseCsvData(uri)
+  return parseCsvData(uri)
 
 def parseCDData(uri):
-	return parseCsvData(uri)
-	
+  return parseCsvData(uri)
+  
 def parseBondData(uri):
-	return parseCsvData(uri)
-	
+  return parseCsvData(uri)
+  
 def parseRaremetalData(uri):
-	return parseCsvData(uri)
+  return parseCsvData(uri)
 
 if __name__ == "__main__":
-	driver = initChromeDriver()
-	# Alpha Vantage API Key: IJA5ZUY00CVDSFBK
-	# TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates', driver)
-	# ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
-	# HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
-	# CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
-	# BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
-	# IncomeData = parseCBPIncomeData("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17cd.xlsx?#")
-	CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
-	SAdata = parseSAData('https://www.fdic.gov/regulations/resources/rates/previous.html', driver)
-	# RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
-	# print(CpiData)
-	stockData = parseStockData("https://dividata.com/")
-	
+  # Alpha Vantage API Key: IJA5ZUY00CVDSFBK
+  # TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates')
+  # ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
+  # HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
+  # CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
+  # BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
+  # IncomeData = parseCBPIncomeData("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17cd.xlsx?#")
+  # CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
+  # SAdata = parseSavingsAcctData('https://www.fdic.gov/regulations/resources/rates/previous.html')
+  # RaremetalData = parseRaremetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
+  # print(CpiData)
+  stockData = parseStockData("https://dividata.com/")
+  
