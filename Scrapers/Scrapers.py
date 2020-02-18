@@ -118,7 +118,18 @@ def parseSAData(uri, root, driver, depth=0):
 	# Return DataFrames
 	return (njdf, jdf)
 
+'''
+	@params:	uri - The weblink to scrape
+				driver - Reference to chromedriver object
+	@requires:	uri is an instantiated string representing a valid webpage containing a table with id seriesDataTable1,
+				driver is an instantiated chromedriver instance
+	@modifies:	None
+	@effects:	Change option under select with name 'startYear' to value = '1990', perform an update on webpage by clicking 
+				on input with id 'dv-submit'. Then, scrapes table with id seriesDataTable1 at the uri provided and returns a 
+				dataframe representing the table
+	@returns:	pandas DataFrame object
 
+'''
 def parseCpiData(uri, driver):
 	driver.get(uri)
 	driver.find_element_by_xpath("//select[@name='startYear']/option[@value='1990']").click()
