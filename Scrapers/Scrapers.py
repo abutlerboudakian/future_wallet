@@ -241,8 +241,9 @@ def parseStockDividend(uri, absPath, driver=None):
       companyName = headerData.split(">")[1].split(" Dividend History")[0]
 
       tickerToName = tickerToName.append({"Ticker":stock, "Market":market, "Company Name":companyName}, ignore_index = True)
-      if (i % 25) == 0: # Print every 100 to show progress
-        print(i, stock)
+      print(i, stock)
+      if i == 60:
+        break
       all_data = pd.concat([all_data, data]) # add stock dividends to 
     time.sleep(randrange(1, 15)) # introduce some lag in between to reduce the number of requests
   
@@ -291,4 +292,4 @@ if __name__ == "__main__":
   driver.quit()
 
 
-# 5 min, 15 min | 10:45pm
+# 5 min, 15 min | 8:34
