@@ -207,8 +207,9 @@ def parseRareMetalData(uri):
   @param absPath is a string denoting the absolute path to the directory
                  containing a list of files of the format <ticker>.<market>.txt
   @param driver is the optional chromedriver
-  @returns a dataframe containing Ticker | Market | Date | Dividend Amount
+  @returns a dataframe containing Ticker | Date | Dividend Amount
            for each stock listed in the absPath directory
+           a dataframe contaning Ticker | Market | Company name
 """
 def parseStockDividend(uri, absPath, driver=None):
   close = None
@@ -221,6 +222,7 @@ def parseStockDividend(uri, absPath, driver=None):
   # I downloaded the Kaggle data here "/mnt/d/price-volume-data-for-all-us-stocks-etfs/Stocks"
   filenames = listdir(absPath)
   all_data = pd.DataFrame()
+  tickerToName = pd.DataFrame(columns=["Ticker", "Market", "Company Name"])
   for i in range(len(filenames)): # For each stock
     filename = filenames[i]
     stock, market = filename.split(".")[:2]
@@ -232,16 +234,21 @@ def parseStockDividend(uri, absPath, driver=None):
       numEntries = data.shape[0]
 
       data = data.rename(columns={"Ex-Dividend Date":"Date"})
-      data.insert(0, "Market", [market]*numEntries, True)
       data.insert(0, "Ticker", [stock]*numEntries, True)
-      if (i % 100) == 0: # Print every 100 to show progress
+
+      headers = driver.find_elements_by_tag_name("h2")
+      headerData = headers[0].get_attribute("outerHTML")
+      companyName = headerData.split(">")[1].split(" Dividend History")[0]
+
+      tickerToName = tickerToName.append({"Ticker":stock, "Market":market, "Company Name":companyName}, ignore_index = True)
+      if (i % 25) == 0: # Print every 100 to show progress
         print(i, stock)
       all_data = pd.concat([all_data, data]) # add stock dividends to 
     time.sleep(randrange(1, 15)) # introduce some lag in between to reduce the number of requests
   
   if close is not None:
     driver.quit()
-  return all_data
+  return all_data, tickerToName
 
 """
   @param absPath is a string denoting the absolute path to /Stock or /ETF from the kaggle dataset
@@ -276,10 +283,11 @@ if __name__ == "__main__":
   # print(SAdata)
   # RaremetalData = parseRareMetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
   # print(CpiData)
-  # stockData = parseStockDividend("https://dividata.com/stock", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver) # There are around 7000 stocks to take note of
+  stockData = parseStockDividend("https://dividata.com/stock", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver) # There are around 7000 stocks to take note of
   # print(stockData, stockData.shape)
   # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
-  # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
+  print(stockData[0], stockData[0].shape) # NOTE: Some of the txt files are empty
+  print(stockData[1], stockData[1].shape) # NOTE: Some of the txt files are empty
   driver.quit()
 
 
