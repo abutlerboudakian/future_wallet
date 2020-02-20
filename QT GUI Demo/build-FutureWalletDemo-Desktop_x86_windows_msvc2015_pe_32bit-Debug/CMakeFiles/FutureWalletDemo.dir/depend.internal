@@ -322,12 +322,17 @@ CMakeFiles/FutureWalletDemo.dir/mainwindow.cpp.obj
  C:/Qt/5.14.1/msvc2017/include/QtGui/qpaintdevice.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qpainterpath.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qpalette.h
+ C:/Qt/5.14.1/msvc2017/include/QtGui/qpen.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qpixelformat.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qpixmap.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qpolygon.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qregion.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qrgb.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qrgba64.h
+ C:/Qt/5.14.1/msvc2017/include/QtGui/qtextcursor.h
+ C:/Qt/5.14.1/msvc2017/include/QtGui/qtextdocument.h
+ C:/Qt/5.14.1/msvc2017/include/QtGui/qtextformat.h
+ C:/Qt/5.14.1/msvc2017/include/QtGui/qtextoption.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qtgui-config.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qtguiglobal.h
  C:/Qt/5.14.1/msvc2017/include/QtGui/qtouchdevice.h
@@ -338,18 +343,26 @@ CMakeFiles/FutureWalletDemo.dir/mainwindow.cpp.obj
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/QApplication
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/QMainWindow
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/QMenuBar
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/QPushButton
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/QStatusBar
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/QTextBrowser
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/QWidget
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/qabstractbutton.h
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/qabstractscrollarea.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qaction.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qactiongroup.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qapplication.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qdesktopwidget.h
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/qframe.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qmainwindow.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qmenu.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qmenubar.h
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/qpushbutton.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qsizepolicy.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qstatusbar.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtabwidget.h
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtextbrowser.h
+ C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtextedit.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtwidgets-config.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qtwidgetsglobal.h
  C:/Qt/5.14.1/msvc2017/include/QtWidgets/qwidget.h
