@@ -128,7 +128,6 @@ def parseSAData(uri, root, driver, depth=0):
 				on input with id 'dv-submit'. Then, scrapes table with id seriesDataTable1 at the uri provided and returns a 
 				dataframe representing the table
 	@returns:	pandas DataFrame object
-
 '''
 def parseCpiData(uri, driver):
 	driver.get(uri)
@@ -211,6 +210,16 @@ def parseBondData(uri):
 def parseRareMetalData(uri):
 	return parseCsvData(uri)
 
+'''
+	@params:	uri - The weblink to scrape
+	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
+	@modifies:	None
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@returns:	pandas DataFrame object
+'''	
+def parseDividendData(uri):
+	return parseCsvData(uri)
+
 """
   @param uri is a string denoting the default location of the dividend website
              namely https://dividata.com/ since https://dividata.com/stock/<ticker>/dividend
@@ -291,6 +300,8 @@ if __name__ == "__main__":
   # print(stockData, stockData.shape)
   # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
   # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
+  DividendData = parseDividendData("https://datahub.io/core/s-and-p-500/r/data.csv")
+  print(DividendData)
   driver.quit()
 
 
