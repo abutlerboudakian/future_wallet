@@ -304,17 +304,12 @@ if __name__ == "__main__":
   # print(SAdata)
   # RaremetalData = parseRareMetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
   # print(CpiData)
-  stockData = parseStockDividend("https://dividata.com/stock", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver) # There are around 7000 stocks to take note of
+  # stockData = parseStockDividend("https://dividata.com/stock", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver) # There are around 7000 stocks to take note of
   # print(stockData, stockData.shape)
   # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
-<<<<<<< HEAD
   # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
   DividendData = parseDividendData("https://datahub.io/core/s-and-p-500/r/data.csv")
   print(DividendData)
-=======
-  print(stockData[0], stockData[0].shape) # NOTE: Some of the txt files are empty
-  print(stockData[1], stockData[1].shape) # NOTE: Some of the txt files are empty
->>>>>>> def4d33691a70a822412144d06c1df6fa47ed36a
   driver.quit()
 
 
