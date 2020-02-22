@@ -158,7 +158,7 @@ def parseCsvData(uri):
 '''
 def parseCBPIncomeData(uri):
   # Need to reconcile CBP datasets, as format changes throughout the years, new counties  included, etc.
-  return parseCsvDat(uri)
+  return parseCsvData(uri)
 
 '''
 	@params:	uri - The weblink to scrape
