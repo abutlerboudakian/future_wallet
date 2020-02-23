@@ -168,7 +168,7 @@ def parseCbpIncomeData():
 
 '''
 	@params:	None
-	@requires:	None
+	@requires:	uri is in https://www2.census.gov/programs-surveys/cbp/datasets/
 	@modifies:	None
 	@effects:	Returns DataFrame object of target CBP Income data from 2016 to 1986
 	@returns:	pandas DataFrame object
@@ -177,7 +177,14 @@ def parseCbpIncomeDataHelper(uri):
 	page = requests.get(uri)
 	return pd.read_csv(io.StringIO(page), encoding="ISO-8859-1")
 
-def parseNAICSCode():
+'''
+	@params:	None
+	@requires:	uri is equal to "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017"
+	@modifies:	None
+	@effects:	Returns DataFrame object of NCAIS codes and their meaning
+	@returns:	pandas DataFrame object
+'''
+def parseNAICSCode(uri):
 	return
 
 '''
