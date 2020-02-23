@@ -145,26 +145,39 @@ def parseCbpIncomeData():
 	min_year = 1986
 	year_index = max_year
 	years = []
-	years_data = []
 	cvs_data = []
 
 	# 2017 declare independently since its not a zipped file
 	year2017 = "https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17co.xlsx?#"
+	data2017 = parseCbpIncomeDataHelper(year2017)
+
+	# Use 2017 data columns as starter
+	allData = pd.DataFrame()
 
 	# Get all years
 	while year_index != min_year:
 		years.append(year_index)
 		year_index -= 1
 
-	# Append 2017 data
-	cvs_data.append(parseCbpIncomeDataHelper(year2017))
+	# Append other years
 	for year in years:
 		strYear = str(year)
 		cvs_data.append(parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/" + strYear + "/cbp" +
 												 strYear[2:len(strYear)] + "co.zip?#"))
 
+	for data in cvs_data:
+
+
+	return allData
+
+'''
+	@params:	None
+	@requires:	None
+	@modifies:	None
+	@effects:	Returns DataFrame object of target CBP Income data from 2016 to 1986
+	@returns:	pandas DataFrame object
+'''
 def parseCbpIncomeDataHelper(uri):
-	# Need to reconcile CBP datasets, as format changes throughout the years, new counties included, etc.
 	page = requests.get(uri)
 	return pd.read_csv(io.StringIO(page.text), encoding="ISO-8859-1")
 
