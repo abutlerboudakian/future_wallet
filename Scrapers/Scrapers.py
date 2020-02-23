@@ -19,6 +19,7 @@ import requests
 import bs4
 import io
 import pandas as pd
+import os
 
 from zipfile import ZipFile
 from os import listdir
@@ -175,11 +176,23 @@ def parseCbpIncomeData():
 '''
 def parseCbpIncomeDataHelper(uri):
 	page = requests.get(uri)
-	return pd.read_csv(io.StringIO(page), encoding="ISO-8859-1")
+	file = ZipFile(io.BytesIO(page.content))
+
+	# Read zip file into text file
+	f = open("data.txt", "w+")
+	with file as myzip:
+		myzip.writestr('/data.txt')
+	df = pd.read_csv('data.txt')
+
+	# Close and delete 'data.txt' file
+	f.close()
+	os.remove('data.txt')
+
+	return df
 
 '''
 	@params:	None
-	@requires:	uri is equal to "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017"
+	@requires:	uri is in "https://www.census.gov/cgi-bin/sssd/naics/"
 	@modifies:	None
 	@effects:	Returns DataFrame object of NCAIS codes and their meaning
 	@returns:	pandas DataFrame object
