@@ -20,6 +20,7 @@ import bs4
 import io
 import pandas as pd
 
+from zipfile import ZipFile
 from os import listdir
 import time
 from random import randrange
@@ -121,7 +122,6 @@ def parseCpiData(uri, driver):
 	table = tableData.get_attribute('outerHTML')
 	return pd.read_html(table)[0]
 
-
 '''
 	@params:	uri - The weblink to scrape
 	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
@@ -140,6 +140,7 @@ def parseCsvData(uri):
 	@effects:	Returns DataFrame object of CBP data from 2016 to 1986
 	@returns:	pandas DataFrame object
 '''
+
 def parseCbpIncomeData():
 	max_year = 2016
 	min_year = 1986
@@ -147,26 +148,21 @@ def parseCbpIncomeData():
 	years = []
 	cvs_data = []
 
-	# 2017 declare independently since its not a zipped file
-	year2017 = "https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17co.xlsx?#"
-	data2017 = parseCbpIncomeDataHelper(year2017)
-
 	# Use 2017 data columns as starter
-	allData = pd.DataFrame()
+	data2017 = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17co.zip?#")
 
 	# Get all years
 	while year_index != min_year:
 		years.append(year_index)
 		year_index -= 1
 
-	# Append other years
+	# Get and append data to cvs_data from all available years
 	for year in years:
 		strYear = str(year)
 		cvs_data.append(parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/" + strYear + "/cbp" +
 												 strYear[2:len(strYear)] + "co.zip?#"))
 
-	for data in cvs_data:
-
+	allData = pd.DataFrame()
 
 	return allData
 
@@ -179,7 +175,10 @@ def parseCbpIncomeData():
 '''
 def parseCbpIncomeDataHelper(uri):
 	page = requests.get(uri)
-	return pd.read_csv(io.StringIO(page.text), encoding="ISO-8859-1")
+	return pd.read_csv(io.StringIO(page), encoding="ISO-8859-1")
+
+def parseNAICSCode():
+	return
 
 '''
 	@params:	uri - The weblink to scrape
@@ -312,7 +311,7 @@ def parseStockData(absPath):
   return all_data
 
 if __name__ == "__main__":
-  driver = initChromeDriver()
+  # driver = initChromeDriver()
   # Alpha Vantage API Key: IJA5ZUY00CVDSFBK
   # TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates', driver)
   # ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
@@ -331,7 +330,7 @@ if __name__ == "__main__":
   # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
   DividendData = parseDividendData("https://datahub.io/core/s-and-p-500/r/data.csv")
   print(DividendData)
-  driver.quit()
+  # driver.quit()
 
 
 # 5 min, 15 min | 8:34
