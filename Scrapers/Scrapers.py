@@ -24,23 +24,7 @@ from os import listdir
 import time
 from random import randrange
 
-'''
-	@params:	headless(optional) - Determines whether chromedriver is a headless instance or not, enabled by default
-	@requires:	chromedriver.exe is available in the current directory
-	@modifies:	None
-	@effects:	Creates a new chromedriver object (headless or not) and returns a reference to it.
-	@returns:	New chromedriver object
-'''
-def initChromeDriver(headless=True):
-  if headless:
-    options = webdriver.ChromeOptions()
-    options.add_argument('headless')
-    options.add_argument("--log-level=3")
-    driver = webdriver.Chrome(chrome_options=options)
-    return driver
-  else:
-    driver = webdriver.Chrome(chrome_options=options)
-    return driver
+
 
 '''
 	@params:	uri - The weblink to scrape
