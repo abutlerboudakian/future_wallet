@@ -34,7 +34,7 @@ from random import randrange
 	@requires:	uri is an instantiated string representing a valid webpage containing a table with id GraphTable,
 				driver is an instantiated chromedriver instance
 	@modifies:	None
-	@effects:	Scrapes table with id GraphTable at the uri provided and returns a dataframe representing the table
+	@effects:	Scrapes table with id GraphTable at the uri provided and returns a dataframe representing the table, parses data into DB format
 	@returns:	pandas DataFrame object
 
 '''
@@ -42,7 +42,11 @@ def parseTBondData(uri, driver):
 	driver.get(uri)
 	tableData = driver.find_element_by_id('GraphTable')
 	table = tableData.get_attribute('outerHTML')
-	return pd.read_html(table)[0]
+	data = pd.read_html(table)[0]
+	data = data[data['MONTH/YEAR'] != 'Average' & data['MONTH/YEAR'] != 'Minimum' & data['MONTH/YEAR'] != 'Maximum']
+	data = data.rename(columns={'MONTH/YEAR': 'Timestamp', '12 MAT': '12MAT', '1 MO. LIBOR': '1MoLIBOR', 'PRIME RATE': 'PrimeRate'})
+	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%m/%Y')
+	return data
 
 '''
 	@params:	uri - The weblink to scrape
@@ -53,7 +57,7 @@ def parseTBondData(uri, driver):
 				root is an instantiated string representing the root directory for all possible local hyperlinks searched in function,
 				driver is an instantiated chromedriver instance
 	@modifies:	None
-	@effects:	Scrapes 2 tables contained at the uri provided, or recursively searches an unordered list of hyperlinks if no tables are present up to a recursion depth of 2
+	@effects:	Scrapes 2 tables contained at the uri provided, or recursively searches an unordered list of hyperlinks if no tables are present up to a recursion depth of 2, parses for DB table format
 	@returns:	tuple of 2 pandas DataFrame objects
 '''
 def parseSAData(uri, root, driver, depth=0):
