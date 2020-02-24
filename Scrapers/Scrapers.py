@@ -216,8 +216,7 @@ def parseCbpIncomeDataHelper(uri):
 '''
 def parseNAICSCode():
 	'''
-	Create tree of NAICS codes where leaves are final codes -> Turn leaves into rows of pandas data frame
-
+	NAICS code structure:
 							NAICS Code Root
 						  /	 |	  |	...	\
 					    (11)(21) (22)	...
@@ -232,22 +231,27 @@ def parseNAICSCode():
 	  /               |
 	Soybean Farming   Other flax seed farming 	...
 
+	Only one click is required to get from 2-digit NAICS code to 6-digit final code, so no recursion necessary.
 	'''
 	# Get HTML page of NAICS codes
 	# Note" If this code is being used in 2022, this should be changed to
 	# "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2022" to reflect most recent data
 	page = requests.get("https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017")
 
-	# Extract NAICS code 2-digit code, which will be the first layer of NAICS code tree
+	# Go through NAICS 2-digit code and get all 6-digit final codes from link. 
 	soup = bs4.BeautifulSoup(page.text, 'html.parser')
 	for link in soup.find_all('a'):
 		layer_1_code = link.get_text().split("-")
 
 		if len(layer_1_code) > 2:
 			continue
-		for code in layer_1_code:
-			if code.isdigit():
-				print(code)
+		for index in range(0, len(layer_1_code)):
+			if layer_1_code[index].isdigit():
+				if len(layer_1_code) == 2:
+
+				else:
+					innerSoup
+
 
 	# Turn HTML page into tree of NAICS codes
 
