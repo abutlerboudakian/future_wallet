@@ -210,12 +210,46 @@ def parseCbpIncomeDataHelper(uri):
 
 '''
 	@params:	None
-	@requires:	uri is in "https://www.census.gov/cgi-bin/sssd/naics/"
+	@requires:	None 
 	@modifies:	None
-	@effects:	Returns DataFrame object of NCAIS codes and their meaning
+	@effects:	Returns DataFrame object of most recent (2017) NCAIS codes and their meaning
 	@returns:	pandas DataFrame object
 '''
-def parseNAICSCode(uri):
+def parseNAICSCode():
+	'''
+	Create tree of NAICS codes where leaves are final codes -> Turn leaves into rows of pandas data frame
+
+							NAICS Code Root
+						  /	 |	  |	...	\
+					    (11)(21) (22)	...
+						/    |    |
+					(111)	...  ...
+					/
+				(1111)	...
+				/
+			(11111)	...
+			/	 |
+	  (111110) (111120)
+	  /               |
+	Soybean Farming   Other flax seed farming 	...
+
+	'''
+	# Get HTML page of NAICS codes
+	# Note" If code is being used in 2022, this should be changed to "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2022"
+	# to reflect most recent data
+	page = requests.get("https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017")
+
+	# Extract NAICS code 2-digit code, which will be the first layer of NAICS code tree
+	soup = bs4.BeautifulSoup(page.text, 'html.parser')
+	for link in soup.find_all('a'):
+		if link.get_text()
+		print(link)
+
+	# Turn HTML page into tree of NAICS codes
+
+
+	# Turn leaves of tree into dataframe
+
 	return
 
 '''
