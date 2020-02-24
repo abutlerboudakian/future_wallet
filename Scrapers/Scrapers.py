@@ -204,7 +204,7 @@ def parseNAICSCode(uri):
 	@params:	uri - The weblink to scrape
 	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
 	@modifies:	None
-	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object, then puts it in format for DB table
 	@returns:	pandas DataFrame object
 '''
 def parseZillowRentData(uri):
@@ -227,11 +227,14 @@ def parseHousingIndexData(uri):
 	@params:	uri - The weblink to scrape
 	@requires:	uri is an instantiated string representing a valid webpage containing a csv file
 	@modifies:	None
-	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object
+	@effects:	Gets csv file located at uri and returns it as a pandas DataFrame object, then puts it in format for DB table
 	@returns:	pandas DataFrame object
 '''
 def parseCDData(uri):
-	return parseCsvData(uri)
+	data = parseCsvData(uri)
+	data = data.rename(columns={'DATE': 'Timestamp', 'CD6NRJD': 'Rate'})
+	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%d/%m/%Y')
+	return data
 
 '''
 	@params:	uri - The weblink to scrape
