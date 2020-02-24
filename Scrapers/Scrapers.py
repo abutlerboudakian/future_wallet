@@ -208,7 +208,10 @@ def parseNAICSCode(uri):
 	@returns:	pandas DataFrame object
 '''
 def parseZillowRentData(uri):
-  return parseCsvData(uri)
+  data = parseCsvData(uri)
+  data = pd.melt(data, id_vars=['RegionID', 'RegionName', 'City', 'State', 'Metro', 'CountyName', 'SizeRank'], var_name='Timestamp', value_name='Rent')
+  data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%Y-%m')
+  return data
 
 '''
 	@params:	uri - The weblink to scrape
