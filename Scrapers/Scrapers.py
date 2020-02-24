@@ -234,15 +234,20 @@ def parseNAICSCode():
 
 	'''
 	# Get HTML page of NAICS codes
-	# Note" If code is being used in 2022, this should be changed to "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2022"
-	# to reflect most recent data
+	# Note" If this code is being used in 2022, this should be changed to
+	# "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2022" to reflect most recent data
 	page = requests.get("https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017")
 
 	# Extract NAICS code 2-digit code, which will be the first layer of NAICS code tree
 	soup = bs4.BeautifulSoup(page.text, 'html.parser')
 	for link in soup.find_all('a'):
-		if link.get_text()
-		print(link)
+		layer_1_code = link.get_text().split("-")
+
+		if len(layer_1_code) > 2:
+			continue
+		for code in layer_1_code:
+			if code.isdigit():
+				print(code)
 
 	# Turn HTML page into tree of NAICS codes
 
