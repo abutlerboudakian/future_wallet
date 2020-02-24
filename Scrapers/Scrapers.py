@@ -121,7 +121,10 @@ def parseCpiData(uri, driver):
 	driver.find_element_by_xpath("//input[@id='dv-submit']").click()
 	tableData = driver.find_element_by_id('seriesDataTable1')
 	table = tableData.get_attribute('outerHTML')
-	return pd.read_html(table)[0]
+	data = pd.read_html(table)[0]
+	data['Timestamp'] = pd.to_datetime(data['Year'] + '-' + data['Period'], format='%Y-%m')
+	data = data.drop(columns=['Year','Period'])
+	return data
 
 '''
 	@params:	uri - The weblink to scrape
