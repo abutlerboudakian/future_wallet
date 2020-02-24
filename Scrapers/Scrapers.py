@@ -157,13 +157,13 @@ def parseCsvData(uri):
 
 def parseCbpIncomeData():
 	max_year = 2016
-	min_year = 1986
+	min_year = 1997
 	year_index = max_year
 	years = []
 	cvs_data = []
 
 	# Use 2017 data columns as starter
-	data2017 = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17co.zip?#")
+	data = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17co.zip?#")
 
 	# Get all years
 	while year_index != min_year:
@@ -173,12 +173,11 @@ def parseCbpIncomeData():
 	# Get and append data to cvs_data from all available years
 	for year in years:
 		strYear = str(year)
-		cvs_data.append(parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/" + strYear + "/cbp" +
-												 strYear[2:len(strYear)] + "co.zip?#"))
+		df = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/" + strYear + "/cbp" + strYear[2:len(strYear)] + "co.zip?#")
+		df['Timestamp'] = df.to_datetime(str(year), format='%Y')
+		data = data.append(df)
 
-	allData = pd.DataFrame()
-
-	return allData
+	return data
 
 '''
 	@params:	None
@@ -196,6 +195,12 @@ def parseCbpIncomeDataHelper(uri):
 	with file as myzip:
 		myzip.writestr('/data.txt')
 	df = pd.read_csv('data.txt')
+	if 'EMP_NF' in df.columns:
+		df = df[df['EMP_NF'] != 'D' & df['EMP_NF'] != 'S']
+	if 'AP_NF' in df.columns:
+		df = df[df['AP_NF'] != 'D' & df['AP_NF'] != 'S']
+	df = df['FIPSTATE', 'FIPSCTY', 'NAICS', 'EMP', 'AP', 'EST']
+	df = df.rename(columns={'FIPSTATE': 'StateCode', 'FIPSCTY': 'CountyCode', 'NAICS': 'IndustryCode', 'EMP': 'NumEmployees', 'AP': 'AnnualPayroll', 'EST': 'NumEstablishments'})
 
 	# Close and delete 'data.txt' file
 	f.close()
