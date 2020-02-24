@@ -257,7 +257,10 @@ def parseBondData(uri):
 	@returns:	pandas DataFrame object
 '''	
 def parseRareMetalData(uri):
-	return parseCsvData(uri)
+	data = parseCsvData(uri)
+	data = data.rename(columns={'Date': 'Timestamp'})
+	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%Y-%m')
+	return data
 
 '''
 	@params:	uri - The weblink to scrape
