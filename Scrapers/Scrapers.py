@@ -75,9 +75,15 @@ def parseSAData(uri, root, driver, depth=0):
 
 		# Scrape tables and record date
 		njdf = pd.read_html(str(tables[0]))[0]
+		njdf = njdf[njdf['Deposit Products'] == 'Savings']
+		njdf = njdf.drop(columns=['Deposit Products'])
+		njdf = njdf.rename(columns={'National Rate': 'NationalRate', 'Rate Cap': 'RateCap'})
 		jdf = pd.read_html(str(tables[1]))[0]
-		njdf['Date'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
-		jdf['Date'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
+		jdf = jdf[jdf['Deposit Products'] == 'Savings']
+		jdf = jdf.drop(columns=['Deposit Products'])
+		jdf = jdf.rename(columns={'National Rate': 'NationalRate', 'Rate Cap': 'RateCap'})
+		njdf['Timestamp'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
+		jdf['Timestamp'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
 	
 	# If tables have not been located and current recursion depth is less than 2:
 	elif depth <= 1:
