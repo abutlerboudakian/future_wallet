@@ -160,7 +160,6 @@ def parseCbpIncomeData():
 	min_year = 1997
 	year_index = max_year
 	years = []
-	cvs_data = []
 
 	# Use 2017 data columns as starter
 	data = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17co.zip?#")
