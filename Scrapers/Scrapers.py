@@ -239,7 +239,13 @@ def parseZillowRentData(uri):
 	@returns:	pandas DataFrame object
 '''
 def parseHousingIndexData(uri):
-  return parseCsvData(uri)
+  data = parseCsvData(uri)
+  data = data[data['place_id'].str.isnumeric()]
+  data = data[data['hpi_flavor'] == 'all-transactions']
+  data['Timestamp'] = pd.to_datetime(data['yr'] + '-' + data['period'], format='%Y-%m')
+  data = data.rename(columns={'place_id': 'ZIP', 'index_nsa': 'Index'})
+  data = data['Timestamp', 'ZIP', 'Index']
+  return data
 
 '''
 	@params:	uri - The weblink to scrape
