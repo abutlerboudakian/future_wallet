@@ -270,12 +270,13 @@ def parseNAICSCode():
 					href_text = inner_link.get_text()
 					# If href text is a 6-digit NAICS code, enter and get NAICS code info
 					if href_text.isdigit() and len(href_text) == NAICS_CODE_LEN:
+						time.sleep(3)
 						final_page = requests.get(base + inner_link.get('href'))
+						print("Status Code", final_page.status_code)
 						final_soup = bs4.BeautifulSoup(final_page.text, 'html.parser')
 
 						# Get inside div to get NAICS info
 						middle_col = final_soup.find("div", {"id": "middle-column"})
-
 						# Get job classification with h3 tag
 						job_class_html = middle_col.find("h3")
 						job_class = job_class_html.get_text()[NAICS_CODE_LEN:len(job_class_html.get_text())]
