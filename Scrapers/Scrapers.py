@@ -228,15 +228,15 @@ def parseNAICSCode():
 			(11111)	...
 			/	 |
 	  (111110) (111120)
-	  /               |
-	Soybean Farming   Other flax seed farming 	...
+	  /           |
+	(Soybean)   (Other flax seed) 	...
 
 	Only one click is required to get from 2-digit NAICS code to 6-digit final code, so no recursion necessary.
 	'''
 	# Init dataframe
 	naics_code = pd.DataFrame()
 	print("Put column names in there ^")
-	
+
 	# Get HTML page of NAICS codes
 	# Note" If this code is being used in 2022, this should be changed to
 	# "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2022" to reflect most recent data
