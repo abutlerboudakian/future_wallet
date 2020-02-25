@@ -233,6 +233,7 @@ def parseNAICSCode():
 
 	Only one click is required to get from 2-digit NAICS code to 6-digit final code, so no recursion necessary.
 	'''
+	NAICS_CODE_LEN = 6
 	# Init dataframe
 	naics_code = pd.DataFrame()
 	# Init column names in dataframe
@@ -249,17 +250,25 @@ def parseNAICSCode():
 
 	# Go through NAICS 2-digit code and get all 6-digit final codes from link.
 	soup = bs4.BeautifulSoup(page.text, 'html.parser')
+
+	# For each link in the root page
 	for link in soup.find_all('a'):
+		# Split with '-' delimeter to get NAICS code in format 'XX-YY'
 		layer_1_code = link.get_text().split("-")
 
-		if len(layer_1_code) > 2:
-			continue
+		# For every element retrieved from the split array, check if its a 2-digit NAICS code. If so, enter the URI and
+		# get the 6-digit NAICS code.
 		for index in range(0, len(layer_1_code)):
 			if layer_1_code[index].isdigit():
-				if len(layer_1_code) == 2:
-					print("Go inside and get the 6-digit codes and put inside df")
-				else:
-					print("Ditto")
+				inner_soup = bs4.BeautifulSoup(link.get('href'), 'html.parser')
+				print(link.get('href'))
+				print(inner_soup.find_all('a'))
+				for inner_link in inner_soup.find_all('a'):
+					href_text = inner_link.get_text()
+					# If href text is a 6-digit NAICS code, enter and get NAICS code info
+					if href_text.isdigit() and len(href_text) == NAICS_CODE_LEN:
+						print(href_text)
+				break
 
 	return
 
