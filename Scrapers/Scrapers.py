@@ -337,57 +337,6 @@ def parseDividendData(uri):
 	return parseCsvData(uri)
 
 """
-  @param uri is a string denoting the default location of the dividend website
-             namely https://dividata.com/ since https://dividata.com/stock/<ticker>/dividend
-             gives us historic dividend data
-  @param absPath is a string denoting the absolute path to the directory
-                 containing a list of files of the format <ticker>.<market>.txt
-  @param driver is the optional chromedriver
-  @returns a dataframe containing Ticker | Date | Dividend Amount
-           for each stock listed in the absPath directory
-           a dataframe contaning Ticker | Market | Company name
-"""
-def parseStockDividend(uri, absPath, driver=None):
-  close = None
-  if driver is None:
-    close = True
-    driver = initChromeDriver()
-
-  # Get the list of stocks from what's in the folder
-  # or     /stock/<acronym>/dividend
-  # I downloaded the Kaggle data here "/mnt/d/price-volume-data-for-all-us-stocks-etfs/Stocks"
-  filenames = listdir(absPath)
-  all_data = pd.DataFrame()
-  tickerToName = pd.DataFrame(columns=["Ticker", "Market", "Company Name"])
-  for i in range(len(filenames)): # For each stock
-    filename = filenames[i]
-    stock, market = filename.split(".")[:2]
-    driver.get(uri + "/" + stock + "/dividend")
-    tableData = driver.find_elements_by_tag_name("table")
-    if len(tableData) != 0: # If stock has dividends
-      table = tableData[-1].get_attribute('outerHTML')
-      data = pd.read_html(table)[0] # pd dataframe acquired for this stock
-      numEntries = data.shape[0]
-
-      data = data.rename(columns={"Ex-Dividend Date":"Date"})
-      data.insert(0, "Ticker", [stock]*numEntries, True)
-
-      headers = driver.find_elements_by_tag_name("h2")
-      headerData = headers[0].get_attribute("outerHTML")
-      companyName = headerData.split(">")[1].split(" Dividend History")[0]
-
-      tickerToName = tickerToName.append({"Ticker":stock, "Market":market, "Company Name":companyName}, ignore_index = True)
-      print(i, stock)
-      if i == 60:
-        break
-      all_data = pd.concat([all_data, data]) # add stock dividends to 
-    time.sleep(randrange(1, 15)) # introduce some lag in between to reduce the number of requests
-  
-  if close is not None:
-    driver.quit()
-  return all_data, tickerToName
-
-"""
   @param absPath is a string denoting the absolute path to /Stock or /ETF from the kaggle dataset
   @returns a panda dataframe of Ticker | Market | Date | Opening price | High | Low | Close | Volume | OpenInt
 """
