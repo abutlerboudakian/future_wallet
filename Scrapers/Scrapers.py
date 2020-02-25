@@ -235,7 +235,12 @@ def parseNAICSCode():
 	'''
 	# Init dataframe
 	naics_code = pd.DataFrame()
-	print("Put column names in there ^")
+	# Init column names in dataframe
+	naics_code["CURRENT_NAICS_CODE"] = ""
+	naics_code["JOB_CLASS"] = ""
+	naics_code["JOB_DESCRIPTION"] = ""
+	naics_code["2012_NAICS_CODE"] = ""
+	naics_code["2007_NAICS_CODE"] = ""
 
 	# Get HTML page of NAICS codes
 	# Note" If this code is being used in 2022, this should be changed to
