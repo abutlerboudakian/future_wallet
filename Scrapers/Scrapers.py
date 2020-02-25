@@ -211,7 +211,8 @@ def parseCbpIncomeDataHelper(uri):
 	@params:	None
 	@requires:	None 
 	@modifies:	None
-	@effects:	Returns DataFrame object of most recent (2017) NCAIS codes and their meaning
+	@effects:	Returns DataFrame object of most recent (2017) NCAIS codes with columns indicating job name and job
+	            description
 	@returns:	pandas DataFrame object
 '''
 def parseNAICSCode():
@@ -232,21 +233,23 @@ def parseNAICSCode():
 	(Soybean)   (Other flax seed) 	...
 
 	Only one click is required to get from 2-digit NAICS code to 6-digit final code, so no recursion necessary.
+
+	Ex: ---> = One click
+	(11) ---> (111110) ---> (Job class, Prev NAICS code, Job Desc)
 	'''
 	NAICS_CODE_LEN = 6
-	# Init dataframe
-	naics_code = pd.DataFrame()
-	# Init column names in dataframe
-	naics_code["CURRENT_NAICS_CODE"] = ""
-	naics_code["JOB_CLASS"] = ""
-	naics_code["JOB_DESCRIPTION"] = ""
-	naics_code["2012_NAICS_CODE"] = ""
-	naics_code["2007_NAICS_CODE"] = ""
+	# Init dataframe with columns
+	naics_code = pd.DataFrame(columns=["CURRENT_NAICS_CODE", "JOB_CLASS", "JOB_DESCRIPTION"])
+
+	# Put previous NAICS codes on backlog for now. Previous NAICS codes determine multiple job titles, as opposed to one
+	# naics_code["2012_NAICS_CODE"] = ""
+	# naics_code["2007_NAICS_CODE"] = ""
 
 	# Get HTML page of NAICS codes
-	# Note" If this code is being used in 2022, this should be changed to
-	# "https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2022" to reflect most recent data
-	page = requests.get("https://www.census.gov/cgi-bin/sssd/naics/naicsrch?chart=2017")
+	# Note" If this code is being used in 2022, this should be changed to "/cgi-bin/sssd/naics/naicsrch?chart=2022"
+	# to reflect most recent data
+	base = "https://www.census.gov"
+	page = requests.get(base + "/cgi-bin/sssd/naics/naicsrch?chart=2017")
 
 	# Go through NAICS 2-digit code and get all 6-digit final codes from link.
 	soup = bs4.BeautifulSoup(page.text, 'html.parser')
@@ -256,21 +259,40 @@ def parseNAICSCode():
 		# Split with '-' delimeter to get NAICS code in format 'XX-YY'
 		layer_1_code = link.get_text().split("-")
 
-		# For every element retrieved from the split array, check if its a 2-digit NAICS code. If so, enter the URI and
-		# get the 6-digit NAICS code.
+		# For every element retrieved from the split array, check if its a 2-digit NAICS code.
 		for index in range(0, len(layer_1_code)):
 			if layer_1_code[index].isdigit():
-				inner_soup = bs4.BeautifulSoup(link.get('href'), 'html.parser')
-				print(link.get('href'))
-				print(inner_soup.find_all('a'))
+				# Enter the 2-digit NAICS URI and get all 6-digit NAICS code under this node.
+				inner_page = requests.get(base + link.get('href'))
+				inner_soup = bs4.BeautifulSoup(inner_page.text, 'html.parser')
+
 				for inner_link in inner_soup.find_all('a'):
 					href_text = inner_link.get_text()
 					# If href text is a 6-digit NAICS code, enter and get NAICS code info
 					if href_text.isdigit() and len(href_text) == NAICS_CODE_LEN:
-						print(href_text)
+						final_page = requests.get(base + inner_link.get('href'))
+						final_soup = bs4.BeautifulSoup(final_page.text, 'html.parser')
+
+						# Get inside div to get NAICS info
+						middle_col = final_soup.find("div", {"id": "middle-column"})
+
+						# Get job classification with h3 tag
+						job_class_html = middle_col.find("h3")
+						job_class = job_class_html.get_text()[NAICS_CODE_LEN:len(job_class_html.get_text())]
+
+						# Get job description before <br/>
+						job_desc = job_class_html.next_sibling
+
+						# Get 2007 NAICS and 2012 NAICS by getting table. Put this feature on the backlog for now.
+						# naics_prev_html = middle_col.find("table")
+
+						# Get naics code
+						curr_naics = href_text
+
+						naics_code = naics_code.append(pd.Series([curr_naics, job_class, job_desc], index=["CURRENT_NAICS_CODE", "JOB_CLASS", "JOB_DESCRIPTION"]), ignore_index=True)
 				break
 
-	return
+	return naics_code
 
 '''
 	@params:	uri - The weblink to scrape
@@ -387,6 +409,7 @@ if __name__ == "__main__":
   # print(stockData, stockData.shape)
   # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
   # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
+  # NAICSdata = parseNAICSCode()
   DividendData = parseDividendData("https://datahub.io/core/s-and-p-500/r/data.csv")
   print(DividendData)
   # driver.quit()
