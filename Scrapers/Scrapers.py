@@ -20,6 +20,7 @@ import bs4
 import io
 import pandas as pd
 import os
+import random
 
 from zipfile import ZipFile
 from os import listdir
@@ -270,7 +271,9 @@ def parseNAICSCode():
 					href_text = inner_link.get_text()
 					# If href text is a 6-digit NAICS code, enter and get NAICS code info
 					if href_text.isdigit() and len(href_text) == NAICS_CODE_LEN:
-						time.sleep(3)
+						# Wait a random amount of seconds from 1 <= n <= 4 to not get 503 error
+						time.sleep(random.randint(1, 4))
+
 						final_page = requests.get(base + inner_link.get('href'))
 						print("Status Code", final_page.status_code)
 						final_soup = bs4.BeautifulSoup(final_page.text, 'html.parser')
@@ -410,7 +413,10 @@ if __name__ == "__main__":
   # print(stockData, stockData.shape)
   # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
   # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
-  # NAICSdata = parseNAICSCode()
+
+  # NAICSdata = parseNAICSCode() # NOTE: this takes long because of time.sleep()
+  # NAICSdata.to_csv(path_or_buf='NAICSCode.csv', index=False)
+
   DividendData = parseDividendData("https://datahub.io/core/s-and-p-500/r/data.csv")
   print(DividendData)
   # driver.quit()
