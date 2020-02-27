@@ -393,6 +393,8 @@ def parseStockData(absPath):
         all_data = pd.concat([all_data, data])
       except pd.errors.EmptyDataError:
         pass
+  all_data = all_data['Date', 'Ticker', 'Market', 'Opening price', 'Close', 'High', 'Low', 'Volume']
+  all_data = all_data.rename(columns={'Date':'Timestamp', 'Opening price':'Open'})
   return all_data
 
 if __name__ == "__main__":
