@@ -44,9 +44,12 @@ def parseTBondData(uri, driver):
 	tableData = driver.find_element_by_id('GraphTable')
 	table = tableData.get_attribute('outerHTML')
 	data = pd.read_html(table)[0]
-	data = data[data['MONTH/YEAR'] != 'Average' & data['MONTH/YEAR'] != 'Minimum' & data['MONTH/YEAR'] != 'Maximum']
-	data = data.rename(columns={'MONTH/YEAR': 'Timestamp', '12 MAT': '12MAT', '1 MO. LIBOR': '1MoLIBOR', 'PRIME RATE': 'PrimeRate'})
+	data = data[(data['Month/Year'] != 'Average') & (data['Month/Year'] != 'Minimum') & (data['Month/Year'] != 'Maximum')]
+	data = data.rename(columns={'Month/Year': 'Timestamp', '12 MAT': '12MAT', '1 Mo. Libor': '1MoLIBOR', 'Prime Rate': 'PrimeRate'})
 	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%m/%Y')
+	data['12MAT'] = data['12MAT'].str.rstrip('%').astype('float') / 100.0
+	data['1MoLIBOR'] = data['1MoLIBOR'].str.rstrip('%').astype('float') / 100.0
+	data['PrimeRate'] = data['PrimeRate'].str.rstrip('%').astype('float') / 100.0
 	return data
 
 '''
@@ -70,7 +73,7 @@ def parseSAData(uri, root, driver, depth=0):
 	# Load Current webpage and get main content div
 	driver.get(uri)
 	div = driver.find_element_by_id('content')
-	soup = BeautifulSoup(div.get_attribute('outerHTML'), 'lxml')
+	soup = bs4.BeautifulSoup(div.get_attribute('outerHTML'), 'lxml')
 
 	# Attempt to locate tables in content div
 	tables = soup.find_all('table')
@@ -82,11 +85,11 @@ def parseSAData(uri, root, driver, depth=0):
 		njdf = pd.read_html(str(tables[0]))[0]
 		njdf = njdf[njdf['Deposit Products'] == 'Savings']
 		njdf = njdf.drop(columns=['Deposit Products'])
-		njdf = njdf.rename(columns={'National Rate': 'NationalRate', 'Rate Cap': 'RateCap'})
+		njdf = njdf.rename(columns={'National Rate 1': 'NationalRate', 'Rate Cap 2': 'RateCap'})
 		jdf = pd.read_html(str(tables[1]))[0]
 		jdf = jdf[jdf['Deposit Products'] == 'Savings']
 		jdf = jdf.drop(columns=['Deposit Products'])
-		jdf = jdf.rename(columns={'National Rate': 'NationalRate', 'Rate Cap': 'RateCap'})
+		jdf = jdf.rename(columns={'National Rate 1': 'NationalRate', 'Rate Cap 2': 'RateCap'})
 		njdf['Timestamp'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
 		jdf['Timestamp'] = pd.to_datetime(((uri.split('/'))[-1]).split('.')[0], format='%Y-%m-%d')
 	
@@ -133,6 +136,7 @@ def parseCpiData(uri, driver):
 	tableData = driver.find_element_by_id('seriesDataTable1')
 	table = tableData.get_attribute('outerHTML')
 	data = pd.read_html(table)[0]
+	print(data.columns)
 	data['Timestamp'] = pd.to_datetime(data['Year'] + '-' + data['Period'], format='%Y-%m')
 	data = data.drop(columns=['Year','Period'])
 	return data
@@ -174,7 +178,7 @@ def parseCbpIncomeData():
 	for year in years:
 		strYear = str(year)
 		df = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/" + strYear + "/cbp" + strYear[2:len(strYear)] + "co.zip?#")
-		df['Timestamp'] = df.to_datetime(str(year), format='%Y')
+		df['Timestamp'] = pd.to_datetime(str(year), format='%Y')
 		data = data.append(df)
 
 	return data
@@ -188,25 +192,24 @@ def parseCbpIncomeData():
 '''
 def parseCbpIncomeDataHelper(uri):
 	page = requests.get(uri)
-	file = ZipFile(io.BytesIO(page.content))
-
-	# Read zip file into text file
-	f = open("data.txt", "w+")
-	with file as myzip:
-		myzip.writestr('/data.txt')
-	df = pd.read_csv('data.txt')
-	if 'EMP_NF' in df.columns:
-		df = df[df['EMP_NF'] != 'D' & df['EMP_NF'] != 'S']
-	if 'AP_NF' in df.columns:
-		df = df[df['AP_NF'] != 'D' & df['AP_NF'] != 'S']
-	df = df['FIPSTATE', 'FIPSCTY', 'NAICS', 'EMP', 'AP', 'EST']
-	df = df.rename(columns={'FIPSTATE': 'StateCode', 'FIPSCTY': 'CountyCode', 'NAICS': 'IndustryCode', 'EMP': 'NumEmployees', 'AP': 'AnnualPayroll', 'EST': 'NumEstablishments'})
-
-	# Close and delete 'data.txt' file
-	f.close()
-	os.remove('data.txt')
+	f = ZipFile(io.BytesIO(page.content))
+	
+	df = pd.read_csv(f.open(ZipFile.namelist(f)[0]))
+	df.columns = df.columns.str.lower()
+	if 'emp_nf' in df.columns:
+		df = df[(df['emp_nf'] != 'D') & (df['emp_nf'] != 'S')]
+	if 'ap_nf' in df.columns:
+		df = df[(df['ap_nf'] != 'D') & (df['ap_nf'] != 'S')]
+	df = df[['fipstate', 'fipscty', 'naics', 'emp', 'ap', 'est']]
+	df = df.rename(columns={'fipstate': 'StateCode', 'fipscty': 'CountyCode', 'naics': 'IndustryCode', 'emp': 'NumEmployees', 'ap': 'AnnualPayroll', 'est': 'NumEstablishments'})
 
 	return df
+
+def parseNAICSCodeCSV(fname):
+	data = pd.read_csv(fname)
+	data.columns = data.columns.str.lower()
+	data = data.rename(columns={'current_naics_code':'IndustryCode', 'job_class':'Name', 'job_description':'Description'})
+	return data
 
 '''
 	@params:	None
@@ -309,6 +312,8 @@ def parseZillowRentData(uri):
   data = parseCsvData(uri)
   data = pd.melt(data, id_vars=['RegionID', 'RegionName', 'City', 'State', 'Metro', 'CountyName', 'SizeRank'], var_name='Timestamp', value_name='Rent')
   data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%Y-%m')
+  data = data.drop(columns=['SizeRank'])
+  data = data.rename(columns={'RegionName':'ZIPCode','CountyName':'County'})
   return data
 
 '''
@@ -322,9 +327,9 @@ def parseHousingIndexData(uri):
   data = parseCsvData(uri)
   data = data[data['place_id'].str.isnumeric()]
   data = data[data['hpi_flavor'] == 'all-transactions']
-  data['Timestamp'] = pd.to_datetime(data['yr'] + '-' + data['period'], format='%Y-%m')
+  data['Timestamp'] = pd.to_datetime(data['yr'].apply(str) + '-' + data['period'].apply(str), format='%Y-%m')
   data = data.rename(columns={'place_id': 'ZIP', 'index_nsa': 'Index'})
-  data = data['Timestamp', 'ZIP', 'Index']
+  data = data[['Timestamp', 'ZIP', 'Index']]
   return data
 
 '''
@@ -337,7 +342,8 @@ def parseHousingIndexData(uri):
 def parseCDData(uri):
 	data = parseCsvData(uri)
 	data = data.rename(columns={'DATE': 'Timestamp', 'CD6NRJD': 'Rate'})
-	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%d/%m/%Y')
+	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%Y-%m-%d')
+	data['Rate'] = pd.to_numeric(data['Rate'], errors='coerce') / 100
 	return data
 
 '''
@@ -350,7 +356,7 @@ def parseCDData(uri):
 def parseBondData(uri):
 	data = parseCsvData(uri)
 	data = data.rename(columns={'Date': 'Timestamp'})
-	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%d/%m/%Y')
+	data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%Y-%m-%d')
 	return data
 
 '''
@@ -387,41 +393,43 @@ def parseStockData(absPath):
     with open(absPath + "\\" + filename) as file:
       try:
         data = pd.read_csv(file)
-        numEntries = data.shape[0]
-        data.insert(0, "Market", [market]*numEntries, True)
-        data.insert(0, "Ticker", [stock]*numEntries, True)
-        all_data = pd.concat([all_data, data])
+        data['Market'] = market
+        data['Ticker'] = stock
+        if all_data.empty:
+        	all_data = data
+        else:
+        	all_data = all_data.append(data)
       except pd.errors.EmptyDataError:
         pass
-  all_data = all_data['Date', 'Ticker', 'Market', 'Opening price', 'Close', 'High', 'Low', 'Volume']
-  all_data = all_data.rename(columns={'Date':'Timestamp', 'Opening price':'Open'})
+  all_data = all_data[['Date', 'Ticker', 'Market', 'Open', 'Close', 'High', 'Low', 'Volume']]
+  all_data = all_data.rename(columns={'Date':'Timestamp'})
   return all_data
 
-if __name__ == "__main__":
-  # driver = initChromeDriver()
-  # Alpha Vantage API Key: IJA5ZUY00CVDSFBK
-  # TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates', driver)
-  # ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
-  # HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
-  # CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
-  # BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
-  # IncomeData = parseCBPIncomeData("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17cd.xlsx?#")
-  # CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
-  # SAdata = parseSAData('https://www.fdic.gov/regulations/resources/rates/previous.html', 'https://www.fdic.gov/regulations/resources/rates/', driver)
-  # print(SAdata)
-  # RaremetalData = parseRareMetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
-  # print(CpiData)
-  # stockData = parseStockDividend("https://dividata.com/stock", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver) # There are around 7000 stocks to take note of
-  # print(stockData, stockData.shape)
-  # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
-  # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
+#if __name__ == "__main__":
+#   # driver = initChromeDriver()
+#   # Alpha Vantage API Key: IJA5ZUY00CVDSFBK
+#   # TBdata = parseTBondData('https://www.firstrepublic.com/finmkts/historical-interest-rates', driver)
+#   # ZRdata = parseZillowRentData('http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily.csv')
+#   # HIdata = parseHousingIndexData('https://www.fhfa.gov/HPI_master.csv')
+#   # CDdata = parseCDData('https://fred.stlouisfed.org/graph/fredgraph.csv?id=CD6NRJD')
+#   # BondData = parseBondData('https://datahub.io/core/bond-yields-us-10y/r/monthly.csv')
+	#IncomeData = parseCbpIncomeData()
+#   # CpiData = parseCpiData('https://beta.bls.gov/dataViewer/view/timeseries/CUSR0000SA0')
+#   # SAdata = parseSAData('https://www.fdic.gov/regulations/resources/rates/previous.html', 'https://www.fdic.gov/regulations/resources/rates/', driver)
+#   # print(SAdata)
+#   # RaremetalData = parseRareMetalData('https://datahub.io/core/gold-prices/r/monthly.csv')
+#   # print(CpiData)
+#   # stockData = parseStockDividend("https://dividata.com/stock", "D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks", driver) # There are around 7000 stocks to take note of
+#   # print(stockData, stockData.shape)
+#   # stockData = parseStockData("D:\\price-volume-data-for-all-us-stocks-etfs\\Stocks")
+#   # print(stockData, stockData.shape) # NOTE: Some of the txt files are empty
 
-  # NAICSdata = parseNAICSCode() # NOTE: this takes long because of time.sleep()
-  # NAICSdata.to_csv(path_or_buf='NAICSCode.csv', index=False)
+#   # NAICSdata = parseNAICSCode() # NOTE: this takes long because of time.sleep()
+#   # NAICSdata.to_csv(path_or_buf='NAICSCode.csv', index=False)
 
-  DividendData = parseDividendData("https://datahub.io/core/s-and-p-500/r/data.csv")
-  print(DividendData)
-  # driver.quit()
+#   DividendData = parseDividendData("https://datahub.io/core/s-and-p-500/r/data.csv")
+#   print(DividendData)
+#   # driver.quit()
 
 
 # 5 min, 15 min | 8:34

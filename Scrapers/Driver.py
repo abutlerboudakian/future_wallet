@@ -33,32 +33,40 @@ def initChromeDriver(headless=True):
     return driver
 
 if __name__ == "__main__":
-	cstr = 'mssql+pyodbc://' sys.argv[1] + ':' + sys.argv[2] + '@74.70.80.116:1433/modeldata'
+	cstr = 'mssql+pyodbc://' + str(sys.argv[1]) + ':' + str(sys.argv[2]) + '@localhost:1433/modeldata?driver=SQL+Server+Native+Client+11.0'
 	engine = sa.create_engine(cstr)
-	conn = engine.connect()
 
 	driver = initChromeDriver()
 
-	sources = pd.read_sql(sql='SELECT * FROM Sources;', con=conn)
+	with engine.connect() as conn:
+		sources = pd.read_sql(sql='SELECT * FROM Sources;', con=conn)
 
-	for row in sources.itertuples():
-		args = []
-		links = row.Link.split('|')
-		args.extend(links)
-		if row.Driver == 1:
-			args.append(driver)
+		for row in sources.itertuples():
+			if(not row.Pushed):
+				args = []
+				if row.Link is not None:
+					links = row.Link.split('|')
+					args.extend(links)
+				if row.Driver == 1:
+					args.append(driver)
 
-		data = getattr(Scrapers, row.Name)(*args)
-		table = row.DestTable
+				print('Getting ' + row.DestTable)
+				if len(args) > 0:
+					data = getattr(Scrapers, row.Name)(*args)
+				else:
+					data = getattr(Scrapers, row.Name)()
+				table = row.DestTable
 
-		if isinstance(data, tuple):
-			tables = table.split('|')
-			for d, t in data, tables:
-				d.to_sql(t, con=conn, if_exists='append', index=False)
-		else:
-			data.to_sql(table, con=conn, if_exists='append', index=False)
+				if isinstance(data, tuple):
+					tables = table.split('|')
+					for i in range(0, len(tables)):
+						print(data[i].columns)
+						data[i].to_sql(tables[i], con=conn, if_exists='append', index=False)
+				else:
+					data.to_sql(table, con=conn, if_exists='append', index=False)
+				conn.execute('UPDATE Sources SET Pushed = 1 WHERE DestTable = \'' + row.DestTable + '\'')
+				print('' + row.DestTable + ' pushed successfully!')
 
 
 	driver.quit()
-	conn.close()
 	engine.dispose()
