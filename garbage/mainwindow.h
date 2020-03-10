@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QResizeEvent> // To resize sideBar
+#include <QGridLayout>
+#include "sideBar.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,5 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    // sideBar * _sideMenu;
+    QWidget * mainWidget;
+    void resizeEvent(QResizeEvent * event);
 };
 #endif // MAINWINDOW_H

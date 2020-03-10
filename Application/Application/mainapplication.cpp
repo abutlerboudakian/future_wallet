@@ -6,6 +6,8 @@ MainApplication::MainApplication(QWidget *parent)
     , ui(new Ui::MainApplication)
 {
     ui->setupUi(this);
+
+
 }
 
 MainApplication::~MainApplication()

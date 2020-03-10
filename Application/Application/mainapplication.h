@@ -2,6 +2,7 @@
 #define MAINAPPLICATION_H
 
 #include <QMainWindow>
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApplication; }
@@ -17,5 +18,6 @@ public:
 
 private:
     Ui::MainApplication *ui;
+    std::unique_ptr<QWidget> Content;
 };
 #endif // MAINAPPLICATION_H
