@@ -18,6 +18,6 @@ public:
 
 private:
     Ui::MainApplication *ui;
-    std::unique_ptr<QWidget> Content;
+    std::unique_ptr<QWidget> Content; // The state is any Widget we use to display content
 };
 #endif // MAINAPPLICATION_H
