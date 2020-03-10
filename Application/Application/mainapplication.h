@@ -2,6 +2,7 @@
 #define MAINAPPLICATION_H
 
 #include <QMainWindow>
+#include "DashBoard.h"
 #include <memory>
 
 QT_BEGIN_NAMESPACE
@@ -18,6 +19,6 @@ public:
 
 private:
     Ui::MainApplication *ui;
-    std::unique_ptr<QWidget> Content; // The state is any Widget we use to display content
+    QWidget * content;
 };
 #endif // MAINAPPLICATION_H

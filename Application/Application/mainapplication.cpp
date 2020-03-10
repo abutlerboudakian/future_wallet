@@ -7,11 +7,14 @@ MainApplication::MainApplication(QWidget *parent)
 {
     ui->setupUi(this);
 
-
+    content = new DashBoard(this);
+    setCentralWidget(content);
+    content->show();
 }
 
 MainApplication::~MainApplication()
 {
     delete ui;
+    delete content;
 }
 
