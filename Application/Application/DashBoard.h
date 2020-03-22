@@ -3,10 +3,11 @@
 
 #include <QGridLayout>
 #include <QLabel>
-#include <QHBoxLayout>
+//#include <QHBoxLayout>
 #include <QPushButton>
 #include <QMainWindow>
 #include <QSizePolicy>
+#include <QScrollArea>
 #include <memory>
 
 class DashBoard : public QWidget
@@ -24,8 +25,18 @@ class DashBoard : public QWidget
     QPushButton * Line;
     QPushButton * HBar;
     QGridLayout * gridLayout;
-    QHBoxLayout * thumbnails;
+    QGridLayout * top;
+    QGridLayout * thumbnails;
     QWidget * metrics;
+    QScrollArea * metricsWrapper;
+
+  private slots:
+    void getInputView();
+    void getBudgetView();
+    void getPieView();
+    void getVBarView();
+    void getLineView();
+    void getHBarView();
 };
 
 #endif
