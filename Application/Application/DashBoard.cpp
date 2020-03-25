@@ -1,8 +1,9 @@
 #include "DashBoard.h"
-#include <iostream>
 
-DashBoard::DashBoard(QMainWindow * parent) : QWidget(parent)
+DashBoard::DashBoard(QMainWindow * parent, QStackedWidget * content) : QWidget(parent)
 {
+  this->content = content;
+
   QString height = QString("height:50px");
   Predict = new QPushButton("Predict");
   welcome = new QLabel("Welcome to Future Wallet");

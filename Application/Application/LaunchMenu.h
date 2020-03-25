@@ -1,18 +1,23 @@
 #ifndef LAUNCHMENU_H
 #define LAUNCHMENU_H
 
+#include <QMainWindow>
+#include <iostream>
+#include <QStackedWidget>
+
 #include <QWidget>
 #include <QGridLayout>
 #include <QFormLayout>
 #include <QPushButton>
 #include <QLabel>
 #include <QGroupBox>
+#include <QLineEdit>
 
 class LaunchMenu : public QWidget
 {
     Q_OBJECT
     public:
-      explicit LaunchMenu(QMainWindow * parent);
+      explicit LaunchMenu(QMainWindow * parent, QStackedWidget * content);
       ~LaunchMenu();
     private:
       QLabel* TitleBar;
@@ -21,6 +26,10 @@ class LaunchMenu : public QWidget
       QGridLayout* Buttons;
       QPushButton* CreateAccount;
       QPushButton* Login;
+      QLineEdit* UserLineEdit;
+      QLineEdit* PassLineEdit;
+
+      QStackedWidget * content;
 
     private slots:
       void runLogin();
