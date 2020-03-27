@@ -75,6 +75,12 @@
            </item>
            <item>
             <widget class="QComboBox" name="comboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <item>
               <property name="text">
                <string>Hourly</string>
@@ -196,6 +202,12 @@
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
             </spacer>
            </item>
            <item>
@@ -254,11 +266,111 @@
            <item>
             <widget class="QComboBox" name="comboBox_2">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <item>
+              <property name="text">
+               <string>Soybean Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Oilseed Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Dry Pea and Bean Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Wheat Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Corn Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Rice Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Vegetable and Melon Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Potato Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Other Vegetables and Melon Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Orange Groves</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Citrus (except Orange) Groves</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Apple Orchards</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Grape Vineyards</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Strawberry Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Berry Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Tree Nut Farming</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>New Item</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>New Item</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>New Item</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>New Item</string>
+              </property>
+             </item>
             </widget>
            </item>
            <item>
