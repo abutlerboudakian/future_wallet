@@ -12,6 +12,7 @@ LaunchMenu::LaunchMenu(QMainWindow * parent, QStackedWidget * content) : QWidget
   Form = new QFormLayout;
   UserLineEdit = new QLineEdit;
   PassLineEdit = new QLineEdit;
+  PassLineEdit->setEchoMode(QLineEdit::Password);
   Form->addRow(tr("Usernane:"), UserLineEdit);
   Form->addRow(tr("Password:"), PassLineEdit);
 
