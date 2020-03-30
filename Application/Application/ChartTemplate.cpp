@@ -114,17 +114,62 @@ void ChartTemplate::initialize(ChartMap * data)
 //------------------------------------------------------
 // BarGUI                                              |
 //------------------------------------------------------
-
-/*void BarGUI::setDataAndEffects(ChartMap * const data)
+BarGUI::BarGUI() : ChartTemplate() { colNames = new QStringList; }
+BarGUI::~BarGUI()
 {
-
+    delete colNames;
 }
 
+/* Function to take in the bargraph data
+ * @requires data to be a ChartMap with std::string->double
+ *                                 denoting BarName->Value
+ * @param data is a ChartMap denoting BarName->Value pairs
+ * @modifies this->series
+ * @effects this->series[0] now contains a QBarSeries modeling the given data
+ */
+void BarGUI::setDataAndEffects(ChartMap * const data)
+{
+    if (!colNames->isEmpty())
+    {
+        colNames->clear();
+    }
+
+    QBarSet * DataSet = new QBarSet("Thing");
+    for (ChartMap::const_iterator i = data->begin(); i != data->end(); i++)
+    {
+        DataSet->append(i->second); // Push back the bar value
+        colNames->push_back(QString::fromStdString(i->first)); // Push back the name of the bar
+    }
+
+    QBarSeries * temp_series = new QBarSeries();
+    temp_series->append(DataSet);
+
+    series->push_back(temp_series);
+}
+
+/* Function to set up the Axes for a BarGraph
+ * @modifies chart
+ * @effect chart now has the XAxis and YAxis and title set
+ */
 void BarGUI::QAxisSetup()
 {
+    QBarCategoryAxis * XAxis = new QBarCategoryAxis();
+    XAxis->append(*colNames);
+    chart->addAxis(XAxis, Qt::AlignBottom);
+    (*(series->begin()))->attachAxis(XAxis);
 
-} */
+    QValueAxis * YAxis = new QValueAxis();
+    //YAxis->setRange(0,maxY);
+    chart->addAxis(YAxis, Qt::AlignLeft);
+    (*(series->begin()))->attachAxis(YAxis);
+}
 
+/* Override to hide legend
+ */
+void BarGUI::Legend()
+{
+    chart->legend()->setVisible(false);
+}
 
 //------------------------------------------------------
 // PieGUI                                              |
@@ -203,16 +248,32 @@ void LineGUI::initialize(LineMap * const data)
  */
 void LineGUI::setDataAndEffects(LineMap * const data)
 {
+    QDateTime largestDateTime = QDateTime(QDate(1990, 1, 1), QTime(0, 0, 0));
+    double largestValue = 0;
+    int series_num = 0;
+
     QLineSeries * temp_series;
     for (LineMap::const_iterator line = data->begin(); line != data->end(); line++) // For each line
     {
         temp_series = new QLineSeries;
         // Add each point on the line
-        for (LinePoints::const_iterator point = line->second.begin(); point != line->second.end(); point++)
+        LinePoints::const_iterator point;
+        for (point = line->second.begin(); point != line->second.end(); point++)
         {
+            if (point->second > largestValue)
+            {   // Update largestY
+                largestValue = point->second;
+                largestY = series_num;
+            }
+            if (point->first > largestDateTime)
+            {   // Update largestX
+                largestDateTime = point->first;
+                largestX = series_num;
+            }
             temp_series->append(point->first.toMSecsSinceEpoch(), point->second);
         }
         series->push_back(temp_series); // Add the line to list of lines
+        series_num++;
     }
 }
 
@@ -227,11 +288,11 @@ void LineGUI::QAxisSetup()
     XAxis->setFormat("MMM d yyyy");
     XAxis->setTitleText("Date");
     chart->addAxis(XAxis, Qt::AlignBottom);
-    (*series)[0]->attachAxis(XAxis);
+    (*series)[largestX]->attachAxis(XAxis);
 
     QValueAxis * YAxis = new QValueAxis;
     YAxis->setLabelFormat("%i");
     YAxis->setTitleText("Value");
     chart->addAxis(YAxis, Qt::AlignLeft);
-    (*series)[0]->attachAxis(YAxis);
+    (*series)[largestY]->attachAxis(YAxis);
 }

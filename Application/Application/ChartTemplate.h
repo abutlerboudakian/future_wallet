@@ -12,6 +12,8 @@
 #include <QAbstractSeries>
 
 #include <QBarSeries>
+#include <QBarSet>
+#include <QStringList>
 #include <QBarCategoryAxis>
 
 #include <QPieSeries>
@@ -73,6 +75,10 @@ public:
 private:
     void setDataAndEffects(ChartMap * const data) override;
     void QAxisSetup() override;
+    void Legend() override;
+
+    double maxY; // For the max in the range
+    QStringList * colNames; // For the column names
 };
 
 class PieGUI : public ChartTemplate {
@@ -95,6 +101,9 @@ public:
 private:
     void setDataAndEffects(LineMap * const data);
     void QAxisSetup() override;
+
+    int largestX, largestY; // Keep track of the series index with the largest timestamp interval
+                            // and largest value
 };
 
 

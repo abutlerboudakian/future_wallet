@@ -30,7 +30,8 @@ public:
 private:
     Ui::MainApplication *ui;
     QStackedWidget * content;
-    PieGUI * PieCreator;
-    LineGUI * LineCreator;
+    PieGUI * PieCreator; // Keeping them as ptrs for now since we need the data stored in them for chart views until we're done with the chart views
+    LineGUI * LineCreator; // putting them on the stack removes the elements in the chartview leading to segfault
+    BarGUI * BarCreator;
 };
 #endif // MAINAPPLICATION_H

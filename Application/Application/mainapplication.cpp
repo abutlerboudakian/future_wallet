@@ -11,7 +11,7 @@ MainApplication::MainApplication(QWidget *parent)
 
     // Example pie and line graph data
     PieCreator = new PieGUI;
-    ChartMap * map = new std::unordered_map<std::string, double>;
+    ChartMap * map = new ChartMap;
     map->insert(std::pair<std::string, double>("Cheese", 0.15));
     map->insert(std::pair<std::string, double>("Crust", 0.5));
     map->insert(std::pair<std::string, double>("Sauce", 0.35));
@@ -25,16 +25,25 @@ MainApplication::MainApplication(QWidget *parent)
                                                     LinePoints{std::pair<QDateTime, double>(QDateTime(QDate(1999, 1, 1), QTime(0, 50, 0)), 20),
                                                                std::pair<QDateTime, double>(QDateTime(QDate(2000, 1, 1), QTime(0, 50, 0)), 6),
                                                                std::pair<QDateTime, double>(QDateTime(QDate(2001, 1, 1), QTime(0, 50, 0)), 0)}));
+    BarCreator = new BarGUI;
+    ChartMap * map3 = new ChartMap;
+    map3->insert(std::pair<std::string, double>("Alcohol", 100));
+    map3->insert(std::pair<std::string, double>("Oreos", 10.49));
+    map3->insert(std::pair<std::string, double>("Oranges", 1000));
+
 
     // Initialize both charts
     PieCreator->initialize(map);
     LineCreator->initialize(map2);
+    BarCreator->initialize(map3);
 
     // Add both
+    content->addWidget(BarCreator->getView());
     content->addWidget(LineCreator->getView());
     content->addWidget(PieCreator->getView());
     delete map;
     delete map2;
+    delete map3;
 
     content->addWidget(new LaunchMenu(this, content));
     content->addWidget(new DashBoard(this, content));
@@ -48,5 +57,6 @@ MainApplication::~MainApplication()
     delete content;
     delete PieCreator;
     delete LineCreator;
+    delete BarCreator;
 }
 
