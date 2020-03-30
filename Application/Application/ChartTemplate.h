@@ -35,7 +35,7 @@ class VisualTemplate
 public:
     VisualTemplate();
     virtual ~VisualTemplate();
-    virtual QChartView * getView() const;
+    virtual const QChartView * getView() const;
 
 protected:
     // Common

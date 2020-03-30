@@ -49,7 +49,7 @@ void VisualTemplate::CreateChartView()
  * @requires this->chartView is initialized
  * @return chartView
  */
-QChartView * VisualTemplate::getView() const
+const QChartView * VisualTemplate::getView() const
 {
     // Rep invariant, but idk how to fix
     return chartView;
