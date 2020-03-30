@@ -18,14 +18,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainapplication.cpp \
-    DashBoard.cpp
+    DashBoard.cpp \
+    predictionInputWages.cpp
 
 HEADERS += \
     mainapplication.h \
-    DashBoard.h
+    DashBoard.h \
+    predictionInputWages.h
 
 FORMS += \
-    mainapplication.ui
+    mainapplication.ui \
+    predictionInputAssets.ui \
+    predictionInputInvestments.ui \
+    predictionInputWages.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
