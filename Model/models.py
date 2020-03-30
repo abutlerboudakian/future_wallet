@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 import tensorflow as tf
 from tensorflow import keras
+from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 
@@ -77,7 +78,7 @@ class InvestmentModel(BaseModel):
 			self.bondModel = BondModel(bondData)
 			self.tbModel = TBModel(tbData)
 		else:
-			self.savingsModel = SavinsModel()
+			self.savingsModel = SavingsModel()
 			self.cdModel = CDModel()
 			self.stockModels = {}
 			self.bondModel = BondModel()

@@ -8,7 +8,7 @@ class DatasetBuilder:
 	def __init__(self):
 		self.engine = dbutil.connect_engine('modeldata')
 
-	def getModelData(mType, **kwargs):
+	def getModelData(self, mType, **kwargs):
 		data = {}
 		if mType == ModelType.WAGES:
 			with engine.connect() as conn:
@@ -39,104 +39,102 @@ class DatasetBuilder:
 				else:
 					return None
 
-		elif mType == ModelType.INVEST:
+		elif mType == ModelType.INVESTS:
 			with engine.connect() as conn:
-				if 'tickers' in kwargs:
-					tickers = kwargs['tickers']
-					savings = {}
-					savingsSet = pd.read_sql("""SELECT
-												s1.Timestamp AS Timestamp,
-												s2.Timestamp AS PredTimestamp,
-												s1.NationalRate AS Rate,
-												s2.NationalRate AS PredRate
-											FROM
-												NJSAs s1,
-												NJSAs s2
-											WHERE
-												s1.Timestamp < s2.Timestamp
-											;""", con=conn)
+				savings = {}
+				savingsSet = pd.read_sql("""SELECT
+											s1.Timestamp AS Timestamp,
+											s2.Timestamp AS PredTimestamp,
+											s1.NationalRate AS Rate,
+											s2.NationalRate AS PredRate
+										FROM
+											NJSAs s1,
+											NJSAs s2
+										WHERE
+											s1.Timestamp < s2.Timestamp
+										;""", con=conn)
 
-					savingsSet = savingsSet.append(pd.read_sql("""SELECT
-												s1.Timestamp AS Timestamp,
-												s2.Timestamp AS PredTimestamp,
-												s1.NationalRate AS Rate,
-												s2.NationalRate AS PredRate
-											FROM
-												JSAs s1,
-												JSAs s2
-											WHERE
-												s1.Timestamp < s2.Timestamp
-											;""", con=conn))
-					savings['X'] = savingsSet[['Timestamp', 'PredTimestamp', 'Rate']]
-					savings['Y'] = savingsSet[['PredRate']]
+				savingsSet = savingsSet.append(pd.read_sql("""SELECT
+											s1.Timestamp AS Timestamp,
+											s2.Timestamp AS PredTimestamp,
+											s1.NationalRate AS Rate,
+											s2.NationalRate AS PredRate
+										FROM
+											JSAs s1,
+											JSAs s2
+										WHERE
+											s1.Timestamp < s2.Timestamp
+										;""", con=conn))
+				savings['X'] = savingsSet[['Timestamp', 'PredTimestamp', 'Rate']]
+				savings['Y'] = savingsSet[['PredRate']]
 
-					cds = {}
-					cdSet = pd.read_sql("""SELECT
-												c1.Timestamp AS Timestamp,
-												c2.Timestamp AS PredTimestamp,
-												c1.Rate AS Rate,
-												c2.Rate AS PredRate
-											FROM
-												CDs c1,
-												CDs c2
-											WHERE
-												c1.Timestamp < c2.Timestamp
-											;""", con=conn)
-					cds['X'] = cdSet[['Timestamp', 'PredTimestamp', 'Rate']]
-					cds['Y'] = cdSet[['PredRate']]
+				cds = {}
+				cdSet = pd.read_sql("""SELECT
+											c1.Timestamp AS Timestamp,
+											c2.Timestamp AS PredTimestamp,
+											c1.Rate AS Rate,
+											c2.Rate AS PredRate
+										FROM
+											CDs c1,
+											CDs c2
+										WHERE
+											c1.Timestamp < c2.Timestamp
+										;""", con=conn)
+				cds['X'] = cdSet[['Timestamp', 'PredTimestamp', 'Rate']]
+				cds['Y'] = cdSet[['PredRate']]
 
-					stocks = {}
-					for t in ticker:
-						stocks[t] = {}
-						stockSet = pd.read_sql("""SELECT
-												s1.Timestamp AS Timestamp,
-												s2.Timestamp AS PredTimestamp,
-												s1.Close AS Value,
-												s2.Close AS PredValue
-											FROM
-												Stocks s1,
-												Stocks s2
-											WHERE
-												s1.Ticker = '""" + t + """'
-												s1.Ticker = s2.Ticker,
-												s1.Timestamp < s2.Timestamp
-											;""", con=conn)
-						stocks[t]['X'] = stockSet[['Timestamp', 'PredTimestamp', 'Value']]
-						stocks[t]['Y'] = stockSet[['PredValue']]
+				stocks = {}
+				tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks;")
+				tickers = tickers['Ticker'].aslist()
+				for t in tickers:
+					stocks[t] = {}
+					stockSet = pd.read_sql("""SELECT
+											s1.Timestamp AS Timestamp,
+											s2.Timestamp AS PredTimestamp,
+											s1.Close AS Value,
+											s2.Close AS PredValue
+										FROM
+											Stocks s1,
+											Stocks s2
+										WHERE
+											s1.Ticker = '""" + t + """'
+											s1.Ticker = s2.Ticker,
+											s1.Timestamp < s2.Timestamp
+										;""", con=conn)
+					stocks[t]['X'] = stockSet[['Timestamp', 'PredTimestamp', 'Value']]
+					stocks[t]['Y'] = stockSet[['PredValue']]
 
-					bonds = {}
-					bondSet = pd.read_sql("""SELECT
-												b1.Timestamp AS Timestamp,
-												b2.Timestamp AS PredTimestamp,
-												b1.Rate AS Rate,
-												b2.Rate AS PredRate
-											FROM
-												Bonds b1,
-												Bonds b2
-											WHERE
-												b1.Timestamp > b2.Timestamp
-											;""", con=conn)
-					bonds['X'] = bondSet[['Timestamp', 'PredTimestamp', 'Rate']]
-					bonds['Y'] = bondSet[['PredRate']]
+				bonds = {}
+				bondSet = pd.read_sql("""SELECT
+											b1.Timestamp AS Timestamp,
+											b2.Timestamp AS PredTimestamp,
+											b1.Rate AS Rate,
+											b2.Rate AS PredRate
+										FROM
+											Bonds b1,
+											Bonds b2
+										WHERE
+											b1.Timestamp > b2.Timestamp
+										;""", con=conn)
+				bonds['X'] = bondSet[['Timestamp', 'PredTimestamp', 'Rate']]
+				bonds['Y'] = bondSet[['PredRate']]
 
-					tbonds = {}
-					tbSet = pd.read_sql("""SELECT
-												b1.Timestamp AS Timestamp,
-												b2.Timestamp AS PredTimestamp,
-												b1.PrimeRate AS Rate,
-												b2.PrimeRate AS PredRate
-											FROM
-												TBonds b1,
-												TBonds b2
-											WHERE
-												b1.Timestamp > b2.Timestamp
-											;""", con=conn)
-					tbonds['X'] = tbSet[['Timestamp', 'PredTimestamp', 'Rate']]
-					tbonds['Y'] = tbSet[['PredRate']]
+				tbonds = {}
+				tbSet = pd.read_sql("""SELECT
+											b1.Timestamp AS Timestamp,
+											b2.Timestamp AS PredTimestamp,
+											b1.PrimeRate AS Rate,
+											b2.PrimeRate AS PredRate
+										FROM
+											TBonds b1,
+											TBonds b2
+										WHERE
+											b1.Timestamp > b2.Timestamp
+										;""", con=conn)
+				tbonds['X'] = tbSet[['Timestamp', 'PredTimestamp', 'Rate']]
+				tbonds['Y'] = tbSet[['PredRate']]
 
-					data = (savings, cds, stocks, bonds, tbonds)
-				else:
-					return None
+				data = (savings, cds, stocks, bonds, tbonds)
 
 		elif mType == ModelType.ASSETS:
 			with engine.connect() as conn:
@@ -196,6 +194,6 @@ class DatasetBuilder:
 				rm['Y'] = rmSet[['Price']]
 				data = (res, rent, rm)
 		else:
-			raise 'Invalid model type specified.', mType
+			raise 'Invalid model type specified. ' + mType
 
 		return data

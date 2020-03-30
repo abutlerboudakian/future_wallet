@@ -4,27 +4,30 @@ from datasetbuilder import DatasetBuilder
 
 class ModelFactory:
 	def __init__(self):
-		dsb = DatasetBuilder()
+		self.dsb = DatasetBuilder()
 
 	def createModel(self, mType, **kwargs):
 		if mType == ModelType.WAGES:
-			if 'industryCode' in kwargs and 'train' in kwargs and kwargs['train'] == True:
-				return WageModel(dsb.getModelData(ModelType.WAGES, industryCode=kwargs['industryCode']))
+			if 'train' in kwargs and kwargs['train'] == True:
+				if 'industryCode' in kwargs:
+					return WageModel(self.dsb.getModelData(ModelType.WAGES, industryCode=kwargs['industryCode']))
+				else:
+					return WageModel(self.dsb.getModelData(ModelType.WAGES))
 			else:
 				return WageModel()
 		elif mType == ModelType.INVESTS:
 			if 'train' in kwargs and kwargs['train'] == True:
-				return InvestmentModel(dsb.getModelData(ModelType.INVESTS, args))
+				return InvestmentModel(self.dsb.getModelData(ModelType.INVESTS))
 			else:
 				return InvestmentModel()
 		elif mType == ModelType.ASSETS:
 			if 'train' in kwargs and kwargs['train'] == True:
-				return AssetModel(dsb.getModelData(ModelType.ASSETS, args))
+				return AssetModel(self.dsb.getModelData(ModelType.ASSETS))
 			else:
 				return AssetModel()
 		else:
-			raise 'Invalid model type specified.', mType
+			raise 'Invalid model type specified. ' + mType
 
 
-	def createAllModels(self)
+	def createAllModels(self):
 		return (WageModel(dsb.getModelData(ModelType.WAGES)), InvestmentModel(dsb.getModelData(ModelType.INVESTS)), AssetModel(dsb.getModelData(ModelType.ASSETS)))
