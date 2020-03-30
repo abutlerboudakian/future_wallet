@@ -40,6 +40,14 @@ class BaseModel(ABC):
 		pass
 
 class WageModel(BaseModel):
+	def __init__ (self, data=None):
+		self.data = data
+		self.industryCode = data['industryCode']
+		self.model = keras.Sequential([
+				keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
+				keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
+				keras.layers.Dense(1)
+			])
 
 	def load(self, model):
 		pass
