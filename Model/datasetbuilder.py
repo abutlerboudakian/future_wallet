@@ -140,6 +140,7 @@ class DatasetBuilder:
 
 		elif mType == ModelType.ASSETS:
 			with engine.connect() as conn:
+				res = {}
 				resSet = pd.read_sql("""SELECT
 											h1.Timestamp AS Timestamp,
 											h2.Timestamp AS PredTimestamp,
@@ -156,7 +157,10 @@ class DatasetBuilder:
 											h1.ZIP = FIPS.ZIP AND
 											h1.Timestamp < h2.Timestamp
 										;""", con=conn)
+				res['X'] = resSet[['Timestamp', 'PredTimestamp', 'Price', 'Lat', 'Long']]
+				res['Y'] = resSet[['PredPrice']]
 
+				rent = {}
 				rentSet = pd.read_sql("""SELECT
 											r1.Timestamp AS Timestamp,
 											r2.Timestamp AS PredTimestamp,
@@ -173,6 +177,24 @@ class DatasetBuilder:
 											r1.ZIPCode = FIPS.ZIP AND
 											r1.Timestamp < r2.Timestamp
 										;""", con=conn)
+				rent['X'] = rentSet[['Timestamp', 'PredTimestamp', 'Rent', 'Lat', 'Long']]
+				rent['Y'] = rentSet[['PredRent']]
+
+				rm = {}
+				rmSet = pd.read_sql("""SELECT
+											r1.Timestamp AS Timestamp,
+											r2.Timestamp AS PredTimestamp,
+											r1.Price AS Price,
+											r2.Price AS PredPrice
+										FROM
+											RMI r1,
+											RMI r2
+										WHERE
+											r1.Timestamp < r2.Timestamp
+										;""", con=conn)
+				rm['X'] = rmSet[['Timestamp', 'PredTimestamp', 'Price']]
+				rm['Y'] = rmSet[['Price']]
+				data = (res, rent, rm)
 		else:
 			raise 'Invalid model type specified.', mType
 
