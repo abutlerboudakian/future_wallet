@@ -15,12 +15,13 @@ class ModelType(Enum):
 
 class BaseModel(ABC):
 	def __init__(self, data=None):
-		self.data = data
-		self.model = keras.Sequential([
-				keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
-				keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
-				keras.layers.Dense(1)
-			])
+		if data is not None:
+			self.data = data
+			self.model = keras.Sequential([
+					keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
+					keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
+					keras.layers.Dense(1)
+				])
 
 	def setData(self, data):
 		self.data = data
@@ -33,7 +34,7 @@ class BaseModel(ABC):
 	def save(self, path):
 		pass
 
-	def load(self, models):
+	def load(self, path):
 		pass
 
 	def predict(self, **kwargs):
@@ -41,16 +42,22 @@ class BaseModel(ABC):
 
 class WageModel(BaseModel):
 	def __init__ (self, data=None):
-		self.data = data
-		self.industryCode = data['industryCode']
-		self.model = keras.Sequential([
-				keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
-				keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
-				keras.layers.Dense(1)
-			])
+		if data is not None:
+			self.data = data
+			self.industryCode = data['industryCode']
+			self.model = keras.Sequential([
+					keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
+					keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
+					keras.layers.Dense(1)
+				])
 
-	def load(self, model):
-		pass
+
+	def save(self, path):
+		self.model.save(path + 'wagemodel' + self.industryCode)
+
+	def load(self, path, industryCode):
+		self.industryCode = industryCode
+		self.model = keras.models.load_model(path + 'wagemodel' + industryCode)
 
 	def predict(self, income, lat, lon, years):
 		timestamp = datetime.now.timestamp()
@@ -60,14 +67,21 @@ class WageModel(BaseModel):
 
 class InvestmentModel(BaseModel):
 	def __init__(self, data=None):
-		savingsData, cdData, stockData, bondData, tbData = zip(*data)
-		self.savingsModel = SavingsModel(savingsData)
-		self.cdModel = CDModel(savingsData)
-		self.stockModels = []
-		for s in stockData:
-			self.stockModels[s['ticker']] = StockModel(s['data'])
-		self.bondModel = BondModel(bondData)
-		self.tbModel = TBModel(tbData)
+		if data is not None:
+			savingsData, cdData, stockData, bondData, tbData = zip(*data)
+			self.savingsModel = SavingsModel(savingsData)
+			self.cdModel = CDModel(savingsData)
+			self.stockModels = {}
+			for ticker, sData in stockData.items():
+				self.stockModels[ticker] = StockModel(sData)
+			self.bondModel = BondModel(bondData)
+			self.tbModel = TBModel(tbData)
+		else:
+			self.savingsModel = SavinsModel()
+			self.cdModel = CDModel()
+			self.stockModels = {}
+			self.bondModel = BondModel()
+			self.tbModel = TBModel()
 
 	def train(self, epochs):
 		savingsModel.train(epochs)
@@ -77,8 +91,23 @@ class InvestmentModel(BaseModel):
 		bondModel.train(epochs)
 		tbModel.train(epochs)
 
-	def load(self, models):
-		pass
+	def save(self, path):
+		self.savingsModel.save(path)
+		self.cdModel.save(path)
+		for ticker, model in self.stockModels:
+			model.save(path, ticker)
+		self.bondModel.save(path)
+		self.tbModel.save(path)
+
+	def load(self, path, tickers):
+		self.savingsModel.load(path)
+		self.cdModel.load(path)
+		for t in tickers:
+			stockModels[t] = StockModel()
+			stockModels[t].load(path, t)
+		self.bondModel.load(path)
+		self.tbModel.load(path)
+
 
 	def predict(self, savings, cd, stocks, bonds, tbs, years):
 		stockRet = 0
@@ -93,18 +122,30 @@ class InvestmentModel(BaseModel):
 
 class AssetModel(BaseModel):
 	def __init__(self, data=None):
-		resData, rentData, rmData = zip(*data)
-		self.residenceModel = ResidenceModel(resData)
-		self.rentModel = RentModel(rentData)
-		self.rmModel = RMModel(rmData)
+		if data is not None:
+			resData, rentData, rmData = zip(*data)
+			self.residenceModel = ResidenceModel(resData)
+			self.rentModel = RentModel(rentData)
+			self.rmModel = RMModel(rmData)
+		else:
+			self.residenceModel = ResidenceModel()
+			self.rentModel = RentModel()
+			self.rmModel = RMModel()
 
 	def train(self, epochs):
 		residenceModel.train(epochs)
 		rentModel.train(epochs)
 		rmModel.train(epochs)
 
-	def load(self, models):
-		pass
+	def save(self, path):
+		self.residenceModel.save(path)
+		self.rentModel.save(path)
+		self.rmModel.save(path)
+
+	def load(self, path):
+		self.residenceModel.load(path)
+		self.rentModel.load(path)
+		self.rmModel.load(path)
 
 	def predict(self, residences, rents, rm, years):
 		resRet = 0
@@ -121,64 +162,87 @@ class AssetModel(BaseModel):
 
 class SavingsModel(BaseModel):
 
-	def load(self, model):
-		pass
+	def save(self, path):
+		self.model.save(path + 'savingsmodel')
+
+	def load(self, path):
+		self.model = keras.models.load_model(path + 'savingsmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class CDModel(BaseModel):
+	def save(self, path):
+		self.model.save(path + 'cdmodel')
 
-	def load(self, model):
-		pass
+	def load(self, path):
+		self.model = keras.models.load_model(path + 'cdmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class StockModel(BaseModel):
 
+	def save(self, path, ticker):
+		self.model.save(path + 'stockmodel' + ticker)
+
 	def load(self, model):
-		pass
+		self.model = keras.models.load_model(path + 'stockmodel' + ticker)
 
 	def predict(self, timestamp, predTimestamp, value):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class BondModel(BaseModel):
 
-	def load(self, model):
-		pass
+	def save(self, path):
+		self.model.save(path + 'bondmodel')
+
+	def load(self, path):
+		self.model = keras.models.load_model(path + 'bondmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class TBModel(BaseModel):
 
-	def load(self, model):
-		pass
+	def save(self, path):
+		self.model.save(path + 'tbmodel')
+
+	def load(self, path):
+		self.model = keras.models.load_model(path + 'tbmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class ResidenceModel(BaseModel):
 
-	def load(self, model):
-		pass
+	def save(self, path):
+		self.model.save(path + 'resmodel')
+
+	def load(self, path):
+		self.model = keras.models.load_model(path + 'resmodel')
 
 	def predict(self, timestamp, predTimestamp, value, lat, lon):
 		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
 
 class RentModel(BaseModel):
 
-	def load(self, model):
-		pass
+	def save(self, path):
+		self.model.save(path + 'rentmodel')
+
+	def load(self, path):
+		self.model = keras.models.load_model(path + 'rentmodel')
 
 	def predict(self, timestamp, predTimestamp, value, lat, lon):
 		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
 
 class RMModel(BaseModel):
 
+	def save(self, path):
+		self.model.save(path + 'rmmodel')
+
 	def load(self, model):
-		pass
+		self.model = keras.models.load_model(path + 'rmmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
 		return self.model.predict([timestamp, predTimestamp, value])

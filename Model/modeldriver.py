@@ -10,6 +10,6 @@ if __name__ == "__main__":
 	investments.train()
 	assets.train()
 
-	wages.save('F:/ServerData/FutureWallet/models')
-	investments.save('F:/ServerData/FutureWallet/models')
-	assets.save('F:/ServerData/FutureWallet/models')
+	wages.save('F:/ServerData/FutureWallet/models/')
+	investments.save('F:/ServerData/FutureWallet/models/')
+	assets.save('F:/ServerData/FutureWallet/models/')

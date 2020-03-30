@@ -8,18 +8,23 @@ class ModelFactory:
 
 	def createModel(self, mType, **kwargs):
 		if mType == ModelType.WAGES:
-			if 'industryCode' in kwargs:
-				model = WageModel(dsb.getModelData(ModelType.WAGES, industryCode=kwargs['industryCode']))
+			if 'industryCode' in kwargs and 'train' in kwargs and kwargs['train'] == True:
+				return WageModel(dsb.getModelData(ModelType.WAGES, industryCode=kwargs['industryCode']))
 			else:
-				return new WageModel()
+				return WageModel()
 		elif mType == ModelType.INVESTS:
-			model = InvestmentModel(dsb.getModelData(ModelType.INVESTS, args))
+			if 'train' in kwargs and kwargs['train'] == True:
+				return InvestmentModel(dsb.getModelData(ModelType.INVESTS, args))
+			else:
+				return InvestmentModel()
 		elif mType == ModelType.ASSETS:
-			model = AssetModel(dsb.getModelData(ModelType.ASSETS, args))
+			if 'train' in kwargs and kwargs['train'] == True:
+				return AssetModel(dsb.getModelData(ModelType.ASSETS, args))
+			else:
+				return AssetModel()
 		else:
 			raise 'Invalid model type specified.', mType
 
-		return model
 
 	def createAllModels(self)
 		return (WageModel(dsb.getModelData(ModelType.WAGES)), InvestmentModel(dsb.getModelData(ModelType.INVESTS)), AssetModel(dsb.getModelData(ModelType.ASSETS)))
