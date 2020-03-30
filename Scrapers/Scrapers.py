@@ -21,6 +21,10 @@ import io
 import pandas as pd
 import os
 import random
+from datetime import datetime, timedelta
+import geopy
+from geopy.exc import GeocoderTimedOut
+import time
 
 from zipfile import ZipFile
 from os import listdir
@@ -152,6 +156,49 @@ def parseCsvData(uri):
   page = requests.get(uri)
   return pd.read_csv(io.StringIO(page.text))
 
+# def tryGeocode(x, nomi):
+# 	try:
+# 		return nomi.geocode(x)
+# 	except GeocoderTimedOut:
+# 		time.sleep(1)
+# 		return tryGeocode(x, nomi)
+
+# def genLatLong(addrs):
+# 	nomi = geopy.Nominatim(user_agent='FutureWallet')
+# 	print(addrs)
+# 	print(nomi.geocode(addrs[0]))
+# 	lat = []
+# 	lon = []
+# 	for a in addrs:
+# 		g = tryGeocode(a, nomi)
+# 		if g is not None:
+# 			lat.append(g.latitude)
+# 			lon.append(g.longitude)
+# 		else:
+# 			lat.append(None)
+# 			lon.append(None)
+# 	return lat, lon
+
+def parseCbpLocData():
+	base = 'https://www2.census.gov/programs-surveys/cbp/technical-documentation/reference/state-county-geography-reference/georef'
+	exts = {'17': [datetime(year=2017, month=1, day=1), datetime(year=2100, month=1, day=1)], '12':[datetime(year=2012, month=1, day=1), datetime(year=2016, month=1, day=1)], '02':[datetime(year=2002, month=1, day=1), datetime(year=2011, month=1, day=1)], '96_01':[datetime(year=1996, month=1, day=1), datetime(year=2001, month=1, day=1)]}
+	zip2ll = pd.read_csv('US.csv', header=None, dtype={'ZIP':str}, names=['Country', 'ZIP', 'Location', 'State', 'StateAbbv', 'County', 'CountyNum', 'Lat', 'Long', 'Acc'])
+	print(zip2ll)
+	fips2zip = pd.read_csv('ZIP-COUNTY-FIPS_2017-06.csv', dtype={'STCOUNTYFP':str, 'ZIP':str})
+	data_agg = pd.DataFrame()
+	for e, ys in exts.items():
+		page = requests.get(base + e + '.txt')
+		data = pd.read_csv(io.StringIO(page.text), dtype={'fipstate':str, 'fipscty':str, 'st':str, 'cty':str})
+		data['TimestampBegin'] = ys[0]
+		data['TimestampEnd'] = ys[1]
+		data = data.rename(columns={'fipstate': 'StateCode', 'fipscty': 'CountyCode', 'st':'StateCode', 'cty':'CountyCode', 'ctyname': 'Name'})
+		data['STCOUNTYFP'] = data['StateCode'] + data['CountyCode']
+		merged = pd.merge(pd.merge(data, fips2zip, on='STCOUNTYFP', sort=False), zip2ll, on='ZIP', sort=False)
+		print(merged)
+		data_agg = data_agg.append(merged[['TimestampBegin', 'TimestampEnd', 'StateCode', 'CountyCode', 'ZIP', 'Name', 'Lat', 'Long']])
+
+	return data_agg
+
 '''
 	@params:	None
 	@requires:	None
@@ -159,7 +206,6 @@ def parseCsvData(uri):
 	@effects:	Returns DataFrame object of CBP data from 2016 to 1986
 	@returns:	pandas DataFrame object
 '''
-
 def parseCbpIncomeData():
 	max_year = 2016
 	min_year = 1997
@@ -168,6 +214,7 @@ def parseCbpIncomeData():
 
 	# Use 2017 data columns as starter
 	data = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/2017/cbp17co.zip?#")
+	data['Timestamp'] = pd.to_datetime('2017', format='%Y')
 
 	# Get all years
 	while year_index != min_year:
@@ -178,7 +225,7 @@ def parseCbpIncomeData():
 	for year in years:
 		strYear = str(year)
 		df = parseCbpIncomeDataHelper("https://www2.census.gov/programs-surveys/cbp/datasets/" + strYear + "/cbp" + strYear[2:len(strYear)] + "co.zip?#")
-		df['Timestamp'] = pd.to_datetime(str(year), format='%Y')
+		df['Timestamp'] = pd.to_datetime(strYear, format='%Y')
 		data = data.append(df)
 
 	return data
@@ -309,7 +356,8 @@ def parseNAICSCode():
 	@returns:	pandas DataFrame object
 '''
 def parseZillowRentData(uri):
-  data = parseCsvData(uri)
+  page = requests.get(uri)
+  data = pd.read_csv(io.StringIO(page.text), dtype={'RegionName':str})
   data = pd.melt(data, id_vars=['RegionID', 'RegionName', 'City', 'State', 'Metro', 'CountyName', 'SizeRank'], var_name='Timestamp', value_name='Rent')
   data['Timestamp'] = pd.to_datetime(data['Timestamp'], format='%Y-%m')
   data = data.drop(columns=['SizeRank'])
@@ -405,6 +453,7 @@ def parseStockData(absPath):
   all_data = all_data.rename(columns={'Date':'Timestamp'})
   return all_data
 
+# Example Driver Block:
 #if __name__ == "__main__":
 #   # driver = initChromeDriver()
 #   # Alpha Vantage API Key: IJA5ZUY00CVDSFBK

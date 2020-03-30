@@ -16,16 +16,39 @@ class ModelType(Enum):
 class BaseModel(ABC):
 	def __init__(self, data=None):
 		self.data = data
+		self.model = keras.Sequential([
+				keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
+				keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
+				keras.layers.Dense(1)
+			])
+
+	def setData(self, data):
+		self.data = data
+
+	def train(self, epochs):
+		x_train, x_test, y_train, y_test = train_test_split(self.data['X'], self.data['Y'], test_size=0.1)
+		self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+		self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=epochs)
+
+	def save(self, path):
+		pass
 
 	def load(self, models):
 		pass
 
-	def predict(self, income, lat, lon, years):
+	def predict(self, **kwargs):
 		pass
 
 class WageModel(BaseModel):
-	def __init__(self, data=None):
+
+	def load(self, model):
 		pass
+
+	def predict(self, income, lat, lon, years):
+		timestamp = datetime.now.timestamp()
+		predTimestamp = (datetime.now + timedelta(years=years)).timestamp()
+		return self.model.predict([timestamp, predTimestamp, income, lat, lon])
+
 
 class InvestmentModel(BaseModel):
 	def __init__(self, data=None):
@@ -37,6 +60,14 @@ class InvestmentModel(BaseModel):
 			self.stockModels[s['ticker']] = StockModel(s)
 		self.bondModel = BondModel(bondData)
 		self.tbModel = TBModel(tbData)
+
+	def train(self, epochs):
+		savingsModel.train(epochs)
+		cdModel.train(epochs)
+		for s in stockModels:
+			s.train(epochs)
+		bondModel.train(epochs)
+		tbModel.train(epochs)
 
 	def load(self, models):
 		pass
@@ -59,6 +90,11 @@ class AssetModel(BaseModel):
 		self.rentModel = RentModel(rentData)
 		self.rmModel = RMModel(rmData)
 
+	def train(self, epochs):
+		residenceModel.train(epochs)
+		rentModel.train(epochs)
+		rmModel.train(epochs)
+
 	def load(self, models):
 		pass
 
@@ -76,81 +112,65 @@ class AssetModel(BaseModel):
 		return resRet + rentRet + rmModel.predict(timestamp, predTimestamp, rm)
 
 class SavingsModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
 	def predict(self, timestamp, predTimestamp, value):
-		pass
+		return self.model.predict([timestamp, predTimestamp, value])
 
 class CDModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
 	def predict(self, timestamp, predTimestamp, value):
-		pass
+		return self.model.predict([timestamp, predTimestamp, value])
 
 class StockModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
 	def predict(self, timestamp, predTimestamp, value):
-		pass
+		return self.model.predict([timestamp, predTimestamp, value])
 
 class BondModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
 	def predict(self, timestamp, predTimestamp, value):
-		pass
+		return self.model.predict([timestamp, predTimestamp, value])
 
 class TBModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
 	def predict(self, timestamp, predTimestamp, value):
-		pass
+		return self.model.predict([timestamp, predTimestamp, value])
 
 class ResidenceModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
-	def predict(self, timestamp, predTimestamp, value, lat, long):
-		pass
+	def predict(self, timestamp, predTimestamp, value, lat, lon):
+		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
 
 class RentModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
-	def predict(self, timestamp, predTimestamp, value, lat, long):
-		pass
+	def predict(self, timestamp, predTimestamp, value, lat, lon):
+		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
 
 class RMModel(BaseModel):
-	def __init__(self, data=None):
-		pass
 
 	def load(self, model):
 		pass
 
 	def predict(self, timestamp, predTimestamp, value):
-		pass
+		return self.model.predict([timestamp, predTimestamp, value])
