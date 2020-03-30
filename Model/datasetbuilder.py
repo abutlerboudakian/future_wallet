@@ -11,7 +11,7 @@ class DatasetBuilder:
 	def getModelData(self, mType, **kwargs):
 		data = {}
 		if mType == ModelType.WAGES:
-			with engine.connect() as conn:
+			with self.engine.connect() as conn:
 				if 'industryCode' in kwargs:
 					data['industryCode'] = kwargs['industryCode']
 					dataset = pd.read_sql(sql="""SELECT
@@ -85,7 +85,7 @@ class DatasetBuilder:
 
 				stocks = {}
 				tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks;")
-				tickers = tickers['Ticker'].aslist()
+				tickers = tickers['Ticker'].tolist()
 				for t in tickers:
 					stocks[t] = {}
 					stockSet = pd.read_sql("""SELECT
