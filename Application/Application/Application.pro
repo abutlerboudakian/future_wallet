@@ -18,11 +18,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainapplication.cpp \
-    DashBoard.cpp
+    DashBoard.cpp \
+    LaunchMenu.cpp
 
 HEADERS += \
     mainapplication.h \
-    DashBoard.h
+    DashBoard.h \
+    LaunchMenu.h
 
 FORMS += \
     mainapplication.ui

@@ -7,7 +7,9 @@ MainApplication::MainApplication(QWidget *parent)
 {
     ui->setupUi(this);
 
-    content = new DashBoard(this);
+    content = new QStackedWidget(this);
+    content->addWidget(new LaunchMenu(this, content));
+    content->addWidget(new DashBoard(this, content));
     setCentralWidget(content);
     content->show();
 }

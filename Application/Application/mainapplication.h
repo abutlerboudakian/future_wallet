@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include "DashBoard.h"
+#include "LaunchMenu.h"
 #include <memory>
+#include <QStackedWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApplication; }
@@ -19,6 +21,6 @@ public:
 
 private:
     Ui::MainApplication *ui;
-    QWidget * content;
+    QStackedWidget * content;
 };
 #endif // MAINAPPLICATION_H
