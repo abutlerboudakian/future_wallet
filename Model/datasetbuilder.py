@@ -1,12 +1,12 @@
 import sqlalchemy as sa
 import pandas as pd
 from datetime import datetime, timedelta
+import dbutil
 from models import ModelType
 
 class DatasetBuilder:
 	def __init__(self):
-		cstr = 'mssql+pyodbc://' + str(sys.argv[1]) + ':' + str(sys.argv[2]) + '@localhost:1433/modeldata?driver=SQL+Server+Native+Client+11.0'
-		self.engine = sa.create_engine(cstr)
+		self.engine = dbutil.connect_engine('modeldata')
 
 	def getModelData(mType, **kwargs):
 		data = {}
@@ -41,10 +41,138 @@ class DatasetBuilder:
 
 		elif mType == ModelType.INVEST:
 			with engine.connect() as conn:
+				if 'tickers' in kwargs:
+					tickers = kwargs['tickers']
+					savings = {}
+					savingsSet = pd.read_sql("""SELECT
+												s1.Timestamp AS Timestamp,
+												s2.Timestamp AS PredTimestamp,
+												s1.NationalRate AS Rate,
+												s2.NationalRate AS PredRate
+											FROM
+												NJSAs s1,
+												NJSAs s2
+											WHERE
+												s1.Timestamp < s2.Timestamp
+											;""", con=conn)
+
+					savingsSet = savingsSet.append(pd.read_sql("""SELECT
+												s1.Timestamp AS Timestamp,
+												s2.Timestamp AS PredTimestamp,
+												s1.NationalRate AS Rate,
+												s2.NationalRate AS PredRate
+											FROM
+												JSAs s1,
+												JSAs s2
+											WHERE
+												s1.Timestamp < s2.Timestamp
+											;""", con=conn))
+					savings['X'] = savingsSet[['Timestamp', 'PredTimestamp', 'Rate']]
+					savings['Y'] = savingsSet[['PredRate']]
+
+					cds = {}
+					cdSet = pd.read_sql("""SELECT
+												c1.Timestamp AS Timestamp,
+												c2.Timestamp AS PredTimestamp,
+												c1.Rate AS Rate,
+												c2.Rate AS PredRate
+											FROM
+												CDs c1,
+												CDs c2
+											WHERE
+												c1.Timestamp < c2.Timestamp
+											;""", con=conn)
+					cds['X'] = cdSet[['Timestamp', 'PredTimestamp', 'Rate']]
+					cds['Y'] = cdSet[['PredRate']]
+
+					stocks = {}
+					for t in ticker:
+						stocks[t] = {}
+						stockSet = pd.read_sql("""SELECT
+												s1.Timestamp AS Timestamp,
+												s2.Timestamp AS PredTimestamp,
+												s1.Close AS Value,
+												s2.Close AS PredValue
+											FROM
+												Stocks s1,
+												Stocks s2
+											WHERE
+												s1.Ticker = '""" + t + """'
+												s1.Ticker = s2.Ticker,
+												s1.Timestamp < s2.Timestamp
+											;""", con=conn)
+						stocks[t]['X'] = stockSet[['Timestamp', 'PredTimestamp', 'Value']]
+						stocks[t]['Y'] = stockSet[['PredValue']]
+
+					bonds = {}
+					bondSet = pd.read_sql("""SELECT
+												b1.Timestamp AS Timestamp,
+												b2.Timestamp AS PredTimestamp,
+												b1.Rate AS Rate,
+												b2.Rate AS PredRate
+											FROM
+												Bonds b1,
+												Bonds b2
+											WHERE
+												b1.Timestamp > b2.Timestamp
+											;""", con=conn)
+					bonds['X'] = bondSet[['Timestamp', 'PredTimestamp', 'Rate']]
+					bonds['Y'] = bondSet[['PredRate']]
+
+					tbonds = {}
+					tbSet = pd.read_sql("""SELECT
+												b1.Timestamp AS Timestamp,
+												b2.Timestamp AS PredTimestamp,
+												b1.PrimeRate AS Rate,
+												b2.PrimeRate AS PredRate
+											FROM
+												TBonds b1,
+												TBonds b2
+											WHERE
+												b1.Timestamp > b2.Timestamp
+											;""", con=conn)
+					tbonds['X'] = tbSet[['Timestamp', 'PredTimestamp', 'Rate']]
+					tbonds['Y'] = tbSet[['PredRate']]
+
+					data = (savings, cds, stocks, bonds, tbonds)
+				else:
+					return None
 
 		elif mType == ModelType.ASSETS:
 			with engine.connect() as conn:
+				resSet = pd.read_sql("""SELECT
+											h1.Timestamp AS Timestamp,
+											h2.Timestamp AS PredTimestamp,
+											h1.[Index] AS Price,
+											FIPS.Lat AS Lat,
+											FIPS.Long AS Long,
+											h2.[Index] AS PredPrice
+										FROM
+											HI h1,
+											HI h2,
+											FIPS
+										WHERE
+											h1.ZIP = h2.ZIP AND
+											h1.ZIP = FIPS.ZIP AND
+											h1.Timestamp < h2.Timestamp
+										;""", con=conn)
 
+				rentSet = pd.read_sql("""SELECT
+											r1.Timestamp AS Timestamp,
+											r2.Timestamp AS PredTimestamp,
+											r1.Rent AS Rent,
+											FIPS.Lat AS Lat,
+											FIPS.Long AS Long,
+											r2.Rent AS PredRent
+										FROM
+											ZillowRent r1,
+											ZillowRent r2,
+											FIPS
+										WHERE
+											r1.ZIPCode = r1.ZIPCode AND
+											r1.ZIPCode = FIPS.ZIP AND
+											r1.Timestamp < r2.Timestamp
+										;""", con=conn)
 		else:
 			raise 'Invalid model type specified.', mType
 

@@ -12,6 +12,7 @@ import sqlalchemy as sa
 from selenium import webdriver
 import sys
 import pandas as pd
+from . Model import dbutil
 import Scrapers
 
 '''
@@ -33,8 +34,7 @@ def initChromeDriver(headless=True):
     return driver
 
 if __name__ == "__main__":
-	cstr = 'mssql+pyodbc://' + str(sys.argv[1]) + ':' + str(sys.argv[2]) + '@localhost:1433/modeldata?driver=SQL+Server+Native+Client+11.0'
-	engine = sa.create_engine(cstr)
+	engine = dbutil.connect_engine('modeldata')
 
 	driver = initChromeDriver()
 

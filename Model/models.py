@@ -65,7 +65,7 @@ class InvestmentModel(BaseModel):
 		self.cdModel = CDModel(savingsData)
 		self.stockModels = []
 		for s in stockData:
-			self.stockModels[s['ticker']] = StockModel(s)
+			self.stockModels[s['ticker']] = StockModel(s['data'])
 		self.bondModel = BondModel(bondData)
 		self.tbModel = TBModel(tbData)
 
