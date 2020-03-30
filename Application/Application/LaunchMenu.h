@@ -1,7 +1,7 @@
 #ifndef LAUNCHMENU_H
 #define LAUNCHMENU_H
 
-#include <QMainWindow>
+#include "mainapplication.h"
 #include <iostream>
 #include <QStackedWidget>
 
