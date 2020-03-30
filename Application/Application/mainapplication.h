@@ -31,5 +31,6 @@ private:
     Ui::MainApplication *ui;
     QStackedWidget * content;
     PieGUI * PieCreator;
+    LineGUI * LineCreator;
 };
 #endif // MAINAPPLICATION_H
