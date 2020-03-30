@@ -51,7 +51,7 @@ LaunchMenu::~LaunchMenu()
 void LaunchMenu::runLogin()
 {
   std::cout<<"Hello World";
-  this->content->setCurrentIndex(1);
+  this->content->setCurrentIndex(Views::Dashboard);
   return;
 }
 
