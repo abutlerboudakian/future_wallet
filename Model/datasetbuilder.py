@@ -9,10 +9,12 @@ class DatasetBuilder:
 		self.engine = sa.create_engine(cstr)
 
 	def getModelData(mType, **kwargs):
+		data = {}
 		if mType == ModelType.WAGES:
 			with engine.connect() as conn:
 				if 'industryCode' in kwargs:
-					x = pd.read_sql(sql="""SELECT
+					data['industryCode'] = kwargs['industryCode']
+					dataset = pd.read_sql(sql="""SELECT
 												c1.Timestamp AS Timestamp,
 												c2.Timestamp AS PredTimestamp,
 												c1.AnnualPayroll AS Income,
@@ -32,6 +34,8 @@ class DatasetBuilder:
 												c1.CountyCode = FIPS.StateCode AND
 												c2.Timestamp > c1.Timestamp
 												;""", con=conn)
+					data['X'] = dataset[['Timestamp', 'PredTimestamp', 'Income', 'Lat', 'Long']]
+					data['Y'] = dataset[['PredIncome']]
 				else:
 					return None
 

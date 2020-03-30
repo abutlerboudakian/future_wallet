@@ -6,9 +6,12 @@ class ModelFactory:
 	def __init__(self):
 		dsb = DatasetBuilder()
 
-	def createModel(self, mType, args=None):
+	def createModel(self, mType, **kwargs):
 		if mType == ModelType.WAGES:
-			model = WageModel(dsb.getModelData(ModelType.WAGES, args))
+			if 'industryCode' in kwargs:
+				model = WageModel(dsb.getModelData(ModelType.WAGES, industryCode=kwargs['industryCode']))
+			else:
+				return new WageModel()
 		elif mType == ModelType.INVESTS:
 			model = InvestmentModel(dsb.getModelData(ModelType.INVESTS, args))
 		elif mType == ModelType.ASSETS:
