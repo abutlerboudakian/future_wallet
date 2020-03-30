@@ -19,8 +19,8 @@ class BaseModel(ABC):
 		if data is not None:
 			self.data = data
 			self.model = keras.Sequential([
-					keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
-					keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
+					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
+					keras.layers.Dense(len(data['X'].columns)+1, activation='relu'),
 					keras.layers.Dense(1)
 				])
 
@@ -47,8 +47,8 @@ class WageModel(BaseModel):
 			self.data = data
 			self.industryCode = data['industryCode']
 			self.model = keras.Sequential([
-					keras.layers.Dense(len(data['X'][0]), input_shape=(len(data['X'][0]),)),
-					keras.layers.Dense(len(data['X'][0])+1, activation='relu'),
+					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
+					keras.layers.Dense(len(data['X'].columns)+1, activation='relu'),
 					keras.layers.Dense(1)
 				])
 
