@@ -28,7 +28,6 @@ HEADERS += \
 
 FORMS += \
     mainapplication.ui \
-    predictionInputAssets.ui \
     predictionInputInvestments.ui \
     predictionInputWages.ui
 

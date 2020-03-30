@@ -1,6 +1,7 @@
 #include "predictionInputWages.h"
+#include <iostream>
 
-predictionInputWages::predictionInputWages()
+predictionInputWages::predictionInputWages(QMainWindow * parent)
 {
 
 }
