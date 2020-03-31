@@ -6,4 +6,4 @@ Dockerfile
 **/*.exe
 **/__pycache__
 **/**/*.user
-**/build
+**/build*/
