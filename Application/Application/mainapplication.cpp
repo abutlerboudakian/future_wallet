@@ -10,12 +10,12 @@ MainApplication::MainApplication(QWidget *parent)
     content = new QStackedWidget(this);
 
     // Example pie and line graph data
-    PieCreator = new PieGUI;
+    PieGUI * PieCreator = new PieGUI;
     ChartMap * map = new ChartMap;
     map->insert(std::pair<std::string, double>("Cheese", 0.15));
     map->insert(std::pair<std::string, double>("Crust", 0.5));
     map->insert(std::pair<std::string, double>("Sauce", 0.35));
-    LineCreator = new LineGUI;
+    LineGUI * LineCreator = new LineGUI;
     LineMap * map2 = new LineMap;
     map2->insert(std::pair<std::string, LinePoints>("Orange",
                                                     LinePoints{std::pair<QDateTime, double>(QDateTime(QDate(1999, 1, 1), QTime(0, 5, 0)), 0),
@@ -25,7 +25,7 @@ MainApplication::MainApplication(QWidget *parent)
                                                     LinePoints{std::pair<QDateTime, double>(QDateTime(QDate(1999, 1, 1), QTime(0, 50, 0)), 20),
                                                                std::pair<QDateTime, double>(QDateTime(QDate(2000, 1, 1), QTime(0, 50, 0)), 6),
                                                                std::pair<QDateTime, double>(QDateTime(QDate(2001, 1, 1), QTime(0, 50, 0)), 0)}));
-    BarCreator = new BarGUI;
+    BarGUI * BarCreator = new BarGUI;
     ChartMap * map3 = new ChartMap;
     map3->insert(std::pair<std::string, double>("Alcohol", 100));
     map3->insert(std::pair<std::string, double>("Oreos", 10.49));
@@ -33,9 +33,9 @@ MainApplication::MainApplication(QWidget *parent)
 
 
     // Initialize both charts
-    PieCreator->initialize(map);
-    LineCreator->initialize(map2);
-    BarCreator->initialize(map3);
+    PieCreator->make(map);
+    LineCreator->make(map2);
+    BarCreator->make(map3);
 
     // Add both
     content->addWidget(BarCreator->getView());
@@ -44,8 +44,11 @@ MainApplication::MainApplication(QWidget *parent)
     delete map;
     delete map2;
     delete map3;
+    delete PieCreator;
+    delete LineCreator;
+    delete BarCreator;
 
-    content->addWidget(new LaunchMenu(this, content));
+    //content->addWidget(new LaunchMenu(this, content));
     content->addWidget(new DashBoard(this, content));
     setCentralWidget(content);
     content->show();
@@ -55,8 +58,5 @@ MainApplication::~MainApplication()
 {
     delete ui;
     delete content;
-    delete PieCreator;
-    delete LineCreator;
-    delete BarCreator;
 }
 

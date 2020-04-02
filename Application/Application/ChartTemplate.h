@@ -50,6 +50,9 @@ protected:
     QChart * chart;
     std::vector<QAbstractSeries *> * series;
     QChartView * chartView;
+
+    // Helper function
+    void clearSeries();
 };
 
 class ChartTemplate : public VisualTemplate
@@ -59,7 +62,7 @@ class ChartTemplate : public VisualTemplate
 public:
     ChartTemplate();
     virtual ~ChartTemplate();
-    virtual void initialize(ChartMap * const data) final;
+    virtual void make(ChartMap * const data) final;
 
 private:
     // Placeholder
@@ -96,7 +99,7 @@ class LineGUI : public VisualTemplate {
 public:
     LineGUI();
     ~LineGUI();
-    void initialize(LineMap * data);
+    void make(LineMap * data);
 
 private:
     void setDataAndEffects(LineMap * const data);

@@ -10,10 +10,11 @@ VisualTemplate::VisualTemplate()
     chartView = nullptr;
 }
 
+// Delegate deconstruction of all objects to chartView
 VisualTemplate::~VisualTemplate()
 {
-    delete series; // Check if this works
-    delete chartView;
+    clearSeries();
+    delete series;
 }
 
 // Common
@@ -74,6 +75,21 @@ void VisualTemplate::QAxisSetup()
     chart->createDefaultAxes();
 }
 
+/* Function sets all elements in this->series to nullptr, so it can delegate
+ * deletion of its elements to another class, then clears it.
+ * @modifies this->series
+ * @effects this->series.empty() == true
+ */
+void VisualTemplate::clearSeries()
+{
+    for (unsigned int i = 0; i < this->series->size(); i++)
+    {
+        (*(this->series))[i] = nullptr;
+    }
+    this->series->clear();
+    return;
+}
+
 //------------------------------------------------------
 // ChartTemplate                                       |
 //------------------------------------------------------
@@ -91,18 +107,11 @@ ChartTemplate::~ChartTemplate() {}
  * @effects this->series is now initialized to the appropriate concrete series
  * @effects this->chart is now initialized as the chart model
  */
-void ChartTemplate::initialize(ChartMap * data)
+void ChartTemplate::make(ChartMap * data)
 {
     if (chartView != nullptr) { delete chartView; }
     else if (chart != nullptr) { delete chart; chart = nullptr; }
-    else if (!series->empty()) // Might be incorrect to free here, since chart frees it
-    {
-        for (std::vector<QAbstractSeries* >::iterator s = series->begin(); s != series->end(); s++)
-        {
-            delete *s;
-        }
-        series->empty();
-    }
+    else if (!series->empty()) { clearSeries(); }
     chartView = nullptr; chart = nullptr;
     setDataAndEffects(data);
     QChartSetup();
@@ -217,18 +226,11 @@ LineGUI::~LineGUI() {}
  * @effects this->series is now initialized to the appropriate concrete series
  * @effects this->chart is now initialized as the chart model
  */
-void LineGUI::initialize(LineMap * const data)
+void LineGUI::make(LineMap * const data)
 {
     if (chartView != nullptr) { delete chartView; }
     else if (chart != nullptr) { delete chart; chart = nullptr; }
-    else if (!series->empty()) // Might be incorrect to free here, since chart frees it
-    {
-        for (std::vector<QAbstractSeries* >::iterator s = series->begin(); s != series->end(); s++)
-        {
-            delete *s;
-        }
-        series->empty();
-    }
+    else if (!series->empty()) { clearSeries(); }
     chartView = nullptr; chart = nullptr;
     setDataAndEffects(data);
     QChartSetup();
