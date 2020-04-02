@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ChartTemplate.cpp \
+    Controller.cpp \
     main.cpp \
     mainapplication.cpp \
     DashBoard.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     ChartTemplate.h \
+    Controller.h \
     mainapplication.h \
     DashBoard.h \
     LaunchMenu.h
