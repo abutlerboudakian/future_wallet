@@ -9,12 +9,6 @@
 
 #include "ChartTemplate.h"
 
-enum Views
-{
-    Login = 0,
-    Dashboard = 1
-};
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApplication; }
 QT_END_NAMESPACE
