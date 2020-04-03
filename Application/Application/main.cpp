@@ -6,7 +6,11 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainApplication w;
+
+    Controller * mainController = new Controller;
+    MainApplication w; // Create all the views
+    w.CreateViews(mainController);
+    mainController->setViews(w.getViews());
     w.showMaximized();
     return a.exec();
 }

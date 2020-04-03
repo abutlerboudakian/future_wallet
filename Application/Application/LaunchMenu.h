@@ -3,7 +3,6 @@
 
 #include "mainapplication.h"
 #include <iostream>
-#include <QStackedWidget>
 
 #include <QWidget>
 #include <QGridLayout>
@@ -17,7 +16,7 @@ class LaunchMenu : public QWidget
 {
     Q_OBJECT
     public:
-      explicit LaunchMenu(QMainWindow * parent, QStackedWidget * content);
+      explicit LaunchMenu(QMainWindow * parent, Controller * controller);
       ~LaunchMenu();
     private:
       QLabel* TitleBar;
@@ -29,7 +28,7 @@ class LaunchMenu : public QWidget
       QLineEdit* UserLineEdit;
       QLineEdit* PassLineEdit;
 
-      QStackedWidget * content;
+      Controller * controller;
 
     private slots:
       void runLogin();

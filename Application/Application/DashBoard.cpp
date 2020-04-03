@@ -1,8 +1,8 @@
 #include "DashBoard.h"
 
-DashBoard::DashBoard(QMainWindow * parent, QStackedWidget * content) : QWidget(parent)
+DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(parent)
 {
-  this->content = content;
+  this->controller = controller;
 
   QString height = QString("height:50px");
   Predict = new QPushButton("Predict");

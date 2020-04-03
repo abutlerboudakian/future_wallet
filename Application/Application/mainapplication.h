@@ -1,13 +1,12 @@
 #ifndef MAINAPPLICATION_H
 #define MAINAPPLICATION_H
 
+#include "Controller.h"
 #include <QMainWindow>
+#include <QStackedWidget>
 #include "DashBoard.h"
 //#include "LaunchMenu.h"
 #include <memory>
-#include <QStackedWidget>
-
-#include "ChartTemplate.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainApplication; }
@@ -20,9 +19,11 @@ class MainApplication : public QMainWindow
 public:
     MainApplication(QWidget *parent = nullptr);
     ~MainApplication();
+    void CreateViews(Controller * maincontroller);
+    QStackedWidget * getViews();
 
 private:
     Ui::MainApplication *ui;
-    QStackedWidget * content;
+    QStackedWidget * Views;
 };
 #endif // MAINAPPLICATION_H

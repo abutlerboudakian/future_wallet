@@ -1,25 +1,33 @@
 #include "Controller.h"
 
-Controller::Controller(QStackedWidget * Views)
+Controller::Controller()
 {
-  this->Views = Views;
   PieCreator = new PieGUI;
   BarCreator = new BarGUI:
   LineCreator = new LineGUI;
 }
 
-/* Deletes the Views
- * @modifies this->Views
- * @effects frees the views stored in this->Views
+/* Deletes the Views. Delegates deletion of the views to MainApplication
+ * @modifies PieCreator, BarCreator, LineCreator
+ * @effects Frees PieCreator, BarCreator, LineCreator from the heap
  */
 Controller::~Controller()
 {
-  delete Views;
   delete PieCreator;
   delete BarCreator;
   delete LineCreator;
 }
 
+/* Sets the views for the controller
+ * @requires Views != NULL
+ * @param Views is a QStackedWidget containing all the initialized views
+ * @modifies this->Views
+ * @effects this->Views = Views
+ */
+void Controller::setViews(QStackedWidget * Views)
+{
+  this->Views = Views;
+}
 
 // ------------------------------------
 // View Switching                     |
@@ -29,7 +37,7 @@ Controller::~Controller()
  * @modifies this->Views
  * @effects this->View's top most QWidget is now Views::DashBoard
  */
-void switchToDashBoard()
+void Controller::switchToDashBoard()
 {
   this->Views->setCurrentIndex(Views::DashBoard);
   return;
@@ -39,7 +47,7 @@ void switchToDashBoard()
  * @modifies this->Views
  * @effects this->View's top most QWidget is now Views::Login
  */
-void switchToLogin()
+void Controller::switchToLogin()
 {
   this->Views->setCurrentIndex(Views::Login);
   return;
@@ -54,9 +62,10 @@ void switchToLogin()
  * @param data is a hashmap of std::string->double for DataName->PercentDecimal
  * @returns a chartview of the pie chart, representing the given data
  */
-QChartView * getPieChart(ChartMap * data)
+QChartView *Controller::getPieChart(ChartMap * data)
 {
-  return PieCreator->make(data);
+  PieCreator->make(data);
+  return PieCreator->getView();
 }
 
 /* Creates a bar graph for the given data
@@ -64,9 +73,10 @@ QChartView * getPieChart(ChartMap * data)
  * @param data is a hashmap of std::string->double for BarName->Value
  * @returns a chartview of the pie chart, representing the given data
  */
-QChartView * getBarGraph(ChartMap * data)
+QChartView * Controller::getBarGraph(ChartMap * data)
 {
-  return BarCreator->make(data);
+  BarCreator->make(data);
+  return BarCreator->getView();
 }
 
 /* Creates a line graph for the given data
@@ -76,7 +86,8 @@ QChartView * getBarGraph(ChartMap * data)
  * @param data is an unordered map, representing the lines we need to graph
  * @returns a chartview of the line graph, representing the given data
  */
-QChartView * getLineGraph(LineMap * data)
+QChartView * Controller::getLineGraph(LineMap * data)
 {
-  return LineCreator->make(data);
+  LineCreator->make(data);
+  return LineCreator->getView();
 }

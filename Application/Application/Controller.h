@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <QStackedWidget>
 #include "ChartTemplate.h"
 
 enum Views
@@ -12,8 +13,10 @@ enum Views
 class Controller
 {
   public:
-    Controller(QStackedWidget * Views);
+    Controller();
     ~Controller();
+
+    void setViews(QStackedWidget * Views);
 
     // View Switching
     void switchToDashBoard();
