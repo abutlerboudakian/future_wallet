@@ -1,31 +1,42 @@
 #include "DashBoard.h"
 
-DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(parent)
+DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(parent), BaseView()
 {
   this->controller = controller;
+  QPushButton * Predict;
+  QLabel * welcome;
+  QPushButton * Budget;
+  QPushButton * Pie;
+  QPushButton * VBar;
+  QPushButton * Line;
+  QPushButton * HBar;
+  QGridLayout * top;
+  QGridLayout * thumbnails;
+  QWidget * metrics;
+  QScrollArea * metricsWrapper;
 
   QString height = QString("height:50px");
-  Predict = new QPushButton("Predict");
-  welcome = new QLabel("Welcome to Future Wallet");
+  Predict = new QPushButton("Predict", this);
+  welcome = new QLabel("Welcome to Future Wallet", this);
   welcome->setStyleSheet(QString("background-color:orange;\nborder:1px solid black;height:50px;\nwidth:200px"));
-  Budget = new QPushButton("Budget");
+  Budget = new QPushButton("Budget", this);
 
   // Set styles for the buttons
   Predict->setStyleSheet(height);
   Budget->setStyleSheet(height);
 
   // Metrics Area
-  metricsWrapper = new QScrollArea;
-  metrics = new QWidget(parent);
+  metricsWrapper = new QScrollArea(this);
+  metrics = new QWidget(this);
   //metrics->setStyleSheet(QString("background-color:orange;\nborder:1px solid black"));
   metricsWrapper->setWidget(metrics);
   // metricsWrapper->setMaximumSize(QSize(16777215, 1677));
 
   // Create the buttons for the chart views
-  Pie = new QPushButton("View As Pie Graph");
-  VBar = new QPushButton("View As Vertical Bar Graph");
-  Line = new QPushButton("View As Line Graph");
-  HBar = new QPushButton("View As Horizontal Bar Graph");
+  Pie = new QPushButton("View As Pie Graph", this);
+  VBar = new QPushButton("View As Vertical Bar Graph", this);
+  Line = new QPushButton("View As Line Graph", this);
+  HBar = new QPushButton("View As Horizontal Bar Graph", this);
   /* height = QString("width:auto;\nheight:auto"); // setting solid pixels causes resize issues
   Pie->setStyleSheet(height);
   VBar->setStyleSheet(height);
@@ -33,9 +44,9 @@ DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(pa
   HBar->setStyleSheet(height); */
 
   // Throw all elements onto the gridlayout
-  gridLayout = new QGridLayout(parent);
-  top = new QGridLayout(parent);
-  thumbnails = new QGridLayout(parent);
+  gridLayout = new QGridLayout(this);
+  top = new QGridLayout(this);
+  thumbnails = new QGridLayout(this);
   // widget, row, column, alignment
   top->addWidget(Predict, 0, 0, Qt::AlignLeft);
   top->addWidget(welcome, 0, 1, Qt::AlignCenter);
@@ -65,20 +76,10 @@ DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(pa
   connect(HBar, SIGNAL(released()), this, SLOT(getHBarView()));
 }
 
+// Delegate destruction of the other elements to the base QWidget destructor
 DashBoard::~DashBoard()
 {
-    delete Predict;
-    delete welcome;
-    delete Budget;
-    delete Pie;
-    delete VBar;
-    delete Line;
-    delete HBar;
-    delete gridLayout;
-    delete thumbnails;
-    delete metrics;
-    delete metricsWrapper;
-    delete top;
+  delete gridLayout;
 }
 
 

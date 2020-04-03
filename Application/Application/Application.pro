@@ -24,6 +24,7 @@ SOURCES += \
     LaunchMenu.cpp
 
 HEADERS += \
+    BaseView.h \
     ChartTemplate.h \
     Controller.h \
     mainapplication.h \
