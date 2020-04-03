@@ -33,6 +33,7 @@ HEADERS += \
 
 FORMS += \
     DashBoard.ui \
+    LaunchMenu.ui \
     mainapplication.ui
 
 # Default rules for deployment.
