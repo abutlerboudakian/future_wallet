@@ -84,36 +84,43 @@ DashBoard::~DashBoard()
 
 
 // Slots -- aka signals
+
+// Function to switch to the input view when "Predict" button is pressed
 void DashBoard::getInputView()
 {
     std::cout<<"HelloWorld"<<std::endl;
     return;
 }
 
+// Function to start the Budget Modal when the "Budget" button is pressed
 void DashBoard::getBudgetView()
 {
     std::cout<<"HelloWorld"<<std::endl;
     return;
 }
 
+// Function to show the metric as a pie chart
 void DashBoard::getPieView()
 {
     std::cout<<"HelloWorld"<<std::endl;
     return;
 }
 
+// Function to show the metric as a vertical bar graph
 void DashBoard::getVBarView()
 {
     std::cout<<"HelloWorld"<<std::endl;
     return;
 }
 
+// Function to show the metric as a line graph
 void DashBoard::getLineView()
 {
     std::cout<<"HelloWorld"<<std::endl;
     return;
 }
 
+// Function to show the metric as a horizontal bar graph
 void DashBoard::getHBarView()
 {
     std::cout<<"HelloWorld"<<std::endl;
