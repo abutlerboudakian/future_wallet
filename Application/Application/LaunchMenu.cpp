@@ -46,9 +46,9 @@ LaunchMenu::LaunchMenu(QMainWindow * parent, Controller * controller) : QWidget(
 // Delegates destruction of QObjects to base QWidget destructor
 LaunchMenu::~LaunchMenu()
 {
+  // delete Form;
+  // delete Buttons;
   delete MainLayout;
-  delete Form;
-  delete Buttons;
 }
 
 // Slots

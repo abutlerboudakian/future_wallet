@@ -124,3 +124,11 @@ void DashBoard::getHBarView()
     std::cout<<"HelloWorld"<<std::endl;
     return;
 }
+
+/* Updates the dashboard view's information
+ * @modifies this->
+ */
+void DashBoard::update()
+{
+    std::cout<<
+}

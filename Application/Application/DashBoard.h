@@ -35,6 +35,8 @@ class DashBoard : public QWidget, public BaseView
 
     //Controller * controller;
 
+    void update();
+
   private slots:
     void getInputView();
     void getBudgetView();
