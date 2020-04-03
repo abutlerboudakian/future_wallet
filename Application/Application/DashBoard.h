@@ -1,49 +1,32 @@
-#ifndef DASHBOARDPAGE
-#define DASHBOARDPAGE
+#ifndef DASHBOARD_H
+#define DASHBOARD_H
 
-#include "mainapplication.h"
+#include <QWidget>
 #include "BaseView.h"
 #include <iostream>
 
-#include <QGridLayout>
-#include <QLabel>
-//#include <QHBoxLayout>
-#include <QPushButton>
-#include <QSizePolicy>
-#include <QScrollArea>
-#include <memory>
+namespace Ui {
+class DashBoard;
+}
 
 class DashBoard : public QWidget, public BaseView
 {
-  Q_OBJECT 
-  public:
-    explicit DashBoard(QMainWindow * parent, Controller * controller);
+    Q_OBJECT
+
+public:
+    explicit DashBoard(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~DashBoard();
-  private:
-    /*QPushButton * Predict;
-    QLabel * welcome;
-    QPushButton * Budget;
-    QPushButton * Pie;
-    QPushButton * VBar;
-    QPushButton * Line;
-    QPushButton * HBar;
-    QWidget * metrics;
-    QScrollArea * metricsWrapper;*/
-    QGridLayout * gridLayout;
-    QGridLayout * top;
-    QGridLayout * thumbnails;
 
-    //Controller * controller;
-
+private:
+    Ui::DashBoard *ui;
     void update();
 
-  private slots:
-    void getInputView();
-    void getBudgetView();
-    void getPieView();
-    void getVBarView();
-    void getLineView();
-    void getHBarView();
+private slots:
+   void getInputView();
+   void getBudgetView();
+   void getPieView();
+   void getVBarView();
+   void getLineView();
 };
 
-#endif
+#endif // DASHBOARD_H

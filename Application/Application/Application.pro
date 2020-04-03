@@ -18,20 +18,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     ChartTemplate.cpp \
     Controller.cpp \
+    DashBoard.cpp \
     main.cpp \
     mainapplication.cpp \
-    DashBoard.cpp \
     LaunchMenu.cpp
 
 HEADERS += \
     BaseView.h \
     ChartTemplate.h \
     Controller.h \
-    mainapplication.h \
     DashBoard.h \
+    mainapplication.h \
     LaunchMenu.h
 
 FORMS += \
+    DashBoard.ui \
     mainapplication.ui
 
 # Default rules for deployment.
