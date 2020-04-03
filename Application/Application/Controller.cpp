@@ -7,7 +7,7 @@ Controller::Controller()
   LineCreator = new LineGUI;
 }
 
-/* Deletes the Views. Delegates deletion of the views to MainApplication
+/* Deletes the chart creators. Delegates deletion of the views to MainApplication
  * @modifies PieCreator, BarCreator, LineCreator
  * @effects Frees PieCreator, BarCreator, LineCreator from the heap
  */
