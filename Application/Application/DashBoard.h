@@ -27,12 +27,11 @@ class DashBoard : public QWidget, public BaseView
     QPushButton * VBar;
     QPushButton * Line;
     QPushButton * HBar;
-    QGridLayout * gridLayout;
-    QGridLayout * top;
-    QGridLayout * thumbnails;
     QWidget * metrics;
     QScrollArea * metricsWrapper;*/
     QGridLayout * gridLayout;
+    QGridLayout * top;
+    QGridLayout * thumbnails;
 
     //Controller * controller;
 

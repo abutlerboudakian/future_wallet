@@ -10,8 +10,6 @@ DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(pa
   QPushButton * VBar;
   QPushButton * Line;
   QPushButton * HBar;
-  QGridLayout * top;
-  QGridLayout * thumbnails;
   QWidget * metrics;
   QScrollArea * metricsWrapper;
 
@@ -45,8 +43,8 @@ DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(pa
 
   // Throw all elements onto the gridlayout
   gridLayout = new QGridLayout(this);
-  top = new QGridLayout(this);
-  thumbnails = new QGridLayout(this);
+  top = new QGridLayout;
+  thumbnails = new QGridLayout;
   // widget, row, column, alignment
   top->addWidget(Predict, 0, 0, Qt::AlignLeft);
   top->addWidget(welcome, 0, 1, Qt::AlignCenter);
@@ -80,6 +78,8 @@ DashBoard::DashBoard(QMainWindow * parent, Controller * controller) : QWidget(pa
 DashBoard::~DashBoard()
 {
   delete gridLayout;
+  delete top;
+  delete thumbnails;
 }
 
 

@@ -1,6 +1,6 @@
 #include "LaunchMenu.h"
 
-LaunchMenu::LaunchMenu(QMainWindow * parent, Controller * controller) : QWidget(parent)
+LaunchMenu::LaunchMenu(QMainWindow * parent, Controller * controller) : QWidget(parent), BaseView()
 {
   this->controller = controller;
   QLabel* TitleBar;
@@ -16,7 +16,7 @@ LaunchMenu::LaunchMenu(QMainWindow * parent, Controller * controller) : QWidget(
   TitleBar->setStyleSheet(QString("font-size:20pt;\ncolor:blue"));
 
   // Create the Login Form
-  Form = new QFormLayout(this);
+  Form = new QFormLayout; // let correct parenting behavior be handled by qt
   UserLineEdit = new QLineEdit(this);
   PassLineEdit = new QLineEdit(this);
   PassLineEdit->setEchoMode(QLineEdit::Password);
@@ -24,10 +24,10 @@ LaunchMenu::LaunchMenu(QMainWindow * parent, Controller * controller) : QWidget(
   Form->addRow(tr("Password:"), PassLineEdit);
 
   // Create submission buttons
-  Login = new QPushButton("Login", this);
+  Login = new QPushButton("Login", this); // let correct parenting behavior be handled by qt
   CreateAccount = new QPushButton("Create an account", this);
 
-  Buttons = new QGridLayout(this);
+  Buttons = new QGridLayout;
   Buttons->addWidget(Login, 0, 1, Qt::AlignRight);
   Buttons->addWidget(CreateAccount, 0, 0, Qt::AlignRight);
 
@@ -47,6 +47,8 @@ LaunchMenu::LaunchMenu(QMainWindow * parent, Controller * controller) : QWidget(
 LaunchMenu::~LaunchMenu()
 {
   delete MainLayout;
+  delete Form;
+  delete Buttons;
 }
 
 // Slots

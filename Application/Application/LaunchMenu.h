@@ -22,12 +22,12 @@ class LaunchMenu : public QWidget, public BaseView
     private:
       QGridLayout* MainLayout;
       /* QLabel* TitleBar;
-      QFormLayout* Form;
-      QGridLayout* Buttons;
       QPushButton* CreateAccount;
       QPushButton* Login;
       QLineEdit* UserLineEdit;
       QLineEdit* PassLineEdit; */
+      QFormLayout* Form;
+      QGridLayout* Buttons;
 
       //Controller * controller;
 
