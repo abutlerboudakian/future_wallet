@@ -1,7 +1,7 @@
 #ifndef DASHBOARDPAGE
 #define DASHBOARDPAGE
-#include <QMainWindow>
-#include <QStackedWidget>
+
+#include "mainapplication.h"
 #include <iostream>
 
 #include <QGridLayout>
@@ -16,7 +16,7 @@ class DashBoard : public QWidget
 {
   Q_OBJECT 
   public:
-    explicit DashBoard(QMainWindow * parent, QStackedWidget* content);
+    explicit DashBoard(QMainWindow * parent, Controller * controller);
     ~DashBoard();
   private:
     QPushButton * Predict;
@@ -32,7 +32,7 @@ class DashBoard : public QWidget
     QWidget * metrics;
     QScrollArea * metricsWrapper;
 
-    QStackedWidget * content;
+    Controller * controller;
 
   private slots:
     void getInputView();

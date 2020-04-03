@@ -1,8 +1,8 @@
 #include "LaunchMenu.h"
 
-LaunchMenu::LaunchMenu(QMainWindow * parent, QStackedWidget * content) : QWidget(parent)
+LaunchMenu::LaunchMenu(QMainWindow * parent, Controller * controller) : QWidget(parent)
 {
-  this->content = content;
+  this->controller = controller;
 
   // Create the Label
   TitleBar = new QLabel(QString("WELCOME TO FUTURE WALLET"));
@@ -51,7 +51,7 @@ LaunchMenu::~LaunchMenu()
 void LaunchMenu::runLogin()
 {
   std::cout<<"Hello World";
-  this->content->setCurrentIndex(Views::Dashboard);
+  controller->switchToDashBoard();
   return;
 }
 
