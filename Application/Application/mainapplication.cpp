@@ -11,7 +11,6 @@ MainApplication::MainApplication(QWidget *parent)
 
     // Example pie and line graph data
     /*PieCreator = new PieGUI;
->>>>>>> Modified main to account for controller and views
     ChartMap * map = new ChartMap;
     map->insert(std::pair<std::string, double>("Cheese", 0.15));
     map->insert(std::pair<std::string, double>("Crust", 0.5));
@@ -67,11 +66,17 @@ MainApplication::~MainApplication()
  * @modifies this->Views
  * @effects this->Views now contains every view in the application linked to the maincontroller
  */
-MainApplication::CreateViews(Controller * maincontroller)
+void MainApplication::CreateViews(Controller * maincontroller)
 {
     Views = new QStackedWidget(this);
     Views->addWidget(new LaunchMenu(this, maincontroller));
     Views->addWidget(new DashBoard(this, maincontroller));
     setCentralWidget(Views);
     Views->show();
+}
+
+// Function returns the MainApplication's views
+QStackedWidget * MainApplication::getViews()
+{
+    return Views;
 }

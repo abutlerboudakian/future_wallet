@@ -3,7 +3,7 @@
 Controller::Controller()
 {
   PieCreator = new PieGUI;
-  BarCreator = new BarGUI:
+  BarCreator = new BarGUI;
   LineCreator = new LineGUI;
 }
 
@@ -39,7 +39,7 @@ void Controller::setViews(QStackedWidget * Views)
  */
 void Controller::switchToDashBoard()
 {
-  this->Views->setCurrentIndex(Views::DashBoard);
+  this->Views->setCurrentIndex(Views::Dashboard);
   return;
 }
 

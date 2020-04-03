@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 #include "DashBoard.h"
-//#include "LaunchMenu.h"
+#include "LaunchMenu.h"
 #include <memory>
 
 QT_BEGIN_NAMESPACE
