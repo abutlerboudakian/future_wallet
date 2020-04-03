@@ -2,6 +2,7 @@
 #define LAUNCHMENU_H
 
 #include "mainapplication.h"
+#include "BaseView.h"
 #include <iostream>
 
 #include <QWidget>
@@ -12,23 +13,23 @@
 #include <QGroupBox>
 #include <QLineEdit>
 
-class LaunchMenu : public QWidget
+class LaunchMenu : public QWidget, public BaseView
 {
     Q_OBJECT
     public:
       explicit LaunchMenu(QMainWindow * parent, Controller * controller);
       ~LaunchMenu();
     private:
-      QLabel* TitleBar;
       QGridLayout* MainLayout;
+      /* QLabel* TitleBar;
       QFormLayout* Form;
       QGridLayout* Buttons;
       QPushButton* CreateAccount;
       QPushButton* Login;
       QLineEdit* UserLineEdit;
-      QLineEdit* PassLineEdit;
+      QLineEdit* PassLineEdit; */
 
-      Controller * controller;
+      //Controller * controller;
 
     private slots:
       void runLogin();
