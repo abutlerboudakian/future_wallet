@@ -43,6 +43,7 @@ void VisualTemplate::QChartSetup()
 void VisualTemplate::CreateChartView()
 {
     chartView = new QChartView(chart);
+    chartView->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing the chartview
     chartView->setRenderHint(QPainter::Antialiasing);
 }
 
