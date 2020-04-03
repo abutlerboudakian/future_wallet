@@ -53,6 +53,24 @@ void Controller::switchToLogin()
   return;
 }
 
+/* Switches main window view to Budgeting page/modal
+ * @modifies this->Views
+ * @effects this->View's top most QWidget is now Views::BudgetView
+ */
+void Controller::switchToBudgetPage()
+{
+    this->Views->setCurrentIndex(Views::BudgetView);
+    return;
+}
+
+/* Switches main window view to Chart Selection View
+ * @modifies this->Views
+ * @effects this->View's top most QWidget is now Views::ChartView
+ */
+void Controller::switchToChartSelection()
+{
+
+}
 
 //-------------------------------------
 // Charts                             |

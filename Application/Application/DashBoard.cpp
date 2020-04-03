@@ -32,7 +32,7 @@ void DashBoard::update()
     // Ask controller for metric data
 
     // Remove current tree widget
-    delete ui->metrics->takeWidget();
+/*    delete ui->metrics->takeWidget();
 
     QTreeWidget * mWidget = new QTreeWidget; // Might need to specify parent
     mWidget->setColumnCount(2);
@@ -52,7 +52,7 @@ void DashBoard::update()
     }
 
 
-    ui->metrics->setWidget(mWidget);
+    ui->metrics->setWidget(mWidget);*/
 }
 
 
@@ -69,6 +69,7 @@ void DashBoard::getInputView()
 void DashBoard::getBudgetView()
 {
   std::cout<<"HelloWorld"<<std::endl;
+  controller->switchToBudgetPage();
   return;
 }
 

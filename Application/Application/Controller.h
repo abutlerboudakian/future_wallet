@@ -3,11 +3,13 @@
 
 #include <QStackedWidget>
 #include "ChartTemplate.h"
+#include "BudgetData.h"
 
 enum Views
 {
     Login = 0,
-    Dashboard = 1
+    Dashboard = 1,
+    BudgetView = 2
 };
 
 class Controller
@@ -21,11 +23,15 @@ class Controller
     // View Switching
     void switchToDashBoard();
     void switchToLogin();
+    void switchToBudgetPage();
+    void switchToChartSelection();
 
     // Charts
     QChartView * getPieChart(ChartMap * data);
     QChartView * getBarGraph(ChartMap * data);
     QChartView * getLineGraph(LineMap * data);
+
+    // Metric data
 
   private:
     QStackedWidget * Views;
@@ -34,6 +40,9 @@ class Controller
     PieGUI * PieCreator;
     BarGUI * BarCreator;
     LineGUI * LineCreator;
+
+    // Budget Data
+    BudgetData * budget;
 };
 
 #endif // CONTROLLER_H

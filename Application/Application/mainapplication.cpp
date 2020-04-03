@@ -71,6 +71,7 @@ void MainApplication::CreateViews(Controller * maincontroller)
     Views = new QStackedWidget(this);
     Views->addWidget(new LaunchMenu(this, maincontroller));
     Views->addWidget(new DashBoard(this, maincontroller));
+    Views->addWidget(new BudgetPage(this, maincontroller));
     setCentralWidget(Views);
     Views->show();
 }

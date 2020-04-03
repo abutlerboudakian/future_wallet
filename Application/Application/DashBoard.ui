@@ -74,7 +74,7 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="Label">
          <property name="text">
           <string>Welcome</string>
