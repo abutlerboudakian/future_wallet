@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "BaseView.h"
 #include <iostream>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 namespace Ui {
 class DashBoard;

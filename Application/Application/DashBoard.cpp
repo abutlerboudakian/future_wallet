@@ -23,6 +23,38 @@ DashBoard::~DashBoard()
     delete ui;
 }
 
+/* Function used to update the metric in display
+ * @modifies this->ui->metrics
+ * @effects this->ui->metrics now contains a new treewidget, representing the new metric
+ */
+void DashBoard::update()
+{
+    // Ask controller for metric data
+
+    // Remove current tree widget
+    delete ui->metrics->takeWidget();
+
+    QTreeWidget * mWidget = new QTreeWidget; // Might need to specify parent
+    mWidget->setColumnCount(2);
+
+    // Wages root
+    QTreeWidgetItem * root = new QTreeWidgetItem(mWidget), * tmpItem;
+    root->setText(0, "Wages");
+    root->setText(1, INSERTTOTALWAGES);
+    mWidget->addTopLevelItem(root);
+    // Input each wage component and value
+    for each component
+    {
+        tmpItem = new QTreeWidgetItem(root);
+        tmpItem->setText(0, COMPONENT NAME);
+        tmpItem->setText(1, COMPONENT VALUE);
+        root->addChild(tmpItem);
+    }
+
+
+    ui->metrics->setWidget(mWidget);
+}
+
 
 // Slots -- aka signals
 
