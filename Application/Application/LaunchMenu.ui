@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Future Wallet</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
@@ -42,14 +42,13 @@
    </item>
    <item row="1" column="1">
     <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
+     <item alignment="Qt::AlignHCenter">
       <widget class="QLabel" name="label">
        <property name="styleSheet">
         <string notr="true">font-size:20pt;
 color:blue;
 margin: 10px, auto;
-padding: 0;
-text-align:center;</string>
+padding: 0;</string>
        </property>
        <property name="text">
         <string>WELCOME TO FUTURE WALLET</string>

@@ -2,14 +2,15 @@
 #define LAUNCHMENU_H
 
 #include <QWidget>
-#include "BaseView.h"
+class Controller; // Forward declaration to resolve circular dependency
+#include "Controller.h"
 #include <iostream>
 
 namespace Ui {
 class LaunchMenu;
 }
 
-class LaunchMenu : public QWidget, public BaseView
+class LaunchMenu : public QWidget
 {
     Q_OBJECT
 
@@ -19,6 +20,7 @@ public:
 
 private:
     Ui::LaunchMenu *ui;
+    Controller * controller;
 
 private slots:
     void runLogin();

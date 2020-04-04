@@ -1,10 +1,6 @@
 #ifndef CHARTTEMPLATE_H
 #define CHARTTEMPLATE_H
 
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 #include <QString>
 
 #include <QChart>
@@ -23,9 +19,7 @@
 #include <QDateTimeAxis>
 #include <QValueAxis>
 
-#define ChartMap std::unordered_map<std::string, double>
-#define LinePoints std::vector<std::pair<QDateTime, double> >
-#define LineMap std::unordered_map<std::string, LinePoints>
+#include "types.hpp"
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -62,11 +56,11 @@ class ChartTemplate : public VisualTemplate
 public:
     ChartTemplate();
     virtual ~ChartTemplate();
-    virtual void make(ChartMap * const data) final;
+    virtual void make(const ChartMap * data) final;
 
 private:
     // Placeholder
-    virtual void setDataAndEffects(ChartMap * data) = 0;
+    virtual void setDataAndEffects(const ChartMap * data) = 0;
 };
 
 class BarGUI : public ChartTemplate {
@@ -76,7 +70,7 @@ public:
     ~BarGUI();
 
 private:
-    void setDataAndEffects(ChartMap * const data) override;
+    void setDataAndEffects(const ChartMap * data) override;
     void QAxisSetup() override;
     void Legend() override;
 
@@ -91,7 +85,7 @@ public:
     ~PieGUI();
 
 private:
-    void setDataAndEffects(ChartMap * const data) override;
+    void setDataAndEffects(const ChartMap * data) override;
     void QAxisSetup() override;
 };
 
@@ -99,10 +93,10 @@ class LineGUI : public VisualTemplate {
 public:
     LineGUI();
     ~LineGUI();
-    void make(LineMap * data);
+    void make(const LineMap * data);
 
 private:
-    void setDataAndEffects(LineMap * const data);
+    void setDataAndEffects(const LineMap * data);
     void QAxisSetup() override;
 
     int largestX, largestY; // Keep track of the series index with the largest timestamp interval
