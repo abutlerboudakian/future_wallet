@@ -3,8 +3,7 @@
 
 LaunchMenu::LaunchMenu(QWidget *parent, Controller * controller) :
     QWidget(parent),
-    ui(new Ui::LaunchMenu),
-    BaseView()
+    ui(new Ui::LaunchMenu)
 {
     ui->setupUi(this);
 

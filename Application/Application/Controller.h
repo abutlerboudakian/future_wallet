@@ -5,11 +5,14 @@
 #include "ChartTemplate.h"
 #include "BudgetData.h"
 
+#include "DashBoard.h"
+#include "LaunchMenu.h"
+#include "BudgetPage.h"
+
 enum Views
 {
     Login = 0,
     Dashboard = 1,
-    BudgetView = 2
 };
 
 class Controller
@@ -24,14 +27,16 @@ class Controller
     void switchToDashBoard();
     void switchToLogin();
     void switchToBudgetPage();
-    void switchToChartSelection();
+
+    void closeBudgetPage();
 
     // Charts
     QChartView * getPieChart(ChartMap * data);
     QChartView * getBarGraph(ChartMap * data);
     QChartView * getLineGraph(LineMap * data);
 
-    // Metric data
+    // getMetricData();
+    const BudgetData * getBudgetData() const;
 
   private:
     QStackedWidget * Views;
@@ -41,8 +46,12 @@ class Controller
     BarGUI * BarCreator;
     LineGUI * LineCreator;
 
-    // Budget Data
+    // ModelData
     BudgetData * budget;
+    // metrics;
+
+    // BudgetModal Boolean
+    bool BudgetModal = false;
 };
 
 #endif // CONTROLLER_H

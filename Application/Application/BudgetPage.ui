@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Future Wallet</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
@@ -26,7 +26,18 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="Default"/>
+        <widget class="QListWidget" name="Default">
+         <item>
+          <property name="text">
+           <string>Orange</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Apple</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </item>
@@ -47,7 +58,28 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="Custom"/>
+        <widget class="QListWidget" name="Custom">
+         <item>
+          <property name="text">
+           <string>Big</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Chungus</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Orange</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Banana</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </item>

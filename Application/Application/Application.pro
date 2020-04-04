@@ -26,14 +26,14 @@ SOURCES += \
     LaunchMenu.cpp
 
 HEADERS += \
-    BaseView.h \
     BudgetData.h \
     BudgetPage.h \
     ChartTemplate.h \
     Controller.h \
     DashBoard.h \
     mainapplication.h \
-    LaunchMenu.h
+    LaunchMenu.h \
+    types.hpp
 
 FORMS += \
     BudgetPage.ui \

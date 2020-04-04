@@ -3,8 +3,7 @@
 
 DashBoard::DashBoard(QWidget *parent, Controller * controller) :
     QWidget(parent),
-    ui(new Ui::DashBoard),
-    BaseView()
+    ui(new Ui::DashBoard)
 {
     ui->setupUi(this);
     this->controller = controller;
@@ -12,9 +11,11 @@ DashBoard::DashBoard(QWidget *parent, Controller * controller) :
 
     connect(ui->Predict, SIGNAL(released()), this, SLOT(getInputView()));
     connect(ui->Budget, SIGNAL(released()), this, SLOT(getBudgetView()));
-    connect(ui->Pie, SIGNAL(released()), this, SLOT(getPieView()));
-    connect(ui->Bar, SIGNAL(released()), this, SLOT(getVBarView()));
-    connect(ui->Line, SIGNAL(released()), this, SLOT(getLineView()));
+    connect(ui->metricsPie, SIGNAL(released()), this, SLOT(getMetricsPieView()));
+    connect(ui->metricsBar, SIGNAL(released()), this, SLOT(getMetricsBarView()));
+    connect(ui->metricsLine, SIGNAL(released()), this, SLOT(getMetricsLineView()));
+    connect(ui->budgetPie, SIGNAL(released()), this, SLOT(getBudgetPieView()));
+    connect(ui->budgetBar, SIGNAL(released()), this, SLOT(getBudgetBarView()));
 }
 
 // Delegate destruction of the other elements to the base QWidget destructor
@@ -23,15 +24,23 @@ DashBoard::~DashBoard()
     delete ui;
 }
 
+/* Function used to update the budget in display
+ * @modifies this->ui->Budget
+ * @effects this->ui->Budget now contains the budget that was recently loaded in
+ */
+void DashBoard::updateBudget()
+{
+    ui->budgets->setText(controller->getBudgetData()->getBudgetString());
+}
+
 /* Function used to update the metric in display
  * @modifies this->ui->metrics
- * @effects this->ui->metrics now contains a new treewidget, representing the new metric
+ * @effects this->ui->metrics now contains the recent metric information
  */
-void DashBoard::update()
+void DashBoard::updateMetrics()
 {
-    // Ask controller for metric data
+    // Ask controller for metric data (basically a preformated string)
 
-    // Remove current tree widget
 /*    delete ui->metrics->takeWidget();
 
     QTreeWidget * mWidget = new QTreeWidget; // Might need to specify parent
@@ -74,22 +83,34 @@ void DashBoard::getBudgetView()
 }
 
 // Function to show the metric as a pie chart
-void DashBoard::getPieView()
+void DashBoard::getMetricsPieView()
 {
   std::cout<<"HelloWorld"<<std::endl;
   return;
 }
 
 // Function to show the metric as a vertical bar graph
-void DashBoard::getVBarView()
+void DashBoard::getMetricsBarView()
 {
   std::cout<<"HelloWorld"<<std::endl;
   return;
 }
 
 // Function to show the metric as a line graph
-void DashBoard::getLineView()
+void DashBoard::getMetricsLineView()
 {
   std::cout<<"HelloWorld"<<std::endl;
   return;
+}
+
+// Function to show the loaded budget as a pie chart
+void DashBoard::getBudgetPieView()
+{
+
+}
+
+// Function to show the loaded budget as a bar graph
+void DashBoard::getBudgetBarView()
+{
+
 }

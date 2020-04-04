@@ -5,6 +5,11 @@ Controller::Controller()
   PieCreator = new PieGUI;
   BarCreator = new BarGUI;
   LineCreator = new LineGUI;
+
+  budget = new BudgetData;
+  budget->addCategory(QString("Alcohol"), 0.05);
+  budget->addCategory(QString("Oranges"), 0.55);
+  budget->addCategory(QString("Ores"), 0.4);
 }
 
 /* Deletes the chart creators. Delegates deletion of the views to MainApplication
@@ -16,6 +21,7 @@ Controller::~Controller()
   delete PieCreator;
   delete BarCreator;
   delete LineCreator;
+  delete budget;
 }
 
 /* Sets the views for the controller
@@ -30,6 +36,18 @@ void Controller::setViews(QStackedWidget * Views)
 }
 
 // ------------------------------------
+// Other Methods                      |
+// ------------------------------------
+
+/* Function returns the BudgetData in the controller
+ * @returnes this->budget
+ */
+const BudgetData * Controller::getBudgetData() const
+{
+    return this->budget;
+}
+
+// ------------------------------------
 // View Switching                     |
 // ------------------------------------
 
@@ -40,6 +58,8 @@ void Controller::setViews(QStackedWidget * Views)
 void Controller::switchToDashBoard()
 {
   this->Views->setCurrentIndex(Views::Dashboard);
+  ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
+  ((DashBoard*)this->Views->widget(Views::Dashboard))->updateBudget();
   return;
 }
 
@@ -53,23 +73,25 @@ void Controller::switchToLogin()
   return;
 }
 
-/* Switches main window view to Budgeting page/modal
- * @modifies this->Views
- * @effects this->View's top most QWidget is now Views::BudgetView
+/* Creates and displays the BudgetPage View as a modal
+ * @modifies this->
+ * @effects this->View's top most QWidget is now Views::ChartView
  */
 void Controller::switchToBudgetPage()
 {
-    this->Views->setCurrentIndex(Views::BudgetView);
-    return;
+    if (!BudgetModal)
+    {   // Make and show budget modal
+        BudgetPage * temp = new BudgetPage;
+        temp->setController(this);
+        temp->setAttribute(Qt::WA_DeleteOnClose);
+        temp->show();
+        BudgetModal = true;
+    }
 }
 
-/* Switches main window view to Chart Selection View
- * @modifies this->Views
- * @effects this->View's top most QWidget is now Views::ChartView
- */
-void Controller::switchToChartSelection()
+void Controller::closeBudgetPage()
 {
-
+    BudgetModal = false;
 }
 
 //-------------------------------------

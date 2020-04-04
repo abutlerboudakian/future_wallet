@@ -108,7 +108,7 @@ ChartTemplate::~ChartTemplate() {}
  * @effects this->series is now initialized to the appropriate concrete series
  * @effects this->chart is now initialized as the chart model
  */
-void ChartTemplate::make(ChartMap * data)
+void ChartTemplate::make(const ChartMap * data)
 {
     if (chartView != nullptr) { delete chartView; }
     else if (chart != nullptr) { delete chart; chart = nullptr; }
@@ -137,7 +137,7 @@ BarGUI::~BarGUI()
  * @modifies this->series
  * @effects this->series[0] now contains a QBarSeries modeling the given data
  */
-void BarGUI::setDataAndEffects(ChartMap * const data)
+void BarGUI::setDataAndEffects(const ChartMap * data)
 {
     if (!colNames->isEmpty())
     {
@@ -192,7 +192,7 @@ PieGUI::~PieGUI() {}
  * @modifies this->series
  * @effects this->series to contain a PieSeries
  */
-void PieGUI::setDataAndEffects(ChartMap * const data)
+void PieGUI::setDataAndEffects(const ChartMap * data)
 {
     QPieSeries * temp_series = new QPieSeries();
 
@@ -227,7 +227,7 @@ LineGUI::~LineGUI() {}
  * @effects this->series is now initialized to the appropriate concrete series
  * @effects this->chart is now initialized as the chart model
  */
-void LineGUI::make(LineMap * const data)
+void LineGUI::make(const LineMap * data)
 {
     if (chartView != nullptr) { delete chartView; }
     else if (chart != nullptr) { delete chart; chart = nullptr; }
@@ -249,7 +249,7 @@ void LineGUI::make(LineMap * const data)
  * @modifies this->series
  * @effects this->series now contains a bunch of QLineSeries based on the data
  */
-void LineGUI::setDataAndEffects(LineMap * const data)
+void LineGUI::setDataAndEffects(const LineMap * data)
 {
     QDateTime largestDateTime = QDateTime(QDate(1990, 1, 1), QTime(0, 0, 0));
     double largestValue = 0;
