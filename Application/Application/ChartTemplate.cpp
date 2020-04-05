@@ -10,10 +10,11 @@ VisualTemplate::VisualTemplate()
     chartView = nullptr;
 }
 
+// Delegate deconstruction of all objects to chartView
 VisualTemplate::~VisualTemplate()
 {
-    delete series; // Check if this works
-    delete chartView;
+    clearSeries();
+    delete series;
 }
 
 // Common
@@ -42,6 +43,7 @@ void VisualTemplate::QChartSetup()
 void VisualTemplate::CreateChartView()
 {
     chartView = new QChartView(chart);
+    chartView->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing the chartview
     chartView->setRenderHint(QPainter::Antialiasing);
 }
 
@@ -74,6 +76,21 @@ void VisualTemplate::QAxisSetup()
     chart->createDefaultAxes();
 }
 
+/* Function sets all elements in this->series to nullptr, so it can delegate
+ * deletion of its elements to another class, then clears it.
+ * @modifies this->series
+ * @effects this->series.empty() == true
+ */
+void VisualTemplate::clearSeries()
+{
+    for (unsigned int i = 0; i < this->series->size(); i++)
+    {
+        (*(this->series))[i] = nullptr;
+    }
+    this->series->clear();
+    return;
+}
+
 //------------------------------------------------------
 // ChartTemplate                                       |
 //------------------------------------------------------
@@ -91,18 +108,11 @@ ChartTemplate::~ChartTemplate() {}
  * @effects this->series is now initialized to the appropriate concrete series
  * @effects this->chart is now initialized as the chart model
  */
-void ChartTemplate::initialize(ChartMap * data)
+void ChartTemplate::make(const ChartMap * data)
 {
     if (chartView != nullptr) { delete chartView; }
     else if (chart != nullptr) { delete chart; chart = nullptr; }
-    else if (!series->empty()) // Might be incorrect to free here, since chart frees it
-    {
-        for (std::vector<QAbstractSeries* >::iterator s = series->begin(); s != series->end(); s++)
-        {
-            delete *s;
-        }
-        series->empty();
-    }
+    else if (!series->empty()) { clearSeries(); }
     chartView = nullptr; chart = nullptr;
     setDataAndEffects(data);
     QChartSetup();
@@ -127,7 +137,7 @@ BarGUI::~BarGUI()
  * @modifies this->series
  * @effects this->series[0] now contains a QBarSeries modeling the given data
  */
-void BarGUI::setDataAndEffects(ChartMap * const data)
+void BarGUI::setDataAndEffects(const ChartMap * data)
 {
     if (!colNames->isEmpty())
     {
@@ -182,7 +192,7 @@ PieGUI::~PieGUI() {}
  * @modifies this->series
  * @effects this->series to contain a PieSeries
  */
-void PieGUI::setDataAndEffects(ChartMap * const data)
+void PieGUI::setDataAndEffects(const ChartMap * data)
 {
     QPieSeries * temp_series = new QPieSeries();
 
@@ -217,18 +227,11 @@ LineGUI::~LineGUI() {}
  * @effects this->series is now initialized to the appropriate concrete series
  * @effects this->chart is now initialized as the chart model
  */
-void LineGUI::initialize(LineMap * const data)
+void LineGUI::make(const LineMap * data)
 {
     if (chartView != nullptr) { delete chartView; }
     else if (chart != nullptr) { delete chart; chart = nullptr; }
-    else if (!series->empty()) // Might be incorrect to free here, since chart frees it
-    {
-        for (std::vector<QAbstractSeries* >::iterator s = series->begin(); s != series->end(); s++)
-        {
-            delete *s;
-        }
-        series->empty();
-    }
+    else if (!series->empty()) { clearSeries(); }
     chartView = nullptr; chart = nullptr;
     setDataAndEffects(data);
     QChartSetup();
@@ -246,7 +249,7 @@ void LineGUI::initialize(LineMap * const data)
  * @modifies this->series
  * @effects this->series now contains a bunch of QLineSeries based on the data
  */
-void LineGUI::setDataAndEffects(LineMap * const data)
+void LineGUI::setDataAndEffects(const LineMap * data)
 {
     QDateTime largestDateTime = QDateTime(QDate(1990, 1, 1), QTime(0, 0, 0));
     double largestValue = 0;

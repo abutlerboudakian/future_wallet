@@ -1,46 +1,40 @@
-#ifndef DASHBOARDPAGE
-#define DASHBOARDPAGE
-#include <QMainWindow>
-#include <QStackedWidget>
-#include <iostream>
+#ifndef DASHBOARD_H
+#define DASHBOARD_H
 
-#include <QGridLayout>
-#include <QLabel>
-//#include <QHBoxLayout>
-#include <QPushButton>
-#include <QSizePolicy>
-#include <QScrollArea>
-#include <memory>
+#include <QWidget>
+class Controller; // Forward declaration to resolve circular dependency
+#include "Controller.h"
+#include <iostream>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+
+namespace Ui {
+class DashBoard;
+}
 
 class DashBoard : public QWidget
 {
-  Q_OBJECT 
-  public:
-    explicit DashBoard(QMainWindow * parent, QStackedWidget* content);
+    Q_OBJECT
+
+public:
+    explicit DashBoard(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~DashBoard();
-  private:
-    QPushButton * Predict;
-    QLabel * welcome;
-    QPushButton * Budget;
-    QPushButton * Pie;
-    QPushButton * VBar;
-    QPushButton * Line;
-    QPushButton * HBar;
-    QGridLayout * gridLayout;
-    QGridLayout * top;
-    QGridLayout * thumbnails;
-    QWidget * metrics;
-    QScrollArea * metricsWrapper;
 
-    QStackedWidget * content;
+    void updateMetrics();
+    void updateBudget();
 
-  private slots:
-    void getInputView();
-    void getBudgetView();
-    void getPieView();
-    void getVBarView();
-    void getLineView();
-    void getHBarView();
+private:
+    Ui::DashBoard *ui;
+    Controller * controller;
+
+private slots:
+   void getInputView();
+   void getBudgetView();
+   void getMetricsPieView();
+   void getMetricsBarView();
+   void getMetricsLineView();
+   void getBudgetPieView();
+   void getBudgetBarView();
 };
 
-#endif
+#endif // DASHBOARD_H

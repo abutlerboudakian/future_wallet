@@ -1,120 +1,116 @@
 #include "DashBoard.h"
+#include "ui_DashBoard.h"
 
-DashBoard::DashBoard(QMainWindow * parent, QStackedWidget * content) : QWidget(parent)
+DashBoard::DashBoard(QWidget *parent, Controller * controller) :
+    QWidget(parent),
+    ui(new Ui::DashBoard)
 {
-  this->content = content;
+    ui->setupUi(this);
+    this->controller = controller;
+    // Set up event triggers:
 
-  QString height = QString("height:50px");
-  Predict = new QPushButton("Predict");
-  welcome = new QLabel("Welcome to Future Wallet");
-  welcome->setStyleSheet(QString("background-color:orange;\nborder:1px solid black;height:50px;\nwidth:200px"));
-  Budget = new QPushButton("Budget");
-
-  // Set styles for the buttons
-  Predict->setStyleSheet(height);
-  Budget->setStyleSheet(height);
-
-  // Metrics Area
-  metricsWrapper = new QScrollArea;
-  metrics = new QWidget(parent);
-  //metrics->setStyleSheet(QString("background-color:orange;\nborder:1px solid black"));
-  metricsWrapper->setWidget(metrics);
-  // metricsWrapper->setMaximumSize(QSize(16777215, 1677));
-
-  // Create the buttons for the chart views
-  Pie = new QPushButton("View As Pie Graph");
-  VBar = new QPushButton("View As Vertical Bar Graph");
-  Line = new QPushButton("View As Line Graph");
-  HBar = new QPushButton("View As Horizontal Bar Graph");
-  /* height = QString("width:auto;\nheight:auto"); // setting solid pixels causes resize issues
-  Pie->setStyleSheet(height);
-  VBar->setStyleSheet(height);
-  Line->setStyleSheet(height);
-  HBar->setStyleSheet(height); */
-
-  // Throw all elements onto the gridlayout
-  gridLayout = new QGridLayout(parent);
-  top = new QGridLayout(parent);
-  thumbnails = new QGridLayout(parent);
-  // widget, row, column, alignment
-  top->addWidget(Predict, 0, 0, Qt::AlignLeft);
-  top->addWidget(welcome, 0, 1, Qt::AlignCenter);
-  top->addWidget(Budget, 0, 2, Qt::AlignRight);
-  thumbnails->addWidget(Pie, 0, 0);
-  thumbnails->addWidget(VBar, 0, 1);
-  thumbnails->addWidget(Line, 0, 2);
-  thumbnails->addWidget(HBar, 0, 3);
-  gridLayout->addLayout(top, 0, 0);
-  gridLayout->addWidget(metricsWrapper, 1, 0);
-  gridLayout->addLayout(thumbnails, 2, 0);
-/*
-  Pie->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-  VBar->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-  Line->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-  HBar->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-*/
-  // Finish setting up the sidebar
-  this->setLayout(gridLayout);
-
-  // Set up event triggers:
-  connect(Predict, SIGNAL(released()), this, SLOT(getInputView()));
-  connect(Budget, SIGNAL(released()), this, SLOT(getBudgetView()));
-  connect(Pie, SIGNAL(released()), this, SLOT(getPieView()));
-  connect(VBar, SIGNAL(released()), this, SLOT(getVBarView()));
-  connect(Line, SIGNAL(released()), this, SLOT(getLineView()));
-  connect(HBar, SIGNAL(released()), this, SLOT(getHBarView()));
+    connect(ui->Predict, SIGNAL(released()), this, SLOT(getInputView()));
+    connect(ui->Budget, SIGNAL(released()), this, SLOT(getBudgetView()));
+    connect(ui->metricsPie, SIGNAL(released()), this, SLOT(getMetricsPieView()));
+    connect(ui->metricsBar, SIGNAL(released()), this, SLOT(getMetricsBarView()));
+    connect(ui->metricsLine, SIGNAL(released()), this, SLOT(getMetricsLineView()));
+    connect(ui->budgetPie, SIGNAL(released()), this, SLOT(getBudgetPieView()));
+    connect(ui->budgetBar, SIGNAL(released()), this, SLOT(getBudgetBarView()));
 }
 
+// Delegate destruction of the other elements to the base QWidget destructor
 DashBoard::~DashBoard()
 {
-    delete Predict;
-    delete welcome;
-    delete Budget;
-    delete Pie;
-    delete VBar;
-    delete Line;
-    delete HBar;
-    delete gridLayout;
-    delete thumbnails;
-    delete metrics;
-    delete metricsWrapper;
-    delete top;
+    delete ui;
+}
+
+/* Function used to update the budget in display
+ * @modifies this->ui->Budget
+ * @effects this->ui->Budget now contains the budget that was recently loaded in
+ */
+void DashBoard::updateBudget()
+{
+    ui->budgets->setText(controller->getBudgetData()->getBudgetString());
+}
+
+/* Function used to update the metric in display
+ * @modifies this->ui->metrics
+ * @effects this->ui->metrics now contains the recent metric information
+ */
+void DashBoard::updateMetrics()
+{
+    // Ask controller for metric data (basically a preformated string)
+
+/*    delete ui->metrics->takeWidget();
+
+    QTreeWidget * mWidget = new QTreeWidget; // Might need to specify parent
+    mWidget->setColumnCount(2);
+
+    // Wages root
+    QTreeWidgetItem * root = new QTreeWidgetItem(mWidget), * tmpItem;
+    root->setText(0, "Wages");
+    root->setText(1, INSERTTOTALWAGES);
+    mWidget->addTopLevelItem(root);
+    // Input each wage component and value
+    for each component
+    {
+        tmpItem = new QTreeWidgetItem(root);
+        tmpItem->setText(0, COMPONENT NAME);
+        tmpItem->setText(1, COMPONENT VALUE);
+        root->addChild(tmpItem);
+    }
+
+
+    ui->metrics->setWidget(mWidget);*/
 }
 
 
 // Slots -- aka signals
+
+// Function to switch to the input view when "Predict" button is pressed
 void DashBoard::getInputView()
 {
-    std::cout<<"HelloWorld"<<std::endl;
-    return;
+  std::cout<<"HelloWorld"<<std::endl;
+  return;
 }
 
+// Function to start the Budget Modal when the "Budget" button is pressed
 void DashBoard::getBudgetView()
 {
-    std::cout<<"HelloWorld"<<std::endl;
-    return;
+  std::cout<<"HelloWorld"<<std::endl;
+  controller->switchToBudgetPage();
+  return;
 }
 
-void DashBoard::getPieView()
+// Function to show the metric as a pie chart
+void DashBoard::getMetricsPieView()
 {
-    std::cout<<"HelloWorld"<<std::endl;
-    return;
+  std::cout<<"HelloWorld"<<std::endl;
+  return;
 }
 
-void DashBoard::getVBarView()
+// Function to show the metric as a vertical bar graph
+void DashBoard::getMetricsBarView()
 {
-    std::cout<<"HelloWorld"<<std::endl;
-    return;
+  std::cout<<"HelloWorld"<<std::endl;
+  return;
 }
 
-void DashBoard::getLineView()
+// Function to show the metric as a line graph
+void DashBoard::getMetricsLineView()
 {
-    std::cout<<"HelloWorld"<<std::endl;
-    return;
+  std::cout<<"HelloWorld"<<std::endl;
+  return;
 }
 
-void DashBoard::getHBarView()
+// Function to show the loaded budget as a pie chart
+void DashBoard::getBudgetPieView()
 {
-    std::cout<<"HelloWorld"<<std::endl;
-    return;
+
+}
+
+// Function to show the loaded budget as a bar graph
+void DashBoard::getBudgetBarView()
+{
+
 }
