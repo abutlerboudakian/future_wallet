@@ -4,6 +4,7 @@ from tensorflow import keras
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
+from datasetbuilder import DatasetBuilder
 
 from abc import ABC
 from enum import Enum
@@ -13,11 +14,20 @@ class ModelType(Enum):
 	WAGES = 1
 	INVESTS = 2
 	ASSETS = 3
+	SAVINGS = 4
+	CDS = 5
+	STOCKS = 6
+	BONDS = 7
+	TBONDS = 8
+	RES = 9
+	RENTS = 10
+	RMS = 11
 
 class BaseModel(ABC):
-	def __init__(self, data=None):
-		if data is not None:
-			self.data = data
+	def __init__(self, dsb=None):
+		if dsb is not None:
+			self.dsb = dsb
+			data = self.dsb.getData(1)
 			self.model = keras.Sequential([
 					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
 					keras.layers.Dense(len(data['X'].columns)+1, activation='relu'),
@@ -27,10 +37,15 @@ class BaseModel(ABC):
 	def setData(self, data):
 		self.data = data
 
-	def train(self, epochs):
-		x_train, x_test, y_train, y_test = train_test_split(self.data['X'], self.data['Y'], test_size=0.1)
-		self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
-		self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=epochs)
+	def train(self, epochs, batchsize):
+		for e in range(epochs):
+			self.dsb.initQuery()
+			while True:
+				data = self.dsb.getData(batchsize)
+				if not data:
+					break
+				x_train, x_test, y_train, y_test = train_test_split(self.data['X'], self.data['Y'], test_size=0.1)
+				self.model.fit(x_train, y_train, validation_data=(x_test, y_test), batchsize=batchsize, epochs=e+1, initial_epoch=e)
 
 	def save(self, path):
 		pass
@@ -42,15 +57,17 @@ class BaseModel(ABC):
 		pass
 
 class WageModel(BaseModel):
-	def __init__ (self, data=None):
-		if data is not None:
-			self.data = data
-			self.industryCode = data['industryCode']
+	def __init__ (self, industryCode=None):
+		if industryCode is not None:
+			self.industryCode = industryCode
+			self.dsb = DatasetBuilder(ModelType.WAGES, industryCode=self.industryCode)
+			data = self.dsb.getData(1)
 			self.model = keras.Sequential([
 					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
 					keras.layers.Dense(len(data['X'].columns)+1, activation='relu'),
 					keras.layers.Dense(1)
 				])
+			self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
 
 
 	def save(self, path):
@@ -67,16 +84,18 @@ class WageModel(BaseModel):
 
 
 class InvestmentModel(BaseModel):
-	def __init__(self, data=None):
-		if data is not None:
-			savingsData, cdData, stockData, bondData, tbData = zip(*data)
-			self.savingsModel = SavingsModel(savingsData)
-			self.cdModel = CDModel(savingsData)
+	def __init__(self, train=False, tickers=None):
+		if train:
+			self.savingsModel = SavingsModel(DatasetBuilder(ModelType.SAVINGS))
+			self.cdModel = CDModel(DatasetBuilder(ModelType.CDS))
 			self.stockModels = {}
-			for ticker, sData in stockData.items():
-				self.stockModels[ticker] = StockModel(sData)
-			self.bondModel = BondModel(bondData)
-			self.tbModel = TBModel(tbData)
+			if tickers is None:
+				tickers = dsb.getTickers()
+			for ticker in tickers:
+				self.stockModels[ticker] = StockModel(DatasetBuilder(ModelType.STOCKS, ticker=ticker))
+
+			self.bondModel = BondModel(DatasetBuilder(ModelType.BONDS))
+			self.tbModel = TBModel(DatasetBuilder(ModelType.TBONDS))
 		else:
 			self.savingsModel = SavingsModel()
 			self.cdModel = CDModel()
@@ -84,13 +103,13 @@ class InvestmentModel(BaseModel):
 			self.bondModel = BondModel()
 			self.tbModel = TBModel()
 
-	def train(self, epochs):
-		savingsModel.train(epochs)
-		cdModel.train(epochs)
+	def train(self, epochs, batchsize):
+		savingsModel.train(epochs, batchsize)
+		cdModel.train(epochs, batchsize)
 		for s in stockModels:
-			s.train(epochs)
-		bondModel.train(epochs)
-		tbModel.train(epochs)
+			s.train(epochs, batchsize)
+		bondModel.train(epochs, batchsize)
+		tbModel.train(epochs, batchsize)
 
 	def save(self, path):
 		self.savingsModel.save(path)
@@ -122,21 +141,20 @@ class InvestmentModel(BaseModel):
 		
 
 class AssetModel(BaseModel):
-	def __init__(self, data=None):
-		if data is not None:
-			resData, rentData, rmData = zip(*data)
-			self.residenceModel = ResidenceModel(resData)
-			self.rentModel = RentModel(rentData)
-			self.rmModel = RMModel(rmData)
+	def __init__(self, train=False):
+		if train:
+			self.residenceModel = ResidenceModel(DatasetBuilder(ModelType.RES))
+			self.rentModel = RentModel(DatasetBuilder(ModelType.RENTS))
+			self.rmModel = RMModel(DatasetBuilder(ModelType.RMS))
 		else:
 			self.residenceModel = ResidenceModel()
 			self.rentModel = RentModel()
 			self.rmModel = RMModel()
 
-	def train(self, epochs):
-		residenceModel.train(epochs)
-		rentModel.train(epochs)
-		rmModel.train(epochs)
+	def train(self, epochs, batchsize):
+		residenceModel.train(epochs, batchsize)
+		rentModel.train(epochs, batchsize)
+		rmModel.train(epochs, batchsize)
 
 	def save(self, path):
 		self.residenceModel.save(path)

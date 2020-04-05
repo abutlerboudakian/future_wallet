@@ -1,28 +1,34 @@
 
-from models import WageModel, InvestmentModel, AssetModel, ModelType
+from modelpack import WageModel, InvestmentModel, AssetModel, ModelType
 from datasetbuilder import DatasetBuilder
 
 class ModelFactory:
 	def __init__(self):
-		self.dsb = DatasetBuilder()
+		pass
 
 	def createModel(self, mType, **kwargs):
 		if mType == ModelType.WAGES:
 			if 'train' in kwargs and kwargs['train'] == True:
 				if 'industryCode' in kwargs:
-					return WageModel(self.dsb.getModelData(ModelType.WAGES, industryCode=kwargs['industryCode']))
+					return WageModel(industryCode=kwargs['industryCode'])
 				else:
-					return WageModel(self.dsb.getModelData(ModelType.WAGES))
+					return WageModel()
 			else:
 				return WageModel()
 		elif mType == ModelType.INVESTS:
-			if 'train' in kwargs and kwargs['train'] == True:
-				return InvestmentModel(self.dsb.getModelData(ModelType.INVESTS))
+			if 'train' in kwargs:
+				if 'tickers' in kwargs:
+					return InvestmentModel(train=kwargs['train'], tickers=kwargs['tickers'])
+				else:
+					return InvestmentModel(train=kwargs['train'])
 			else:
-				return InvestmentModel()
+				if 'tickers' in kwargs:
+					return InvestmentModel(tickers=kwargs['tickers'])
+				else:
+					return InvestmentModel()
 		elif mType == ModelType.ASSETS:
-			if 'train' in kwargs and kwargs['train'] == True:
-				return AssetModel(self.dsb.getModelData(ModelType.ASSETS))
+			if 'train' in kwargs:
+				return AssetModel(train=kwargs['train'])
 			else:
 				return AssetModel()
 		else:
@@ -30,4 +36,4 @@ class ModelFactory:
 
 
 	def createAllModels(self):
-		return (WageModel(dsb.getModelData(ModelType.WAGES)), InvestmentModel(dsb.getModelData(ModelType.INVESTS)), AssetModel(dsb.getModelData(ModelType.ASSETS)))
+		return (WageModel(DataSetBuilder(ModelType.WAGES)), InvestmentModel(DatasetBuilder(ModelType.INVESTS)), AssetModel(DataSetBuilder(ModelType.ASSETS)))
