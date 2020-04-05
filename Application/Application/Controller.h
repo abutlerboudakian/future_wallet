@@ -8,11 +8,17 @@
 #include "DashBoard.h"
 #include "LaunchMenu.h"
 #include "BudgetPage.h"
+#include "predictionInputAssets.h"
+#include "predictionInputWages.h"
+#include "predictionInputInvest.h"
 
 enum Views
 {
     Login = 0,
     Dashboard = 1,
+    WagePredict = 2,
+    InvestPredict = 3,
+    AssetPredict = 4
 };
 
 class Controller
@@ -27,6 +33,9 @@ class Controller
     void switchToDashBoard();
     void switchToLogin();
     void switchToBudgetPage();
+    void switchToInputWages();
+    void switchToInputInvest();
+    void switchToInputAsset();
 
     void closeBudgetPage();
 

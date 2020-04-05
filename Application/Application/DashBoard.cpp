@@ -70,7 +70,7 @@ void DashBoard::updateMetrics()
 // Function to switch to the input view when "Predict" button is pressed
 void DashBoard::getInputView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
+  this->controller->switchToInputWages();
   return;
 }
 
