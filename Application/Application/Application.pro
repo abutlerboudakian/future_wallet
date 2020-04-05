@@ -16,21 +16,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Asset.cpp \
     BudgetData.cpp \
     BudgetPage.cpp \
     ChartTemplate.cpp \
     Controller.cpp \
     DashBoard.cpp \
+    Investment.cpp \
+    Wage.cpp \
     main.cpp \
     mainapplication.cpp \
     LaunchMenu.cpp
 
 HEADERS += \
+    Asset.h \
     BudgetData.h \
     BudgetPage.h \
     ChartTemplate.h \
     Controller.h \
     DashBoard.h \
+    Investment.h \
+    Wage.h \
     mainapplication.h \
     LaunchMenu.h \
     types.hpp
