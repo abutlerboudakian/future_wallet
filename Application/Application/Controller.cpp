@@ -95,8 +95,6 @@ void Controller::switchToLogin()
 }
 
 /* Creates and displays the BudgetPage View as a modal
- * @modifies this->
- * @effects this->View's top most QWidget is now Views::ChartView
  */
 void Controller::switchToBudgetPage()
 {
@@ -113,6 +111,33 @@ void Controller::switchToBudgetPage()
 void Controller::closeBudgetPage()
 {
     BudgetModal = false;
+}
+
+/* Creates and displays the predictionInputWages View
+ * @modifies this->View
+ * @effects this->View's top most QWidget is now Views::WagePredict
+ */
+void Controller::switchToInputWages()
+{
+  this->Views->setCurrentIndex(Views::WagePredict);
+}
+
+/* Creates and displays the predictionInputAssets View
+ * @modifies this->View
+ * @effects this->View's top most QWidget is now Views::AssetPredict
+ */
+void Controller::switchToInputAsset()
+{
+    this->Views->setCurrentIndex(Views::AssetPredict);
+}
+
+/* Creates and displays the predictionInputInvest View
+ * @modifies this->View
+ * @effects this->View's top most QWidget is now Views::InvestPredict
+ */
+void Controller::switchToInputInvest()
+{
+    this->Views->setCurrentIndex(Views::InvestPredict);
 }
 
 //-------------------------------------

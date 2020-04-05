@@ -1,23 +1,29 @@
 #ifndef PREDICTIONINPUTWAGES_H
 #define PREDICTIONINPUTWAGES_H
 
-#include <QGridLayout>
-#include <QLabel>
-//#include <QHBoxLayout>
-#include <QPushButton>
-#include <QMainWindow>
-#include <QSizePolicy>
-#include <QScrollArea>
-#include <memory>
+#include <QWidget>
+class Controller;
+#include "Controller.h"
 
+namespace Ui {
+class predictionInputWages;
+}
 
-class predictionInputWages: public QWidget
+class predictionInputWages : public QWidget
 {
-public:
     Q_OBJECT
-    public:
-      explicit predictionInputWages(QMainWindow * parent);
-      ~predictionInputWages();
+
+public:
+    explicit predictionInputWages(QWidget *parent = nullptr, Controller * controller = nullptr);
+    ~predictionInputWages();
+
+private:
+    Ui::predictionInputWages *ui;
+    Controller * controller;
+
+private slots:
+    void getInvestView();
+    void Exit();
 };
 
 #endif // PREDICTIONINPUTWAGES_H
