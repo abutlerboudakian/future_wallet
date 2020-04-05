@@ -31,11 +31,11 @@ class Controller
     void closeBudgetPage();
 
     // Charts
-    QChartView * getPieChart(ChartMap * data);
-    QChartView * getBarGraph(ChartMap * data);
-    QChartView * getLineGraph(LineMap * data);
+    QChartView * getPieChart(const ChartMap * data);
+    QChartView * getBarGraph(const ChartMap * data);
+    QChartView * getLineGraph(const LineMap * data);
 
-    // getMetricData();
+    const std::vector<double> * getMetricsData() const;
     const BudgetData * getBudgetData() const;
 
   private:
@@ -49,6 +49,7 @@ class Controller
     // ModelData
     BudgetData * budget;
     // metrics;
+    std::vector<double> * metrics; // [wages growth, investment growth, asset growth, years]
 
     // BudgetModal Boolean
     bool BudgetModal = false;
