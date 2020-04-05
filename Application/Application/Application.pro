@@ -28,7 +28,8 @@ HEADERS += \
 
 FORMS += \
     mainapplication.ui \
-    predictionInputInvestments.ui \
+    predictionInputAssets.ui \
+    predictionInputInvest.ui \
     predictionInputWages.ui
 
 # Default rules for deployment.
