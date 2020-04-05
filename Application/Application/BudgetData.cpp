@@ -9,7 +9,7 @@ BudgetData::~BudgetData()
 {
     delete data;
 }
-
+/*
 QDataStream & operator<<(QDataStream &out, const BudgetData &b)
 {
     //hashmap of [category] -> percent as a double
@@ -26,7 +26,7 @@ QDataStream & operator>>(QDataStream &in, BudgetData &b)
     //s = Student();
     //in >> s.ID >> s.Name;
     return in;
-}
+}*/
 
 /* Function converts BudgetData to a QString formated for DashBoard
  * @returns a QString formated representation of this->data

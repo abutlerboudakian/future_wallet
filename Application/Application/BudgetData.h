@@ -20,8 +20,8 @@ public:
     BudgetData();
     ~BudgetData();
 
-    friend QDataStream & operator<<(QDataStream &out, const BudgetData &s);
-    friend QDataStream & operator>>(QDataStream &in, BudgetData &s);
+    // friend QDataStream & operator<<(QDataStream &out, const BudgetData &s);
+    // friend QDataStream & operator>>(QDataStream &in, BudgetData &s);
 
     bool addCategory(QString name, double val);
     bool removeCategory(QString name);
