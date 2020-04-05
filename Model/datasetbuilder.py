@@ -80,14 +80,14 @@ class DatasetBuilder:
 				self.query = """SELECT
 								s1.Timestamp AS Timestamp,
 								s2.Timestamp AS PredTimestamp,
-								s1.Close AS Value,
-								s2.Close AS PredValue
+								s1.[Close] AS Price,
+								s2.[Close] AS PredPrice
 							FROM
 								Stocks s1,
 								Stocks s2
 							WHERE
-								s1.Ticker = '""" + t + """'
-								s1.Ticker = s2.Ticker,
+								s1.Ticker = '""" + t + """' AND
+								s1.Ticker = s2.Ticker AND
 								s1.Timestamp < s2.Timestamp
 							;"""
 
@@ -193,8 +193,8 @@ class DatasetBuilder:
 			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Rate']]
 			ret['Y'] = df[['PredRate']]
 		if self.mType == modelpack.ModelType.STOCKS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Value']]
-			ret['Y'] = df[['PredValue']]
+			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Price']]
+			ret['Y'] = df[['PredPrice']]
 		if self.mType == modelpack.ModelType.BONDS:
 			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Rate']]
 			ret['Y'] = df[['PredRate']]

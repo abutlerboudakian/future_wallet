@@ -11,17 +11,21 @@ if __name__ == "__main__":
 
 	wages = []
 	industryCodes = None
+	tickers = None
 	with engine.connect() as conn:
 		industryCodes = pd.read_sql("SELECT DISTINCT IndustryCode FROM CBPIncome WHERE IndustryCode LIKE '%///'", con=conn)
+		tickers = pd.read_sql("WITH Tickers AS (SELECT DISTINCT Ticker FROM Stocks) SELECT TOP 5 PERCENT Ticker FROM Tickers ORDER BY newid();", con=conn)
 
 	industryCodes = industryCodes['IndustryCode'].tolist()
-	print('Industry Codes loaded...')
+	tickers = tickers['Ticker'].tolist()
+	print('Industry Codes and Tickers loaded...')
+
 
 	for i in industryCodes:
 		print('Wage model ' + i + ' loaded')
 		wages.append(mfac.createModel(ModelType.WAGES, train=True, industryCode=i))
 	print('Wages models created...')
-	investments = mfac.createModel(ModelType.INVESTS, train=True)
+	investments = mfac.createModel(ModelType.INVESTS, train=True, tickers=tickers)
 	print('Investment models created...')
 	assets = mfac.createModel(ModelType.ASSETS, train=True)
 	print('Asset models saved...')

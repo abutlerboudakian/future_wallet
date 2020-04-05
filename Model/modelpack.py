@@ -89,10 +89,9 @@ class InvestmentModel(BaseModel):
 			self.savingsModel = SavingsModel(DatasetBuilder(ModelType.SAVINGS))
 			self.cdModel = CDModel(DatasetBuilder(ModelType.CDS))
 			self.stockModels = {}
-			if tickers is None:
-				tickers = dsb.getTickers()
-			for ticker in tickers:
-				self.stockModels[ticker] = StockModel(DatasetBuilder(ModelType.STOCKS, ticker=ticker))
+			if tickers is not None:
+				for ticker in tickers:
+					self.stockModels[ticker] = StockModel(DatasetBuilder(ModelType.STOCKS, ticker=ticker))
 
 			self.bondModel = BondModel(DatasetBuilder(ModelType.BONDS))
 			self.tbModel = TBModel(DatasetBuilder(ModelType.TBONDS))
