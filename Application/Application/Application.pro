@@ -39,6 +39,9 @@ FORMS += \
     BudgetPage.ui \
     DashBoard.ui \
     LaunchMenu.ui \
+    predictionInputWages.ui \
+    predictionInputAssets.ui \
+    predictionInputInvest.ui \
     mainapplication.ui
 
 # Default rules for deployment.
