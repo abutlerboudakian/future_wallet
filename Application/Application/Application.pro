@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts
 
 CONFIG += c++11
 
@@ -16,21 +16,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    BudgetData.cpp \
+    BudgetPage.cpp \
+    ChartTemplate.cpp \
+    Controller.cpp \
+    DashBoard.cpp \
     main.cpp \
     mainapplication.cpp \
-    DashBoard.cpp \
-    predictionInputWages.cpp
+    LaunchMenu.cpp
 
 HEADERS += \
-    mainapplication.h \
+    BudgetData.h \
+    BudgetPage.h \
+    ChartTemplate.h \
+    Controller.h \
     DashBoard.h \
-    predictionInputWages.h
+    mainapplication.h \
+    LaunchMenu.h \
+    types.hpp
 
 FORMS += \
-    mainapplication.ui \
-    predictionInputAssets.ui \
-    predictionInputInvest.ui \
-    predictionInputWages.ui
+    BudgetPage.ui \
+    DashBoard.ui \
+    LaunchMenu.ui \
+    mainapplication.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
