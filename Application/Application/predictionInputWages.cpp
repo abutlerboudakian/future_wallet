@@ -10,11 +10,22 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
 
     connect(ui->Next, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
+
+    setupValidator();
 }
 
 predictionInputWages::~predictionInputWages()
 {
     delete ui;
+}
+
+
+void predictionInputWages::setupValidator()
+{
+    validDouble = new QDoubleValidator(0.00, 1000000.00, 2);
+    validInt = new QIntValidator(0, 60, this);
+    ui->lineEdit->setValidator(validInt);
+    ui->lineEdit_2->setValidator(validDouble);
 }
 
 // Slots
