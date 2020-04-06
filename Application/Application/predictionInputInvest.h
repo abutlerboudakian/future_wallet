@@ -22,16 +22,24 @@ public:
 private:
     Ui::predictionInputInvest *ui;
     Controller * controller;
+
+    void getStockData();
+    unsigned int counter = 2;
+
     QDoubleValidator * validDouble;
     QIntValidator * validInt;
 
 private:
     void setupValidator();
 
+
 private slots:
     void getAssetView();
     void getWagesView();
     void Exit();
+
+    void addStock();
+    void removeStock();
 };
 
 #endif // PREDICTIONINPUTINVEST_H

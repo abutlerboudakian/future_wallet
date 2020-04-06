@@ -21,12 +21,23 @@ public:
 private:
     Ui::predictionInputAssets *ui;
     Controller * controller;
+
+    void getResidenceData();
+    void getRentalData();
+    unsigned int resCounter = 2;
+    unsigned int rentCounter = 2;
+
     QDoubleValidator * validDouble;
 
 private:
     void setupValidator();
 
+
 private slots:
+    void addResidence();
+    void addRental();
+    void removeResidence();
+    void removeRental();
     void submitInputs();
     void getInvestView();
     void Exit();
