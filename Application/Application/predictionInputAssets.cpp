@@ -21,6 +21,7 @@ predictionInputAssets::~predictionInputAssets()
     delete ui;
 }
 
+// Function to setup validators for all inputs
 void predictionInputAssets::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
