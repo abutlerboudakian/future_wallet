@@ -23,7 +23,7 @@ private:
 
 private slots:
     void submitInputs();
-    void getInvestView();
+    void getWagesView();
     void Exit();
 };
 

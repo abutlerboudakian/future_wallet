@@ -9,7 +9,7 @@ predictionInputInvest::predictionInputInvest(QWidget *parent, Controller * contr
     this->controller = controller;
 
     connect(ui->Next, SIGNAL(released()), this, SLOT(getAssetView()));
-    connect(ui->Back, SIGNAL(released()), this, SLOT(getWagesView()));
+    connect(ui->Back, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 }
 
@@ -25,18 +25,18 @@ void predictionInputInvest::getAssetView()
     this->controller->switchToInputAsset();
 }
 
-// Function to change view to the previous page, the Wages View
-// Also save input to the controller
-void predictionInputInvest::getWagesView()
+// Function to change view to the invest input page
+void predictionInputInvest::getInvestView()
 {
-    // Include code to save input to the controller's models
-    this->controller->switchToInputWages();
+    // Input saving to controller and validation calls here in ifs
+    this->controller->switchToInputInvest();
 }
 
-// Function to change view to the dashboard page
-// Also save input to the controller (not post)
+// Function to switch view back to the dashboard and save current
+// progress in controller
 void predictionInputInvest::Exit()
 {
-    // Include code tos ave input to the controller's models
+    // Add code to tell controller to update it's AssetModel
     this->controller->switchToDashBoard();
 }
+
