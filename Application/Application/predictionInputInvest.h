@@ -20,11 +20,16 @@ public:
 private:
     Ui::predictionInputInvest *ui;
     Controller * controller;
+    void getStockData();
+    unsigned int counter = 2;
 
 private slots:
     void getAssetView();
-    void getInvestView();
+    void getWagesView();
     void Exit();
+
+    void addStock();
+    void removeStock();
 };
 
 #endif // PREDICTIONINPUTINVEST_H

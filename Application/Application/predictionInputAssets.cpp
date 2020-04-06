@@ -10,7 +10,7 @@ predictionInputAssets::predictionInputAssets(QWidget *parent, Controller * contr
     this->controller = controller;
 
     connect(ui->Submit, SIGNAL(released()), this, SLOT(submitInputs()));
-    connect(ui->Back, SIGNAL(released()), this, SLOT(getWagesView()));
+    connect(ui->Back, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 }
 
@@ -28,10 +28,10 @@ void predictionInputAssets::submitInputs()
 
 // Function to change view to the previous page, the Wages View
 // Also save input to the controller
-void predictionInputAssets::getWagesView()
+void predictionInputAssets::getInvestView()
 {
     // Include code to save input to the controller's models
-    this->controller->switchToInputWages();
+    this->controller->switchToInputInvest();
 }
 
 // Function to change view to the dashboard page

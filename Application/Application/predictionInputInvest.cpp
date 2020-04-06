@@ -9,8 +9,11 @@ predictionInputInvest::predictionInputInvest(QWidget *parent, Controller * contr
     this->controller = controller;
 
     connect(ui->Next, SIGNAL(released()), this, SLOT(getAssetView()));
-    connect(ui->Back, SIGNAL(released()), this, SLOT(getInvestView()));
+    connect(ui->Back, SIGNAL(released()), this, SLOT(getWagesView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
+
+    connect(ui->Add, SIGNAL(released()), this, SLOT(addStock()));
+    connect(ui->Remove, SIGNAL(released()), this, SLOT(removeStock()));
 }
 
 predictionInputInvest::~predictionInputInvest()
@@ -21,15 +24,16 @@ predictionInputInvest::~predictionInputInvest()
 // Function to change view to the asset input page
 void predictionInputInvest::getAssetView()
 {
+    this->getStockData();
     // Include code to save the input to the controller
     this->controller->switchToInputAsset();
 }
 
 // Function to change view to the invest input page
-void predictionInputInvest::getInvestView()
+void predictionInputInvest::getWagesView()
 {
     // Input saving to controller and validation calls here in ifs
-    this->controller->switchToInputInvest();
+    this->controller->switchToInputWages();
 }
 
 // Function to switch view back to the dashboard and save current
@@ -38,5 +42,86 @@ void predictionInputInvest::Exit()
 {
     // Add code to tell controller to update it's AssetModel
     this->controller->switchToDashBoard();
+}
+
+/* Function used to get all the stock information
+ *
+ */
+void predictionInputInvest::getStockData()
+{
+    std::cout<<"Start"<<std::endl;
+    std::unordered_map<std::string, int> StockData;
+    QObjectList Stocks = ui->Stocks->children();
+    for (QObjectList::const_iterator i = Stocks.begin(); i != Stocks.end(); i++)
+    {
+        QList<QLineEdit*> fields = ((QWidget*)*i)->findChildren<QLineEdit*>(QRegularExpression("StockData"));
+        StockData.insert(std::pair<std::string, int>(fields[0]->text().toStdString(), fields[1]->text().toInt()));
+    }
+    for (std::unordered_map<std::string, int>::iterator i = StockData.begin(); i != StockData.end(); i++)
+    {
+        std::cout<<i->first<<" "<<i->second<<std::endl;
+    }
+    std::cout<<"Done"<<std::endl;
+}
+
+
+// Function modifies the ui to add a new stock field
+/* @modifies this->ui
+ * @effect this->ui->Stocks has a new stock field
+ */
+void predictionInputInvest::addStock()
+{
+    // Constructs a stock field
+    QWidget * Stock = new QWidget();
+    QHBoxLayout * StockLayout = new QHBoxLayout;
+    StockLayout->addWidget(new QLabel("Stock")); // Throw label on the left
+
+    QVBoxLayout * Contents = new QVBoxLayout; // Contents of the stock
+    StockLayout->addLayout(Contents);
+    QHBoxLayout * row1 = new QHBoxLayout, *row2 = new QHBoxLayout;
+    QLineEdit * StockName = new QLineEdit, * Shares = new QLineEdit;
+    StockName->setObjectName(QString("StockData") + QString::number(counter++));
+    Shares->setObjectName(QString("StockData") + QString::number(counter++));
+    row1->addWidget(new QLabel("Stock Name"));
+    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row1->addWidget(StockName);
+    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row2->addWidget(new QLabel("Shares"));
+    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row2->addWidget(Shares);
+    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Contents->addLayout(row1);
+    Contents->addLayout(row2);
+
+    QHBoxLayout * Buttons = new QHBoxLayout;  // Contains all the buttons
+    QPushButton * Add = new QPushButton("Add Stock"), * Remove = new QPushButton("Remove Stock");
+    Buttons->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Buttons->addWidget(Add);
+    Buttons->addWidget(Remove);
+    Contents->addLayout(Buttons);
+
+    // Adds the stock field
+    Stock->setLayout(StockLayout);
+    this->ui->Stocks->addWidget(Stock);
+
+    // Binds the event trigger
+    connect(Add, SIGNAL(released()), this, SLOT(addStock()));
+    connect(Remove, SIGNAL(released()), this, SLOT(removeStock()));
+}
+
+// Function modifies the ui to remove a stock field
+/* @modifies this->ui
+ * @effect this->ui->Stocks has one less stock field
+ *         but has at least one
+ */
+void predictionInputInvest::removeStock()
+{
+    if (this->ui->Stocks->count() > 1)
+    {
+        QPushButton * removeButton = (QPushButton*)sender();
+        QWidget * target = removeButton->parentWidget();
+        this->ui->Stocks->removeWidget(target);
+        delete target;
+    }
 }
 
