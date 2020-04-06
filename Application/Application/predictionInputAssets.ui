@@ -200,14 +200,14 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="AddResidence">
          <property name="text">
           <string>Add Residence</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="RemoveResidence">
          <property name="text">
           <string>Remove Residence</string>
          </property>
@@ -363,14 +363,14 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_6">
+        <widget class="QPushButton" name="AddRental">
          <property name="text">
           <string>Add Rental</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_5">
+        <widget class="QPushButton" name="RemoveRental">
          <property name="text">
           <string>Remove Rental</string>
          </property>
@@ -396,58 +396,12 @@
        <item>
         <widget class="QLabel" name="label_8">
          <property name="text">
-          <string>Precious Metal 0</string>
+          <string>Precious Metals</string>
          </property>
         </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_12">
-           <item>
-            <widget class="QLabel" name="label_9">
-             <property name="minimumSize">
-              <size>
-               <width>84</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Type</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_16">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_5"/>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_18">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_13">
            <item>
@@ -512,20 +466,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_8">
-         <property name="text">
-          <string>Add Metal</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_7">
-         <property name="text">
-          <string>Remove Metal</string>
-         </property>
-        </widget>
        </item>
        <item>
         <spacer name="horizontalSpacer_15">

@@ -22,6 +22,10 @@ private:
     Controller * controller;
 
 private slots:
+    void addResidence();
+    void addRental();
+    void removeResidence();
+    void removeRental();
     void submitInputs();
     void getInvestView();
     void Exit();
