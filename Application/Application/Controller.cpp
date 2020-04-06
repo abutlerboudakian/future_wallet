@@ -6,6 +6,12 @@ Controller::Controller()
   BarCreator = new BarGUI;
   LineCreator = new LineGUI;
 
+  metrics = new std::vector<double>;
+  metrics->push_back(0);
+  metrics->push_back(0);
+  metrics->push_back(0);
+  metrics->push_back(0);
+
   budget = new BudgetData;
   budget->addCategory(QString("Alcohol"), 0.05);
   budget->addCategory(QString("Oranges"), 0.55);
@@ -22,6 +28,7 @@ Controller::~Controller()
   delete BarCreator;
   delete LineCreator;
   delete budget;
+  delete metrics;
 }
 
 /* Sets the views for the controller
@@ -40,12 +47,26 @@ void Controller::setViews(QStackedWidget * Views)
 // ------------------------------------
 
 /* Function returns the BudgetData in the controller
- * @returnes this->budget
+ * @returns this->budget
  */
 const BudgetData * Controller::getBudgetData() const
 {
     return this->budget;
 }
+
+
+/* Function returns the std::vector<double> metrics in the controller
+ * @returns this->metrics
+ */
+const std::vector<double> * Controller::getMetricsData() const
+{
+    return this->metrics;
+}
+
+//-------------------------------------
+// Endpoints                          |
+//-------------------------------------
+
 
 // ------------------------------------
 // View Switching                     |
@@ -127,7 +148,7 @@ void Controller::switchToInputInvest()
  * @param data is a hashmap of std::string->double for DataName->PercentDecimal
  * @returns a chartview of the pie chart, representing the given data
  */
-QChartView *Controller::getPieChart(ChartMap * data)
+QChartView *Controller::getPieChart(const ChartMap * data)
 {
   PieCreator->make(data);
   return PieCreator->getView();
@@ -138,7 +159,7 @@ QChartView *Controller::getPieChart(ChartMap * data)
  * @param data is a hashmap of std::string->double for BarName->Value
  * @returns a chartview of the pie chart, representing the given data
  */
-QChartView * Controller::getBarGraph(ChartMap * data)
+QChartView * Controller::getBarGraph(const ChartMap * data)
 {
   BarCreator->make(data);
   return BarCreator->getView();
@@ -151,7 +172,7 @@ QChartView * Controller::getBarGraph(ChartMap * data)
  * @param data is an unordered map, representing the lines we need to graph
  * @returns a chartview of the line graph, representing the given data
  */
-QChartView * Controller::getLineGraph(LineMap * data)
+QChartView * Controller::getLineGraph(const LineMap * data)
 {
   LineCreator->make(data);
   return LineCreator->getView();

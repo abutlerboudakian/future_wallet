@@ -42,10 +42,10 @@ class BaseModel(ABC):
 			self.dsb.initQuery()
 			while True:
 				data = self.dsb.getData(batchsize)
-				if not data:
+				if data['X'].empty or data['Y'].empty:
 					break
-				x_train, x_test, y_train, y_test = train_test_split(self.data['X'], self.data['Y'], test_size=0.1)
-				self.model.fit(x_train, y_train, validation_data=(x_test, y_test), batchsize=batchsize, epochs=e+1, initial_epoch=e)
+				x_train, x_test, y_train, y_test = train_test_split(data['X'], data['Y'], test_size=0.1)
+				self.model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=batchsize, epochs=e+1, initial_epoch=e)
 
 	def save(self, path):
 		pass
@@ -103,12 +103,12 @@ class InvestmentModel(BaseModel):
 			self.tbModel = TBModel()
 
 	def train(self, epochs, batchsize):
-		savingsModel.train(epochs, batchsize)
-		cdModel.train(epochs, batchsize)
-		for s in stockModels:
+		self.savingsModel.train(epochs, batchsize)
+		self.cdModel.train(epochs, batchsize)
+		for s in self.stockModels:
 			s.train(epochs, batchsize)
-		bondModel.train(epochs, batchsize)
-		tbModel.train(epochs, batchsize)
+		self.bondModel.train(epochs, batchsize)
+		self.tbModel.train(epochs, batchsize)
 
 	def save(self, path):
 		self.savingsModel.save(path)
@@ -133,10 +133,10 @@ class InvestmentModel(BaseModel):
 		timestamp = datetime.now().timestamp()
 		predTimestamp = (datetime.now() + timedelta(years=years)).timestamp()
 		for ticker, stock, shares in stocks:
-			predStock = stockModels[ticker].predict(timestamp, predTimestamp, stock)
+			predStock = self.stockModels[ticker].predict(timestamp, predTimestamp, stock)
 			stockRet += ((predStock - stock)*shares)
 		stockRet /= years
-		return stockRet + savingsModel.predict(timestamp, predTimestamp, savings) + cdModel.predict(timestamp, predTimestamp, cd) + bondModel.predict(timestamp, predTimestamp, bonds) + tbModel.predict(timestamp, predTimestamp, tbs)
+		return stockRet + self.savingsModel.predict(timestamp, predTimestamp, savings) + self.cdModel.predict(timestamp, predTimestamp, cd) + self.bondModel.predict(timestamp, predTimestamp, bonds) + self.tbModel.predict(timestamp, predTimestamp, tbs)
 		
 
 class AssetModel(BaseModel):
@@ -151,9 +151,9 @@ class AssetModel(BaseModel):
 			self.rmModel = RMModel()
 
 	def train(self, epochs, batchsize):
-		residenceModel.train(epochs, batchsize)
-		rentModel.train(epochs, batchsize)
-		rmModel.train(epochs, batchsize)
+		self.residenceModel.train(epochs, batchsize)
+		self.rentModel.train(epochs, batchsize)
+		self.rmModel.train(epochs, batchsize)
 
 	def save(self, path):
 		self.residenceModel.save(path)
@@ -171,14 +171,16 @@ class AssetModel(BaseModel):
 		timestamp = datetime.now().timestamp()
 		predTimestamp = (datetime.now() + timedelta(years=years)).timestamp()
 		for (res, lat, lon) in residences:
-			predRes = residenceModel.predict(timestamp, predTimestamp, res, lat, lon)
+			predRes = self.residenceModel.predict(timestamp, predTimestamp, res, lat, lon)
 			resRet += (predRes - res)/years
 		for (rent, lat, lon) in rents:
-			predRent = rentModel.predict(timestamp, predTimestamp, rent, lat, lon)
+			predRent = self.rentModel.predict(timestamp, predTimestamp, rent, lat, lon)
 			rentRet += predRent*12
-		return resRet + rentRet + rmModel.predict(timestamp, predTimestamp, rm)
+		return resRet + rentRet + self.rmModel.predict(timestamp, predTimestamp, rm)
 
 class SavingsModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
 
 	def save(self, path):
 		self.model.save(path + 'savingsmodel')
@@ -190,6 +192,9 @@ class SavingsModel(BaseModel):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class CDModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
+
 	def save(self, path):
 		self.model.save(path + 'cdmodel')
 
@@ -200,6 +205,8 @@ class CDModel(BaseModel):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class StockModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
 
 	def save(self, path, ticker):
 		self.model.save(path + 'stockmodel' + ticker)
@@ -211,6 +218,8 @@ class StockModel(BaseModel):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class BondModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
 
 	def save(self, path):
 		self.model.save(path + 'bondmodel')
@@ -222,6 +231,8 @@ class BondModel(BaseModel):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class TBModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
 
 	def save(self, path):
 		self.model.save(path + 'tbmodel')
@@ -233,6 +244,8 @@ class TBModel(BaseModel):
 		return self.model.predict([timestamp, predTimestamp, value])
 
 class ResidenceModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
 
 	def save(self, path):
 		self.model.save(path + 'resmodel')
@@ -244,6 +257,8 @@ class ResidenceModel(BaseModel):
 		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
 
 class RentModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
 
 	def save(self, path):
 		self.model.save(path + 'rentmodel')
@@ -255,6 +270,8 @@ class RentModel(BaseModel):
 		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
 
 class RMModel(BaseModel):
+	def __init__(self, dsb=None):
+		super().__init__(dsb)
 
 	def save(self, path):
 		self.model.save(path + 'rmmodel')

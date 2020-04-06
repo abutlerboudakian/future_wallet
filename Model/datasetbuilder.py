@@ -182,6 +182,8 @@ class DatasetBuilder:
 		else:
 			data = self.resultset.fetchmany(self.batchsize)
 		df = pd.DataFrame(data, columns=self.resultset.keys())
+		df['Timestamp'] = df['Timestamp'].astype('int64') / 10**9
+		df['PredTimestamp'] = df['PredTimestamp'].astype('int64') / 10**9
 		ret = {}
 		if self.mType == modelpack.ModelType.WAGES:
 			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Income', 'Lat', 'Long']]

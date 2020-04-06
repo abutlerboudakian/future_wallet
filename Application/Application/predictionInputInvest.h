@@ -2,6 +2,8 @@
 #define PREDICTIONINPUTINVEST_H
 
 #include <QWidget>
+#include <QValidator>
+#include <QDoubleValidator>
 class Controller;
 #include "Controller.h"
 
@@ -20,8 +22,16 @@ public:
 private:
     Ui::predictionInputInvest *ui;
     Controller * controller;
+
     void getStockData();
     unsigned int counter = 2;
+
+    QDoubleValidator * validDouble;
+    QIntValidator * validInt;
+
+private:
+    void setupValidator();
+
 
 private slots:
     void getAssetView();

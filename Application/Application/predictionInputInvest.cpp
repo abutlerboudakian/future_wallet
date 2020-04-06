@@ -12,13 +12,29 @@ predictionInputInvest::predictionInputInvest(QWidget *parent, Controller * contr
     connect(ui->Back, SIGNAL(released()), this, SLOT(getWagesView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
+
     connect(ui->Add, SIGNAL(released()), this, SLOT(addStock()));
     connect(ui->Remove, SIGNAL(released()), this, SLOT(removeStock()));
+
+    setupValidator();
+
 }
 
 predictionInputInvest::~predictionInputInvest()
 {
     delete ui;
+}
+
+// Function to setup validators for all inputs
+void predictionInputInvest::setupValidator()
+{
+    validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
+    validInt = new QIntValidator(10000, 99999, this);
+    ui->lineEdit->setValidator(validInt);
+    ui->lineEdit_2->setValidator(validDouble);
+    ui->lineEdit_3->setValidator(validDouble);
+    ui->lineEdit_4->setValidator(validInt);
+    ui->lineEdit_6->setValidator(validDouble);
 }
 
 // Function to change view to the asset input page

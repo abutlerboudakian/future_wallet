@@ -31,13 +31,13 @@ if __name__ == "__main__":
 	print('Asset models saved...')
 
 	for w in wages:
-		w.train(50, 100000)
+		w.train(20, 1000000)
 		wages.save('F:/ServerData/FutureWallet/models/')
 	
 	print('Wage models saved...')
 
-	investments.train(50, 100000)
-	assets.train(50, 100000)
+	investments.train(20, 1000000)
+	assets.train(20, 1000000)
 
 	investments.save('F:/ServerData/FutureWallet/models/')
 	print('Investment models saved...')

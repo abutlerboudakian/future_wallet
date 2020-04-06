@@ -2,6 +2,7 @@
 #define PREDICTIONINPUTASSETS_H
 
 #include <QWidget>
+#include <QDoubleValidator>
 class Controller; // Forward declaration to resolve circular dependency
 #include "Controller.h"
 
@@ -20,10 +21,17 @@ public:
 private:
     Ui::predictionInputAssets *ui;
     Controller * controller;
+
     void getResidenceData();
     void getRentalData();
     unsigned int resCounter = 2;
     unsigned int rentCounter = 2;
+
+    QDoubleValidator * validDouble;
+
+private:
+    void setupValidator();
+
 
 private slots:
     void addResidence();

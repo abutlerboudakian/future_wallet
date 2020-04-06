@@ -26,6 +26,8 @@ public:
 private:
     Ui::DashBoard *ui;
     Controller * controller;
+    ChartMap * metrics;
+    //LineMap * metricsLine;
 
 private slots:
    void getInputView();
