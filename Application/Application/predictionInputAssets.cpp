@@ -12,11 +12,24 @@ predictionInputAssets::predictionInputAssets(QWidget *parent, Controller * contr
     connect(ui->Submit, SIGNAL(released()), this, SLOT(submitInputs()));
     connect(ui->Back, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
+
+    setupValidator();
 }
 
 predictionInputAssets::~predictionInputAssets()
 {
     delete ui;
+}
+
+void predictionInputAssets::setupValidator()
+{
+    validDouble = new QDoubleValidator(0.00, 1000000.00, 2);
+    ui->lineEdit->setValidator(validDouble);
+    ui->lineEdit_2->setValidator(validDouble);
+    ui->lineEdit_3->setValidator(validDouble);
+    ui->lineEdit_4->setValidator(validDouble);
+    ui->lineEdit_5->setValidator(validDouble);
+    ui->lineEdit_6->setValidator(validDouble);
 }
 
 // Function to submit all the inputs gathered and return to dashboard
