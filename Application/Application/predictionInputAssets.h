@@ -20,6 +20,10 @@ public:
 private:
     Ui::predictionInputAssets *ui;
     Controller * controller;
+    void getResidenceData();
+    void getRentalData();
+    unsigned int resCounter = 2;
+    unsigned int rentCounter = 2;
 
 private slots:
     void addResidence();
