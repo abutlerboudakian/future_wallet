@@ -2,6 +2,8 @@
 #define PREDICTIONINPUTWAGES_H
 
 #include <QWidget>
+#include <QValidator>
+#include <QDoubleValidator>
 class Controller;
 #include "Controller.h"
 
@@ -20,6 +22,11 @@ public:
 private:
     Ui::predictionInputWages *ui;
     Controller * controller;
+    QDoubleValidator * validDouble;
+    QIntValidator * validInt;
+
+private:
+    void setupValidator();
 
 private slots:
     void getInvestView();
