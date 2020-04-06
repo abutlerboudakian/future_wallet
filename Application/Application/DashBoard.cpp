@@ -7,8 +7,11 @@ DashBoard::DashBoard(QWidget *parent, Controller * controller) :
 {
     ui->setupUi(this);
     this->controller = controller;
-    // Set up event triggers:
 
+    metrics = nullptr;
+    //metricsLine = nullptr;
+
+    // Set up event triggers:
     connect(ui->Predict, SIGNAL(released()), this, SLOT(getInputView()));
     connect(ui->Budget, SIGNAL(released()), this, SLOT(getBudgetView()));
     connect(ui->metricsPie, SIGNAL(released()), this, SLOT(getMetricsPieView()));
@@ -22,6 +25,7 @@ DashBoard::DashBoard(QWidget *parent, Controller * controller) :
 DashBoard::~DashBoard()
 {
     delete ui;
+    delete metrics;
 }
 
 /* Function used to update the budget in display
@@ -34,34 +38,39 @@ void DashBoard::updateBudget()
 }
 
 /* Function used to update the metric in display
- * @modifies this->ui->metrics
+ * @modifies this->ui->metrics, this->metrics
  * @effects this->ui->metrics now contains the recent metric information
+ *          this->metrics contains the Controller's metrics
  */
 void DashBoard::updateMetrics()
 {
     // Ask controller for metric data (basically a preformated string)
-
-/*    delete ui->metrics->takeWidget();
-
-    QTreeWidget * mWidget = new QTreeWidget; // Might need to specify parent
-    mWidget->setColumnCount(2);
-
-    // Wages root
-    QTreeWidgetItem * root = new QTreeWidgetItem(mWidget), * tmpItem;
-    root->setText(0, "Wages");
-    root->setText(1, INSERTTOTALWAGES);
-    mWidget->addTopLevelItem(root);
-    // Input each wage component and value
-    for each component
+    const std::vector<double> * data = controller->getMetricsData();
+    std::vector<double>::const_iterator i = data->begin();
+    if (metrics == nullptr)
     {
-        tmpItem = new QTreeWidgetItem(root);
-        tmpItem->setText(0, COMPONENT NAME);
-        tmpItem->setText(1, COMPONENT VALUE);
-        root->addChild(tmpItem);
+        metrics = new ChartMap;
+        metrics->insert(std::pair<std::string, double>("Wages", *(i++)));
+        metrics->insert(std::pair<std::string, double>("Assets", *(i++)));
+        metrics->insert(std::pair<std::string, double>("Investment", *(i++)));
     }
+    else
+    {
+        (*metrics)["Wages"] = *(i++);
+        (*metrics)["Assets"] = *(i++);
+        (*metrics)["Investment"] = *(i++);
+    };
 
+    i = data->begin();
+    double sum = 0;
+    while (i != data->end()) {sum += *(i++);}
+    i = data->begin();
+    std::string years = QString::number((*(data->end() - 1)), 'g', 2).toStdString();
 
-    ui->metrics->setWidget(mWidget);*/
+    ui->metrics->setText(QString::fromStdString("Your income will grow/shrink by " + QString::number(sum, 'g', 2).toStdString() + " dollars in " + years
+                                                + "\n\nYour wages will grow/shrink by " + QString::number(*(i++), 'g', 2).toStdString() + " dollars in " + years
+                                                + "\nYour assets will grow/shrink by " + QString::number(*(i++), 'g', 2).toStdString() + " dollars in " + years
+                                                + "\nYour investments will grow/shrink by " + QString::number(*(i++), 'g', 2).toStdString() + " dollars in " + years));
 }
 
 
@@ -70,7 +79,7 @@ void DashBoard::updateMetrics()
 // Function to switch to the input view when "Predict" button is pressed
 void DashBoard::getInputView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
+  this->controller->switchToInputWages();
   return;
 }
 
@@ -85,32 +94,37 @@ void DashBoard::getBudgetView()
 // Function to show the metric as a pie chart
 void DashBoard::getMetricsPieView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
+  this->updateMetrics();
+  controller->getPieChart(metrics)->show();
   return;
 }
 
 // Function to show the metric as a vertical bar graph
 void DashBoard::getMetricsBarView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
-  return;
+    this->updateMetrics();
+    controller->getBarGraph(metrics)->show();
+    return;
 }
 
 // Function to show the metric as a line graph
 void DashBoard::getMetricsLineView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
-  return;
+    //this->updateMetrics();
+    //controller->getLineGraph(metricsLine)->show();
+    return;
 }
 
 // Function to show the loaded budget as a pie chart
 void DashBoard::getBudgetPieView()
 {
-
+    const ChartMap * data = controller->getBudgetData()->getBudgetChartMap();
+    controller->getPieChart(data)->show();
 }
 
 // Function to show the loaded budget as a bar graph
 void DashBoard::getBudgetBarView()
 {
-
+    const ChartMap * data = controller->getBudgetData()->getBudgetChartMap();
+    controller->getBarGraph(data)->show();
 }

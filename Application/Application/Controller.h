@@ -8,11 +8,17 @@
 #include "DashBoard.h"
 #include "LaunchMenu.h"
 #include "BudgetPage.h"
+#include "predictionInputAssets.h"
+#include "predictionInputWages.h"
+#include "predictionInputInvest.h"
 
 enum Views
 {
     Login = 0,
     Dashboard = 1,
+    WagePredict = 2,
+    InvestPredict = 3,
+    AssetPredict = 4
 };
 
 class Controller
@@ -27,15 +33,18 @@ class Controller
     void switchToDashBoard();
     void switchToLogin();
     void switchToBudgetPage();
+    void switchToInputWages();
+    void switchToInputInvest();
+    void switchToInputAsset();
 
     void closeBudgetPage();
 
     // Charts
-    QChartView * getPieChart(ChartMap * data);
-    QChartView * getBarGraph(ChartMap * data);
-    QChartView * getLineGraph(LineMap * data);
+    QChartView * getPieChart(const ChartMap * data);
+    QChartView * getBarGraph(const ChartMap * data);
+    QChartView * getLineGraph(const LineMap * data);
 
-    // getMetricData();
+    const std::vector<double> * getMetricsData() const;
     const BudgetData * getBudgetData() const;
 
   private:
@@ -49,6 +58,7 @@ class Controller
     // ModelData
     BudgetData * budget;
     // metrics;
+    std::vector<double> * metrics; // [wages growth, investment growth, asset growth, years]
 
     // BudgetModal Boolean
     bool BudgetModal = false;

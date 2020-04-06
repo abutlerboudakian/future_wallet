@@ -71,6 +71,9 @@ void MainApplication::CreateViews(Controller * maincontroller)
     Views = new QStackedWidget(this);
     Views->addWidget(new LaunchMenu(this, maincontroller));
     Views->addWidget(new DashBoard(this, maincontroller));
+    Views->addWidget(new predictionInputWages(this, maincontroller));
+    Views->addWidget(new predictionInputInvest(this, maincontroller));
+    Views->addWidget(new predictionInputAssets(this, maincontroller));
     setCentralWidget(Views);
     Views->show();
 }
