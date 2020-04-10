@@ -42,14 +42,24 @@ class BaseModel(ABC):
 		self.data = data
 
 	def train(self, epochs, batchsize):
+		small = False
+		self.dsb.initQuery()
+		data = self.dsb.getData(batchsize)
+		if len(data['X'].index) < batchsize:
+			small = True
 		for e in range(epochs):
-			self.dsb.initQuery()
-			while True:
+			if not small:
+				self.dsb.initQuery()
 				data = self.dsb.getData(batchsize)
+			while True:		
 				if data['X'].empty or data['Y'].empty:
 					break
 				x_train, x_test, y_train, y_test = train_test_split(data['X'], data['Y'], test_size=0.1)
 				self.model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=batchsize, epochs=e+1, initial_epoch=e)
+				if not small:
+					data = self.dsb.getData(batchsize)
+				else:
+					break
 
 	def save(self, path):
 		pass
