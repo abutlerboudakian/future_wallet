@@ -14,6 +14,8 @@ class ModelFactory:
 				else:
 					return WageModel()
 			else:
+				if 'industryCode' in kwargs:
+					return WageModel(industryCode=kwargs['industryCode'])
 				return WageModel()
 		elif mType == ModelType.INVESTS:
 			if 'train' in kwargs:

@@ -30,9 +30,13 @@ class BaseModel(ABC):
 			data = self.dsb.getData(1)
 			self.model = keras.Sequential([
 					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
-					keras.layers.Dense(len(data['X'].columns)+1, activation='relu'),
+					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
+					keras.layers.LeakyReLU(),
 					keras.layers.Dense(1)
 				])
+			self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
 
 	def setData(self, data):
 		self.data = data
@@ -64,7 +68,10 @@ class WageModel(BaseModel):
 			data = self.dsb.getData(1)
 			self.model = keras.Sequential([
 					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
-					keras.layers.Dense(len(data['X'].columns)+1, activation='relu'),
+					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
+					keras.layers.LeakyReLU(),
 					keras.layers.Dense(1)
 				])
 			self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
@@ -78,9 +85,10 @@ class WageModel(BaseModel):
 		self.model = keras.models.load_model(path + 'wagemodel' + industryCode)
 
 	def predict(self, income, lat, lon, years):
-		timestamp = datetime.now.timestamp()
-		predTimestamp = (datetime.now + timedelta(years=years)).timestamp()
-		return self.model.predict([timestamp, predTimestamp, income, lat, lon])
+		timestamp = datetime.now().timestamp()
+		today = datetime.now()
+		predTimestamp = (today.replace(year=today.year + years)).timestamp()
+		return self.model.predict(np.asarray([[timestamp, predTimestamp, income, lat, lon]]))
 
 
 class InvestmentModel(BaseModel):

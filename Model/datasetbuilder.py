@@ -18,10 +18,10 @@ class DatasetBuilder:
 				self.query = """SELECT
 									c1.Timestamp AS Timestamp,
 									c2.Timestamp AS PredTimestamp,
-									c1.AnnualPayroll AS Income,
-									FIPS.Lat AS Lat,
-									FIPS.Long AS Long,
-									c2.AnnualPayroll AS PredIncome
+									c1.AnnualPayroll*1000/c1.NumEmployees AS Income,
+									FIPS.Lat/90 AS Lat,
+									FIPS.Long/180 AS Long,
+									c2.AnnualPayroll*1000/c2.NumEmployees AS PredIncome
 								FROM
 									CBPIncome c1,
 									CBPIncome c2,
@@ -33,7 +33,13 @@ class DatasetBuilder:
 									c1.IndustryCode = '""" + kwargs['industryCode'] + """' AND
 									c1.StateCode = FIPS.StateCode AND
 									c1.CountyCode = FIPS.StateCode AND
-									c2.Timestamp > c1.Timestamp
+									c2.Timestamp > c1.Timestamp AND
+									c1.AnnualPayroll IS NOT NULL AND
+									c2.AnnualPayroll IS NOT NULL AND
+									c1.NumEmployees IS NOT NULL AND
+									c2.NumEmployees IS NOT NULL AND
+									c1.NumEmployees != 0 AND
+									c2.NumEmployees != 0
 									;"""
 				
 
@@ -47,7 +53,9 @@ class DatasetBuilder:
 								NJSAs s1,
 								NJSAs s2
 							WHERE
-								s1.Timestamp < s2.Timestamp
+								s1.Timestamp < s2.Timestamp AND
+								s1.NationalRate IS NOT NULL AND
+								s2.NationalRate IS NOT NULL
 							UNION ALL
 							SELECT
 								s1.Timestamp AS Timestamp,
@@ -58,7 +66,9 @@ class DatasetBuilder:
 								JSAs s1,
 								JSAs s2
 							WHERE
-								s1.Timestamp < s2.Timestamp
+								s1.Timestamp < s2.Timestamp AND
+								s1.NationalRate IS NOT NULL AND
+								s2.NationalRate IS NOT NULL
 							;"""
 
 		elif mType == modelpack.ModelType.CDS:
@@ -71,7 +81,9 @@ class DatasetBuilder:
 							CDs c1,
 							CDs c2
 						WHERE
-							c1.Timestamp < c2.Timestamp
+							c1.Timestamp < c2.Timestamp AND
+							c1.Rate IS NOT NULL AND
+							c2.Rate IS NOT NULL
 						;"""
 
 		elif mType == modelpack.ModelType.STOCKS:
@@ -88,7 +100,9 @@ class DatasetBuilder:
 							WHERE
 								s1.Ticker = '""" + t + """' AND
 								s1.Ticker = s2.Ticker AND
-								s1.Timestamp < s2.Timestamp
+								s1.Timestamp < s2.Timestamp AND
+								s1.[Close] IS NOT NULL AND
+								s2.[Close] IS NOT NULL
 							;"""
 
 		elif mType == modelpack.ModelType.BONDS:
@@ -101,7 +115,9 @@ class DatasetBuilder:
 							Bonds b1,
 							Bonds b2
 						WHERE
-							b1.Timestamp > b2.Timestamp
+							b1.Timestamp > b2.Timestamp AND
+							b1.Rate IS NOT NULL AND
+							b2.Rate IS NOT NULL
 						;"""
 
 
@@ -115,7 +131,9 @@ class DatasetBuilder:
 							TBonds b1,
 							TBonds b2
 						WHERE
-							b1.Timestamp > b2.Timestamp
+							b1.Timestamp > b2.Timestamp AND
+							b1.PrimeRate IS NOT NULL AND
+							b2.PrimeRate IS NOT NULL
 						;"""
 
 
@@ -124,8 +142,8 @@ class DatasetBuilder:
 							h1.Timestamp AS Timestamp,
 							h2.Timestamp AS PredTimestamp,
 							h1.[Index] AS Price,
-							FIPS.Lat AS Lat,
-							FIPS.Long AS Long,
+							FIPS.Lat/90 AS Lat,
+							FIPS.Long/180 AS Long,
 							h2.[Index] AS PredPrice
 						FROM
 							HI h1,
@@ -134,7 +152,9 @@ class DatasetBuilder:
 						WHERE
 							h1.ZIP = h2.ZIP AND
 							h1.ZIP = FIPS.ZIP AND
-							h1.Timestamp < h2.Timestamp
+							h1.Timestamp < h2.Timestamp AND
+							h1.[Index] IS NOT NULL AND
+							h2.[Index] IS NOT NULL
 						;"""
 
 
@@ -143,17 +163,19 @@ class DatasetBuilder:
 							r1.Timestamp AS Timestamp,
 							r2.Timestamp AS PredTimestamp,
 							r1.Rent AS Rent,
-							FIPS.Lat AS Lat,
-							FIPS.Long AS Long,
+							FIPS.Lat/90 AS Lat,
+							FIPS.Long/180 AS Long,
 							r2.Rent AS PredRent
 						FROM
 							ZillowRent r1,
 							ZillowRent r2,
 							FIPS
 						WHERE
-							r1.ZIPCode = r1.ZIPCode AND
+							r1.ZIPCode = r2.ZIPCode AND
 							r1.ZIPCode = FIPS.ZIP AND
-							r1.Timestamp < r2.Timestamp
+							r1.Timestamp < r2.Timestamp AND
+							r1.Rent IS NOT NULL AND
+							r2.Rent IS NOT NULL
 						;"""
 
 		elif mType == modelpack.ModelType.RMS:
@@ -166,7 +188,9 @@ class DatasetBuilder:
 							RMI r1,
 							RMI r2
 						WHERE
-							r1.Timestamp < r2.Timestamp
+							r1.Timestamp < r2.Timestamp AND
+							r1.Price IS NOT NULL AND
+							r2.Price IS NOT NULL
 						;"""
 		else:
 			raise 'Invalid model type specified. ' + mType

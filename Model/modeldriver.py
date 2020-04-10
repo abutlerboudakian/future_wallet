@@ -11,13 +11,13 @@ if __name__ == "__main__":
 
 	wages = []
 	industryCodes = None
-	tickers = None
+	# tickers = None
 	with engine.connect() as conn:
-		industryCodes = pd.read_sql("SELECT DISTINCT IndustryCode FROM CBPIncome WHERE IndustryCode LIKE '%///'", con=conn)
-		tickers = pd.read_sql("WITH Tickers AS (SELECT DISTINCT Ticker FROM Stocks) SELECT TOP 5 PERCENT Ticker FROM Tickers ORDER BY newid();", con=conn)
+		industryCodes = pd.read_sql("SELECT DISTINCT TOP(1) IndustryCode FROM CBPIncome WHERE IndustryCode LIKE '%///'", con=conn)
+		# tickers = pd.read_sql("WITH Tickers AS (SELECT DISTINCT Ticker FROM Stocks) SELECT TOP 5 PERCENT Ticker FROM Tickers ORDER BY newid();", con=conn)
 
 	industryCodes = industryCodes['IndustryCode'].tolist()
-	tickers = tickers['Ticker'].tolist()
+	# tickers = tickers['Ticker'].tolist()
 	print('Industry Codes and Tickers loaded...')
 
 
@@ -25,21 +25,21 @@ if __name__ == "__main__":
 		print('Wage model ' + i + ' loaded')
 		wages.append(mfac.createModel(ModelType.WAGES, train=True, industryCode=i))
 	print('Wages models created...')
-	investments = mfac.createModel(ModelType.INVESTS, train=True, tickers=tickers)
-	print('Investment models created...')
-	assets = mfac.createModel(ModelType.ASSETS, train=True)
-	print('Asset models saved...')
+	# investments = mfac.createModel(ModelType.INVESTS, train=True)
+	# print('Investment models created...')
+	# assets = mfac.createModel(ModelType.ASSETS, train=True)
+	# print('Asset models saved...')
 
 	for w in wages:
-		w.train(20, 1000000)
-		wages.save('F:/ServerData/FutureWallet/models/')
+		w.train(75, 1000000)
+		w.save('F:/ServerData/FutureWallet/models/')
 	
-	print('Wage models saved...')
+	# print('Wage models saved...')
 
-	investments.train(20, 1000000)
-	assets.train(20, 1000000)
+	# investments.train(20, 1000000)
+	# assets.train(20, 1000000)
 
-	investments.save('F:/ServerData/FutureWallet/models/')
-	print('Investment models saved...')
-	assets.save('F:/ServerData/FutureWallet/models/')
-	print('Asset models saved...')
+	# investments.save('F:/ServerData/FutureWallet/models/')
+	# print('Investment models saved...')
+	# assets.save('F:/ServerData/FutureWallet/models/')
+	# print('Asset models saved...')
