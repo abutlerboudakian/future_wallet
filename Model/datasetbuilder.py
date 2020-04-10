@@ -36,6 +36,8 @@ class DatasetBuilder:
 									c2.Timestamp > c1.Timestamp AND
 									c1.AnnualPayroll IS NOT NULL AND
 									c2.AnnualPayroll IS NOT NULL AND
+									c1.AnnualPayroll != 0 AND
+									c2.AnnualPayroll != 0 AND
 									c1.NumEmployees IS NOT NULL AND
 									c2.NumEmployees IS NOT NULL AND
 									c1.NumEmployees != 0 AND
@@ -206,35 +208,37 @@ class DatasetBuilder:
 		else:
 			data = self.resultset.fetchmany(self.batchsize)
 		df = pd.DataFrame(data, columns=self.resultset.keys())
-		df['Timestamp'] = df['Timestamp'].astype('int64') / 10**9
-		df['PredTimestamp'] = df['PredTimestamp'].astype('int64') / 10**9
+		df['Timestamp'] = df['Timestamp'].astype('int64')
+		df['PredTimestamp'] = df['PredTimestamp'].astype('int64')
+		df['DeltaTime'] = 1000*(df['PredTimestamp'] - df['Timestamp']) / df['PredTimestamp']
+		df.drop(columns=['Timestamp', 'PredTimestamp'], inplace=True)
 		ret = {}
 		if self.mType == modelpack.ModelType.WAGES:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Income', 'Lat', 'Long']]
+			ret['X'] = df[['DeltaTime', 'Income', 'Lat', 'Long']]
 			ret['Y'] = df[['PredIncome']]
 		if self.mType == modelpack.ModelType.SAVINGS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Rate']]
+			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
 		if self.mType == modelpack.ModelType.CDS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Rate']]
+			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
 		if self.mType == modelpack.ModelType.STOCKS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Price']]
+			ret['X'] = df[['DeltaTime', 'Price']]
 			ret['Y'] = df[['PredPrice']]
 		if self.mType == modelpack.ModelType.BONDS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Rate']]
+			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
 		if self.mType == modelpack.ModelType.TBONDS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Rate']]
+			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
 		if self.mType == modelpack.ModelType.RES:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Price', 'Lat', 'Long']]
+			ret['X'] = df[['DeltaTime', 'Price', 'Lat', 'Long']]
 			ret['Y'] = df[['PredPrice']]
 		if self.mType == modelpack.ModelType.RENTS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Rent', 'Lat', 'Long']]
+			ret['X'] = df[['DeltaTime', 'Rent', 'Lat', 'Long']]
 			ret['Y'] = df[['PredRent']]
 		if self.mType == modelpack.ModelType.RMS:
-			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Price']]
+			ret['X'] = df[['DeltaTime', 'Price']]
 			ret['Y'] = df[['Price']]
 
 		return ret

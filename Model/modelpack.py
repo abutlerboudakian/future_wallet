@@ -32,11 +32,15 @@ class BaseModel(ABC):
 					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
 					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
 					keras.layers.LeakyReLU(),
-					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
+					keras.layers.Dense((len(data['X'].columns)*2) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*5) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*10) // 1),
 					keras.layers.LeakyReLU(),
 					keras.layers.Dense(1)
 				])
-			self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+			self.model.compile(optimizer='adam', loss=keras.losses.mean_absolute_percentage_error, metrics=['mean_absolute_percentage_error'])
 
 	def setData(self, data):
 		self.data = data
@@ -80,11 +84,21 @@ class WageModel(BaseModel):
 					keras.layers.Dense(len(data['X'].columns), input_shape=(len(data['X'].columns),)),
 					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
 					keras.layers.LeakyReLU(),
-					keras.layers.Dense((len(data['X'].columns)*1.5) // 1),
+					keras.layers.Dense((len(data['X'].columns)*2) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*5) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*10) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*10) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*5) // 1),
+					keras.layers.LeakyReLU(),
+					keras.layers.Dense((len(data['X'].columns)*2) // 1),
 					keras.layers.LeakyReLU(),
 					keras.layers.Dense(1)
 				])
-			self.model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+			self.model.compile(optimizer='adam', loss=keras.losses.mean_absolute_percentage_error, metrics=['mean_absolute_percentage_error'])
 
 
 	def save(self, path):
@@ -98,7 +112,8 @@ class WageModel(BaseModel):
 		timestamp = datetime.now().timestamp()
 		today = datetime.now()
 		predTimestamp = (today.replace(year=today.year + years)).timestamp()
-		return self.model.predict(np.asarray([[timestamp, predTimestamp, income, lat, lon]]))
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict(np.asarray([[deltaTime, income, lat/90, lon/180]]))
 
 
 class InvestmentModel(BaseModel):

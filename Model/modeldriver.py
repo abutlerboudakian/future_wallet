@@ -13,7 +13,7 @@ if __name__ == "__main__":
 	industryCodes = None
 	# tickers = None
 	with engine.connect() as conn:
-		industryCodes = pd.read_sql("SELECT DISTINCT TOP(1) IndustryCode FROM CBPIncome WHERE IndustryCode LIKE '%///'", con=conn)
+		industryCodes = pd.read_sql("SELECT DISTINCT TOP(5) IndustryCode FROM CBPIncome WHERE IndustryCode LIKE '%///'", con=conn)
 		# tickers = pd.read_sql("WITH Tickers AS (SELECT DISTINCT Ticker FROM Stocks) SELECT TOP 5 PERCENT Ticker FROM Tickers ORDER BY newid();", con=conn)
 
 	industryCodes = industryCodes['IndustryCode'].tolist()

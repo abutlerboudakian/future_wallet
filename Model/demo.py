@@ -6,10 +6,10 @@ import dbutil
 if __name__ == '__main__':
 	mfac = mf.ModelFactory()
 
-	wages = mfac.createModel(ModelType.WAGES, industryCode='212')
+	wages = mfac.createModel(ModelType.WAGES, industryCode='113')
 
-	wages.load('F:/ServerData/FutureWallet/models/', industryCode='212')
+	wages.load('F:/ServerData/FutureWallet/models/', industryCode='113')
 
-	prediction = wages.predict(500000, 42.7, -78.671, 30)
+	prediction = wages.predict(50000, 42.7, -78.671, 100)
 
 	print(prediction)
