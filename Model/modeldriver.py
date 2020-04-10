@@ -24,7 +24,7 @@ if __name__ == "__main__":
 		print('Wage model ' + i + ' loaded')
 		w = mfac.createModel(ModelType.WAGES, train=True, industryCode=i)
 		print('Wage model ' + i + ' created...')
-		w.train(75, 1000000)
+		w.train(50, 1000000)
 		print('Wage model ' + i + ' trained...')
 		w.save('F:/ServerData/FutureWallet/models/')
 		print('Wage model ' + i + ' saved...')
@@ -34,8 +34,8 @@ if __name__ == "__main__":
 	assets = mfac.createModel(ModelType.ASSETS, train=True)
 	print('Asset models saved...')	
 
-	investments.train(20, 1000000)
-	assets.train(20, 1000000)
+	investments.train(50, 1000000)
+	assets.train(50, 1000000)
 
 	investments.save('F:/ServerData/FutureWallet/models/')
 	print('Investment models saved...')
