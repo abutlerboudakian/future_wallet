@@ -222,7 +222,8 @@ class SavingsModel(BaseModel):
 		self.model = keras.models.load_model(path + 'savingsmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
-		return self.model.predict([timestamp, predTimestamp, value])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value])
 
 class CDModel(BaseModel):
 	def __init__(self, dsb=None):
@@ -235,7 +236,8 @@ class CDModel(BaseModel):
 		self.model = keras.models.load_model(path + 'cdmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
-		return self.model.predict([timestamp, predTimestamp, value])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value])
 
 class StockModel(BaseModel):
 	def __init__(self, dsb=None):
@@ -248,7 +250,8 @@ class StockModel(BaseModel):
 		self.model = keras.models.load_model(path + 'stockmodel' + ticker)
 
 	def predict(self, timestamp, predTimestamp, value):
-		return self.model.predict([timestamp, predTimestamp, value])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value])
 
 class BondModel(BaseModel):
 	def __init__(self, dsb=None):
@@ -261,7 +264,8 @@ class BondModel(BaseModel):
 		self.model = keras.models.load_model(path + 'bondmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
-		return self.model.predict([timestamp, predTimestamp, value])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value])
 
 class TBModel(BaseModel):
 	def __init__(self, dsb=None):
@@ -274,7 +278,8 @@ class TBModel(BaseModel):
 		self.model = keras.models.load_model(path + 'tbmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
-		return self.model.predict([timestamp, predTimestamp, value])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value])
 
 class ResidenceModel(BaseModel):
 	def __init__(self, dsb=None):
@@ -287,7 +292,8 @@ class ResidenceModel(BaseModel):
 		self.model = keras.models.load_model(path + 'resmodel')
 
 	def predict(self, timestamp, predTimestamp, value, lat, lon):
-		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value, lat/90, lon/180])
 
 class RentModel(BaseModel):
 	def __init__(self, dsb=None):
@@ -300,7 +306,8 @@ class RentModel(BaseModel):
 		self.model = keras.models.load_model(path + 'rentmodel')
 
 	def predict(self, timestamp, predTimestamp, value, lat, lon):
-		return self.model.predict([timestamp, predTimestamp, value, lat, lon])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value, lat/90, lon/180])
 
 class RMModel(BaseModel):
 	def __init__(self, dsb=None):
@@ -313,4 +320,5 @@ class RMModel(BaseModel):
 		self.model = keras.models.load_model(path + 'rmmodel')
 
 	def predict(self, timestamp, predTimestamp, value):
-		return self.model.predict([timestamp, predTimestamp, value])
+		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
+		return self.model.predict([deltaTime, value])
