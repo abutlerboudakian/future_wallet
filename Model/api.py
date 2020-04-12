@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify
+import requests
+import json
 import dbutil
 from modelfactory import ModelFactory
 from modelpack import ModelType
@@ -32,8 +34,24 @@ def submitInputs():
 	tickers = [*invests_data['stocks']]
 	invests = mfac.createModel(ModelType.INVESTS)
 	invests.load(modeldir, tickers)
-	stocks = {}
-	response['invests'] = invests.predict(float(invests_data['savings']), float(invests_data['cd']), stocks, float(invests_data['bonds']), float(invests_data['tbonds']), int(data['years']))
+	stocks = []
+	for ticker, shares in invests_data['stocks'].items():
+		stockData = requests.get('https://www.alphavantage.co/query',
+			params={
+				'function': 'TIME_SERIES_DAILY',
+				'symbol': ticker,
+				'apikey': 'BYK3GWD7674OE5J5'})
+
+		stockData = json.loads(stockData.content)
+		stocks.append((ticker,
+			float(stockData['Time Series (Daily)'][list(stockData['Time Series (Daily)'].keys())[0]]['4. close']),
+			float(shares)))
+	response['invests'] = invests.predict(float(invests_data['savings']),
+		float(invests_data['cd']),
+		stocks,
+		float(invests_data['bonds']),
+		float(invests_data['tbonds']),
+		int(data['years']))
 	
 	assets = mfac.createModel(ModelType.ASSETS)
 	assets.load(modeldir)
@@ -47,6 +65,33 @@ def submitInputs():
 		res.append((float(val), float(location['Lat'][0]), float(location['Long'][0])))
 	response['assets'] = assets.predict(res, rents, float(assets_data['rm']), int(data['years']))
 	response['years'] = data['years']
+
+	with uEng.connect() as uConn:
+		uConn.execute("DELETE FROM Inputs WHERE userid='" + data['userid'] + "';")
+		uConn.execute("DELETE FROM UserStocks WHERE userid='" + data['userid'] + "';")
+		uConn.execute("DELETE FROM UserRes WHERE userid='" + data['userid'] + "';")
+		uConn.execute("DELETE FROM UserRents WHERE userid='" + data['userid'] + "';")
+
+		uConn.execute("INSERT INTO Inputs VALUES ('" + data['userid'] + "', '" 
+			+ wages_data['industryCode'] "', " 
+			+ wages_data['income'] + ", " 
+			+ wages_data['hourly'].upper() + ", " 
+			+ wages_data['hourspw'] + ", " 
+			+ invests_data['savings'] + ", " 
+			+ invests_data['cd'] + ", "
+			+ invests_data['bonds'] + ", "
+			+ invests_data['tbonds'] + ", "
+			+ assets_data['rm'] + ");")
+
+		for ticker, shares in invests_data['stocks'].items():
+			uConn.execute("INSERT INTO UserStocks VALUES ('" + data['userid'] + "', " + ticker + ", " + shares + ");")
+
+		for val, loc in assets_data['res'].items():
+			uConn.execute("INSERT INTO UserRes VALUES('" + data['userid'] + "', '" + loc + "', " + val + ");")
+
+		for val, loc in assets_data['rents'].items():
+			uConn.execute("INSERT INTO UserRents VALUES('" + data['userid'] + "', '" + loc + "', " + val + ");")
+
 
 	return jsonify(response)
 
