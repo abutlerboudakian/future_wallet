@@ -32,7 +32,7 @@ void predictionInputInvest::setupValidator()
 
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);    ui->Saving->setValidator(validDouble);
     ui->CD->setValidator(validDouble);
-    ui->Stock->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
+    ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
     ui->Share->setValidator(validDouble);
     ui->Mutual->setValidator(validDouble);
     ui->Bond->setValidator(validDouble);
@@ -70,10 +70,16 @@ void predictionInputInvest::getStockData()
     std::cout<<"Start"<<std::endl;
     std::unordered_map<std::string, int> StockData;
     std::cout<<ui->Stocks->count()<<std::endl;
-    for (int i = 0; i < ui->Stocks->count(); i++)
+    /*for (unsigned int i = 0; i < ui->Stocks->count(); i++)
     {
-        //QList<QLineEdit*> fields = ((QWidget*)ui->Stocks->itemAt(i))->findChildren<QLineEdit*>(QRegularExpression(QString("/StockData\\d/g")));
-        //StockData.insert(std::pair<std::string, int>(fields[0]->text().toStdString(), fields[1]->text().toInt()));
+
+        QList<QLineEdit*> fields = ((QWidget*)ui->Stocks->itemAt(i))->findChildren<QLineEdit*>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
+        StockData.insert(std::pair<std::string, int>(fields[0]->text().toStdString(), fields[1]->text().toInt()));
+    }*/
+    QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*"))); // Because its children of this, not children of a layout
+    for (unsigned int i = 0; i < 2*ui->Stocks->count(); i+=2)
+    {
+        StockData.insert(std::pair<std::string, int>(list[i]->text().toStdString(), list[i+1]->text().toInt()));
     }
     for (std::unordered_map<std::string, int>::iterator i = StockData.begin(); i != StockData.end(); i++)
     {

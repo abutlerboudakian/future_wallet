@@ -209,7 +209,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="Stock"/>
+               <widget class="QLineEdit" name="StockData0"/>
               </item>
               <item>
                <spacer name="horizontalSpacer_11">
