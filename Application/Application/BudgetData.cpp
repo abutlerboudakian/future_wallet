@@ -33,7 +33,7 @@ QDataStream & operator>>(QDataStream &in, BudgetData &b)
  */
 QString BudgetData::getBudgetString() const
 {
-    std::string x;
+    std::string x = "";
     for (ChartMap::const_iterator i = data->begin(); i != data->end(); i++)
     {
         x += i->first + "\t\t" + QString::number(i->second * 100).toStdString() + "%" + '\n';

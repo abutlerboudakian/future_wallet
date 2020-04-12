@@ -30,11 +30,11 @@ void predictionInputInvest::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
     validInt = new QIntValidator(10000, 99999, this);
-    ui->lineEdit->setValidator(validInt);
+    /*ui->lineEdit->setValidator(validInt);
     ui->lineEdit_2->setValidator(validDouble);
     ui->lineEdit_3->setValidator(validDouble);
     ui->lineEdit_4->setValidator(validInt);
-    ui->lineEdit_6->setValidator(validDouble);
+    ui->lineEdit_6->setValidator(validDouble);*/
 }
 
 // Function to change view to the asset input page

@@ -41,7 +41,12 @@ void BudgetPage::getLoadBudgetView()
     // Figure out if it is ui->Default or ui->Custom. Else, send error modal
     // ui->THING->currentItem()->text()
     // controller->setSelectedBudget
-
+    QListWidget * selected;
+    selected = (ui->Default->selectionModel()->hasSelection() ? ui->Default : ui->Custom);
+    if (selected->selectionModel()->hasSelection())
+    {
+        controller->setSelectedBudget(selected->currentItem()->text());
+    }
 }
 
 void BudgetPage::getCreateBudgetView()
@@ -71,4 +76,14 @@ void BudgetPage::closeEvent(QCloseEvent * event)
     controller->closeBudgetPage(); // tells controller it is closing
     //destroy(true, true);
     event->accept();
+}
+
+/* Function used to update the list of user created budgets
+ * @modifies this->Custom
+ * @effect this->Custom is populate with a list of user created budget names
+ */
+void BudgetPage::updateUserList()
+{
+    ui->Custom->clear();
+    ui->Custom->addItems(controller->getBudgetList());
 }

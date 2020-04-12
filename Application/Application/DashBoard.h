@@ -21,7 +21,7 @@ public:
     ~DashBoard();
 
     void updateMetrics();
-    void updateBudget();
+    void updateBudget(QString budgetId);
 
 private:
     Ui::DashBoard *ui;

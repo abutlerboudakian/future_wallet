@@ -5,12 +5,17 @@
 #include <QEventLoop>
 
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QByteArray>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <iostream>
+
+#include <QCryptographicHash>
+
+#include "BudgetData.h"
 
 class Requests : public QObject
 {
@@ -20,35 +25,34 @@ class Requests : public QObject
 public:
     explicit Requests(QObject * parent = nullptr);
 
-    void getPrediction(...);
-    //void getPredictionCallback(...);
+    // Inputs
+    std::vector<double> * getPrediction(...);
 
     void getInputs(...);
-    //void getInputsCallback(...);
 
-    void addBudget(...);
-    //void addBudgetCallback(...);
+    // Budgets
+    void addBudget(BudgetData * budget, QString userid);
+    BudgetData * loadBudget(QString budgetId, QString userid);
+    QStringList listBudgets(QString userId);
 
-    void loadBudget(...);
-    //void loadBudgetCallback(...);
-
-    void listBudgets(...);
-    //void listBudgetsCallback(...);
-
+    // Auth
     void login(...);
-    //void loginCallback(...);
 
     void logout(...);
-    //void logoutCallback(...);
 
-    void getIndustries(...);
-    //void getIndustriesCallback(...);
+    bool Register(QString userId, QString Password);
+    bool UpdateUserInfo(QString OriginalUserId, QString userId, QString Password);
+
+    // Aux
+    QStringList getIndustries();
+    QStringList getStocks();
 
 private slots:
     void readData(QNetworkReply * reply);
 private:
     QNetworkAccessManager NAMSender;
     QByteArray Data;
+    QString Location = "http://127.0.0.1:5000";
 };
 
 #endif // REQUESTS_H

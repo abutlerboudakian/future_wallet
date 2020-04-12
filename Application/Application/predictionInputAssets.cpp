@@ -29,12 +29,12 @@ predictionInputAssets::~predictionInputAssets()
 void predictionInputAssets::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
-    ui->lineEdit->setValidator(validDouble);
+    /*ui->lineEdit->setValidator(validDouble);
     ui->lineEdit_2->setValidator(validDouble);
     ui->lineEdit_3->setValidator(validDouble);
     ui->lineEdit_4->setValidator(validDouble);
     ui->lineEdit_5->setValidator(validDouble);
-    ui->lineEdit_6->setValidator(validDouble);
+    ui->lineEdit_6->setValidator(validDouble);*/
 }
 
 // Function to submit all the inputs gathered and return to dashboard

@@ -32,9 +32,9 @@ DashBoard::~DashBoard()
  * @modifies this->ui->Budget
  * @effects this->ui->Budget now contains the budget that was recently loaded in
  */
-void DashBoard::updateBudget()
+void DashBoard::updateBudget(QString budgetId)
 {
-    ui->budgets->setText(controller->getBudgetData()->getBudgetString());
+    ui->budgets->setText(controller->getBudgetData(budgetId)->getBudgetString());
 }
 
 /* Function used to update the metric in display
@@ -51,26 +51,25 @@ void DashBoard::updateMetrics()
     {
         metrics = new ChartMap;
         metrics->insert(std::pair<std::string, double>("Wages", *(i++)));
-        metrics->insert(std::pair<std::string, double>("Assets", *(i++)));
         metrics->insert(std::pair<std::string, double>("Investment", *(i++)));
+        metrics->insert(std::pair<std::string, double>("Assets", *(i++)));
     }
     else
     {
         (*metrics)["Wages"] = *(i++);
-        (*metrics)["Assets"] = *(i++);
         (*metrics)["Investment"] = *(i++);
+        (*metrics)["Assets"] = *(i++);
     };
 
     i = data->begin();
     double sum = 0;
-    while (i != data->end()) {sum += *(i++);}
-    i = data->begin();
-    std::string years = QString::number((*(data->end() - 1)), 'g', 2).toStdString();
+    while (i != (data->end()-1)) {sum += *(i++);}
+    std::string years = QString::number((*(data->end() - 1)), 'f', 2).toStdString();
 
-    ui->metrics->setText(QString::fromStdString("Your income will grow/shrink by " + QString::number(sum, 'g', 2).toStdString() + " dollars in " + years
-                                                + "\n\nYour wages will grow/shrink by " + QString::number(*(i++), 'g', 2).toStdString() + " dollars in " + years
-                                                + "\nYour assets will grow/shrink by " + QString::number(*(i++), 'g', 2).toStdString() + " dollars in " + years
-                                                + "\nYour investments will grow/shrink by " + QString::number(*(i++), 'g', 2).toStdString() + " dollars in " + years));
+    ui->metrics->setText(QString::fromStdString("Your income will grow/shrink by " + QString::number(sum, 'f', 2).toStdString() + " dollars in " + years
+                                                + "\n\nYour wages will grow/shrink by " + QString::number((*metrics)["Wages"], 'f', 2).toStdString() + " dollars in " + years
+                                                + "\nYour investments will grow/shrink by " + QString::number((*metrics)["Investment"], 'f', 2).toStdString() + " dollars in " + years
+                                                + "\nYour assets will grow/shrink by " + QString::number((*metrics)["Assets"], 'f', 2).toStdString() + " dollars in " + years));
 }
 
 
@@ -118,13 +117,13 @@ void DashBoard::getMetricsLineView()
 // Function to show the loaded budget as a pie chart
 void DashBoard::getBudgetPieView()
 {
-    const ChartMap * data = controller->getBudgetData()->getBudgetChartMap();
+    const ChartMap * data = controller->getBudgetData(QString(""))->getBudgetChartMap();
     controller->getPieChart(data)->show();
 }
 
 // Function to show the loaded budget as a bar graph
 void DashBoard::getBudgetBarView()
 {
-    const ChartMap * data = controller->getBudgetData()->getBudgetChartMap();
+    const ChartMap * data = controller->getBudgetData(QString(""))->getBudgetChartMap();
     controller->getBarGraph(data)->show();
 }
