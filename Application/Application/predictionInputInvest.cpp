@@ -30,8 +30,7 @@ predictionInputInvest::~predictionInputInvest()
 void predictionInputInvest::setupValidator()
 {
 
-    validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
-    ui->Saving->setValidator(validDouble);
+    validDouble = new QDoubleValidator(0.00, 99999999.00, 2);    ui->Saving->setValidator(validDouble);
     ui->CD->setValidator(validDouble);
     ui->Stock->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
     ui->Share->setValidator(validDouble);

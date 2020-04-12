@@ -6,16 +6,21 @@ Controller::Controller()
   BarCreator = new BarGUI;
   LineCreator = new LineGUI;
 
-  metrics = new std::vector<double>;
-  metrics->push_back(0);
-  metrics->push_back(0);
-  metrics->push_back(0);
-  metrics->push_back(0);
+  metrics = nullptr;//new std::vector<double>;
+  //metrics->push_back(0);
+  //metrics->push_back(0);
+  //metrics->push_back(0);
+  //metrics->push_back(0);
 
-  budget = new BudgetData;
-  budget->addCategory(QString("Alcohol"), 0.05);
+  budget = nullptr;
+  /*budget->addCategory(QString("Alcohol"), 0.05);
   budget->addCategory(QString("Oranges"), 0.55);
-  budget->addCategory(QString("Ores"), 0.4);
+  budget->addCategory(QString("Ores"), 0.4);*/
+
+  ReqObj = new Requests;
+  this->userid = QString("Hello WOrld");
+  ReqObj->getIndustries();
+  ReqObj->getStocks();
 }
 
 /* Deletes the chart creators. Delegates deletion of the views to MainApplication
@@ -29,6 +34,7 @@ Controller::~Controller()
   delete LineCreator;
   delete budget;
   delete metrics;
+  delete ReqObj;
 }
 
 /* Sets the views for the controller
@@ -46,11 +52,25 @@ void Controller::setViews(QStackedWidget * Views)
 // Other Methods                      |
 // ------------------------------------
 
-/* Function returns the BudgetData in the controller
- * @returns this->budget
+/* Function gets the budget from the databse and returns the BudgetData in the controller
+ * @param budgetId is a string denoting the associated budget ID
+ * @returns this->budget if budgetId=="" else attempts to grab the budget from the
+ *                       database and returns it
  */
-const BudgetData * Controller::getBudgetData() const
+const BudgetData * Controller::getBudgetData(QString budgetId)
 {
+    if (budgetId==QString("") && this->budget == nullptr)
+    {
+        this->budget = new BudgetData;
+    }
+    else if (budgetId != QString(""))
+    {
+        if (this->budget != nullptr)
+        {
+            delete this->budget;
+        }
+        this->budget = ReqObj->loadBudget(budgetId, "Userid");
+    }
     return this->budget;
 }
 
@@ -58,14 +78,37 @@ const BudgetData * Controller::getBudgetData() const
 /* Function returns the std::vector<double> metrics in the controller
  * @returns this->metrics
  */
-const std::vector<double> * Controller::getMetricsData() const
+const std::vector<double> * Controller::getMetricsData()
 {
+    if (this->metrics != nullptr)
+    {
+        delete this->metrics;
+    }
+    this->metrics = ReqObj->getPrediction();
     return this->metrics;
+}
+
+/* Function gets and sets the budgetid of the Controller and
+ * updates the dashboard
+ * @param budgetId is a string denoting the associated budgetID
+ * @modifies this->budget
+ * @effect this->budget is updated to the budget noted by budgetId
+ */
+void Controller::setSelectedBudget(QString budgetId)
+{
+    ((DashBoard*)this->Views->widget(Views::Dashboard))->updateBudget(budgetId);
 }
 
 //-------------------------------------
 // Endpoints                          |
 //-------------------------------------
+/* Function gets a list of budget names from the ReqObj
+ * @returns QStringList of names of budgets for this->Userid
+ */
+QStringList Controller::getBudgetList()
+{
+    return this->ReqObj->listBudgets(this->userid);
+}
 
 
 // ------------------------------------
@@ -80,7 +123,7 @@ void Controller::switchToDashBoard()
 {
   this->Views->setCurrentIndex(Views::Dashboard);
   ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
-  ((DashBoard*)this->Views->widget(Views::Dashboard))->updateBudget();
+  ((DashBoard*)this->Views->widget(Views::Dashboard))->updateBudget(QString(""));
   return;
 }
 
@@ -103,6 +146,7 @@ void Controller::switchToBudgetPage()
         BudgetPage * temp = new BudgetPage;
         temp->setController(this);
         temp->setAttribute(Qt::WA_DeleteOnClose);
+        temp->updateUserList();
         temp->show();
         BudgetModal = true;
     }

@@ -12,6 +12,8 @@
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
 
+#include "Requests.h"
+
 enum Views
 {
     Login = 0,
@@ -44,8 +46,12 @@ class Controller
     QChartView * getBarGraph(const ChartMap * data);
     QChartView * getLineGraph(const LineMap * data);
 
-    const std::vector<double> * getMetricsData() const;
-    const BudgetData * getBudgetData() const;
+    const std::vector<double> * getMetricsData();
+    const BudgetData * getBudgetData(QString budgetId);
+    void setSelectedBudget(QString budgetId);
+
+    // Endpoints
+    QStringList getBudgetList();
 
   private:
     QStackedWidget * Views;
@@ -62,6 +68,10 @@ class Controller
 
     // BudgetModal Boolean
     bool BudgetModal = false;
+
+    Requests * ReqObj;
+
+    QString userid;
 };
 
 #endif // CONTROLLER_H
