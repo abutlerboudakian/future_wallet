@@ -16,6 +16,8 @@ Controller::Controller()
   budget->addCategory(QString("Alcohol"), 0.05);
   budget->addCategory(QString("Oranges"), 0.55);
   budget->addCategory(QString("Ores"), 0.4);
+  Requests * x = new Requests;
+  x->getPrediction();
 }
 
 /* Deletes the chart creators. Delegates deletion of the views to MainApplication

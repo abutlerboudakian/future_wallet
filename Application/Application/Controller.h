@@ -12,6 +12,8 @@
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
 
+#include "Requests.h"
+
 enum Views
 {
     Login = 0,

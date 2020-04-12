@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts network
 
 CONFIG += c++11
 
@@ -21,6 +21,7 @@ SOURCES += \
     ChartTemplate.cpp \
     Controller.cpp \
     DashBoard.cpp \
+    Requests.cpp \
     main.cpp \
     mainapplication.cpp \
     LaunchMenu.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     ChartTemplate.h \
     Controller.h \
     DashBoard.h \
+    Requests.h \
     mainapplication.h \
     LaunchMenu.h \
     predictionInputAssets.h \
