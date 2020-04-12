@@ -23,18 +23,20 @@ predictionInputAssets::predictionInputAssets(QWidget *parent, Controller * contr
 predictionInputAssets::~predictionInputAssets()
 {
     delete ui;
+    delete validDouble;
+    delete validInt;
 }
 
 // Function to setup validators for all inputs
 void predictionInputAssets::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
-    ui->lineEdit->setValidator(validDouble);
-    ui->lineEdit_2->setValidator(validDouble);
-    ui->lineEdit_3->setValidator(validDouble);
-    ui->lineEdit_4->setValidator(validDouble);
-    ui->lineEdit_5->setValidator(validDouble);
-    ui->lineEdit_6->setValidator(validDouble);
+    validInt = new QIntValidator(0, 99999, this);
+    ui->ResidenceLocation->setValidator(validInt);
+    ui->ResidenceValue->setValidator(validDouble);
+    ui->RentValue->setValidator(validDouble);
+    ui->RentLocation->setValidator(validInt);
+    ui->Metal->setValidator(validDouble);
 }
 
 // Function to submit all the inputs gathered and return to dashboard

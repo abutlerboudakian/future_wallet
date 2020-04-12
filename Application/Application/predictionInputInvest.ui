@@ -80,7 +80,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_2">
+        <widget class="QLineEdit" name="Saving">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -139,7 +139,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_3"/>
+        <widget class="QLineEdit" name="CD"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_9">
@@ -209,7 +209,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="Stock0"/>
+               <widget class="QLineEdit" name="Stock"/>
               </item>
               <item>
                <spacer name="horizontalSpacer_11">
@@ -264,7 +264,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="StockData1">
+               <widget class="QLineEdit" name="Share">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -380,7 +380,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_4"/>
+        <widget class="QLineEdit" name="Mutual"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_13">
@@ -432,7 +432,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_5"/>
+        <widget class="QLineEdit" name="Bond"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_15">
@@ -478,7 +478,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_6"/>
+        <widget class="QLineEdit" name="TBond"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_17">

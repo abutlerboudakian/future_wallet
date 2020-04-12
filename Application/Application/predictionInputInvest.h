@@ -27,7 +27,6 @@ private:
     unsigned int counter = 2;
 
     QDoubleValidator * validDouble;
-    QIntValidator * validInt;
 
 private:
     void setupValidator();
