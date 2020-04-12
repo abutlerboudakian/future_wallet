@@ -18,12 +18,12 @@ class predictionInputInvest : public QWidget
 public:
     explicit predictionInputInvest(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~predictionInputInvest();
+    void getStockData();
 
 private:
     Ui::predictionInputInvest *ui;
     Controller * controller;
 
-    void getStockData();
     unsigned int counter = 2;
 
     QDoubleValidator * validDouble;
