@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import requests
 import json
+import pandas as pd
 import dbutil
 from modelfactory import ModelFactory
 from modelpack import ModelType
@@ -39,11 +40,11 @@ def submitInputs():
 		stockData = requests.get('https://www.alphavantage.co/query',
 			params={
 				'function': 'TIME_SERIES_DAILY',
-				'symbol': ticker,
+				'symbol': ticker.upper(),
 				'apikey': 'BYK3GWD7674OE5J5'})
 
 		stockData = json.loads(stockData.content)
-		stocks.append((ticker,
+		stocks.append((ticker.upper(),
 			float(stockData['Time Series (Daily)'][list(stockData['Time Series (Daily)'].keys())[0]]['4. close']),
 			float(shares)))
 	response['invests'] = invests.predict(float(invests_data['savings']),
@@ -57,12 +58,12 @@ def submitInputs():
 	assets.load(modeldir)
 	res = []
 	rents = []
-	for val, loc in assets_data['res'].items():
-		location = fips['ZIP' == loc]
-		res.append((float(val), float(location['Lat'][0]), float(location['Long'][[0]])))
-	for val, loc in assets_data['rents'].items():
-		location = fips['ZIP' == loc]
-		res.append((float(val), float(location['Lat'][0]), float(location['Long'][0])))
+	for r in assets_data['res']:
+		location = fips['ZIP' == r['loc']]
+		res.append((float(r['value']), float(location['Lat'][0]), float(location['Long'][[0]])))
+	for r in assets_data['rents']:
+		location = fips['ZIP' == r['loc']]
+		res.append((float(r['value']), float(location['Lat'][0]), float(location['Long'][0])))
 	response['assets'] = assets.predict(res, rents, float(assets_data['rm']), int(data['years']))
 	response['years'] = data['years']
 
@@ -81,23 +82,56 @@ def submitInputs():
 			+ invests_data['cd'] + ", "
 			+ invests_data['bonds'] + ", "
 			+ invests_data['tbonds'] + ", "
-			+ assets_data['rm'] + ");")
+			+ assets_data['rm'] + ", "
+			+ data['years'] + ");")
 
 		for ticker, shares in invests_data['stocks'].items():
-			uConn.execute("INSERT INTO UserStocks VALUES ('" + data['userid'] + "', " + ticker + ", " + shares + ");")
+			uConn.execute("INSERT INTO UserStocks VALUES ('" + data['userid'] + "', " + ticker.upper() + ", " + shares + ");")
 
-		for val, loc in assets_data['res'].items():
-			uConn.execute("INSERT INTO UserRes VALUES('" + data['userid'] + "', '" + loc + "', " + val + ");")
+		for r in assets_data['res']:
+			uConn.execute("INSERT INTO UserRes VALUES('" + data['userid'] + "', '" + r['loc'] + "', " + r['value'] + ");")
 
-		for val, loc in assets_data['rents'].items():
-			uConn.execute("INSERT INTO UserRents VALUES('" + data['userid'] + "', '" + loc + "', " + val + ");")
-
+		for r in assets_data['rents']:
+			uConn.execute("INSERT INTO UserRents VALUES('" + data['userid'] + "', '" + r['loc'] + "', " + r['val'] + ");")
 
 	return jsonify(response)
 
 @app.route('/getInputs', methods=['GET'])
 def getInputs():
-	return "{}"
+	response = {}
+	data = request.get_json()
+	response['userid'] = data['userid']
+	wages = {}
+	invests = {}
+	assets = {}
+	with uEng.connect() as uConn:
+		inputs = pd.read_sql("SELECT * FROM Inputs WHERE userid='" + data['userid'] + "';", con=uConn)
+		stocks = pd.read_sql("SELECT ticker, shares FROM UserStocks WHERE userid='" + data['userid'] + "';", con=uConn)
+		res = pd.read_sql("SELECT loc, price AS value FROM UserRes WHERE userid='" + data['userid'] + "';", con=uConn)
+		rents = pd.read_sql("SELECT loc, rent AS value FROM UserRents WHERE userid='" + data['userid'] + "';", con=uConn)
+	wages['industryCode'] = inputs['industryCode'][0]
+	wages['income'] = inputs['income'][0]
+	wages['loc'] = inputs['loc'][0]
+	wages['hourly'] = inputs['hourly'][0]
+	wages['hourspw'] = inputs['hourspw'][0]
+
+	response['wages'] = wages
+
+	invests['savings'] = inputs['savings'][0]
+	invests['cd'] = inputs['cd'][0]
+	invests['stocks'] = {tick:share for tick, share in (stocks['ticker'].tolist(), stocks['shares'].tolist())}
+	invests['bonds'] = inputs['bonds'][0]
+	invests['tbonds'] = inputs['tbonds'][0]
+
+	response['invests'] = invests
+
+	assets['res'] = res.to_dict('records')
+	assets['rents'] = rents.to_dict('records')
+	assets['rm'] = inputs['rm'][0]
+
+	response['assets'] = assets
+
+	return jsonify(response)
 
 @app.route('/submitBudget', methods=['POST'])
 def submitBudget():
