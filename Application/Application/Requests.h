@@ -31,12 +31,12 @@ public:
     void getInputs(...);
 
     // Budgets
-    void addBudget(BudgetData * budget, QString userid);
+    bool addBudget(BudgetData * budget, QString userid);
     BudgetData * loadBudget(QString budgetId, QString userid);
     QStringList listBudgets(QString userId);
 
     // Auth
-    void login(...);
+    bool login(...);
 
     void logout(...);
 
