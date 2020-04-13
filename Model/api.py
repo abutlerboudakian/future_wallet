@@ -75,7 +75,7 @@ def submitInputs():
 		uConn.execute("DELETE FROM UserRents WHERE userid='" + data['userid'] + "';")
 
 		uConn.execute("INSERT INTO Inputs VALUES ('" + data['userid'] + "', '" 
-			+ wages_data['industryCode'] "', " 
+			+ wages_data['industryCode'] + "', " 
 			+ wages_data['income'] + ", " 
 			+ wages_data['hourly'].upper() + ", " 
 			+ wages_data['hourspw'] + ", " 

@@ -171,6 +171,7 @@ QStringList Controller::getBudgetList()
 void Controller::login(QString userid, QString Password)
 {
     // Andrew should implement this
+    ReqObj->login(userid, Password);
 
     ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
     ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
@@ -201,6 +202,9 @@ void Controller::Register(QString userid, QString Password)
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully created an account! Please login.");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
+        this->switchToDashBoard();
     }
     else
     {

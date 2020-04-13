@@ -36,9 +36,9 @@ public:
     QStringList listBudgets(QString userId);
 
     // Auth
-    bool login(...);
+    bool login(QString userId, QString Password);
 
-    void logout(...);
+    void logout(QString userId);
 
     bool Register(QString userId, QString Password);
     bool UpdateUserInfo(QString OriginalUserId, QString userId, QString Password);
