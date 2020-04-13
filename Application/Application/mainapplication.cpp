@@ -7,8 +7,10 @@ MainApplication::MainApplication(QWidget *parent)
 {
     ui->setupUi(this);
 
-    
+    connect(ui->LogOut, SIGNAL(triggered()), this, SLOT(logout()));
+    connect(ui->AccountPage, SIGNAL(triggered()), this, SLOT(getUserAccountView()));
 
+    //hideMenu();
     // Example pie and line graph data
     /*PieCreator = new PieGUI;
     ChartMap * map = new ChartMap;
@@ -58,6 +60,7 @@ MainApplication::~MainApplication()
 {
     delete ui;
     delete Views;
+    delete controller;
 }
 
 /* Creates the views for the application, linked to the providec controller
@@ -83,3 +86,50 @@ QStackedWidget * MainApplication::getViews()
 {
     return Views;
 }
+
+// Function to set the controller of MainApplication
+// @param controller is a Controller
+// @modifies this->controller
+// @effect this->controller = controller
+void MainApplication::setController(Controller * controller)
+{
+    this->controller = controller;
+}
+
+/* Function sets the username for the menubar
+ * @param userId is a QString of the username
+ * @modifies the menubar
+ * @effect the menubar displays the username now
+ */
+/*void MainApplication::setUserName(QString userId)
+{
+    ui->UserName->setTitle(userId);
+}
+
+// @modifies menubar
+// @effects menubar->setvisible(true);
+void MainApplication::showMenu()
+{
+    //this->menuBar()->setVisible(true);
+}
+
+// @modifies menubar
+// @effects menubar->setvisible(false);
+void MainApplication::hideMenu()
+{
+    //this->menuBar()->setVisible(false);
+}*/
+
+
+// Function gets the user account info page
+void MainApplication::getUserAccountView()
+{
+
+}
+
+/* Function Logs the user out */
+void MainApplication::logout()
+{
+    this->controller->logout();
+}
+

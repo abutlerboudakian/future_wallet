@@ -53,10 +53,6 @@ std::vector<double> * Requests::getPrediction(...)
         metric->push_back(result["assets"].toDouble());
         metric->push_back(result["years"].toInt());
     }
-    else
-    {
-        metric->push_back(0); metric->push_back(0); metric->push_back(0); metric->push_back(0);
-    }
     return metric;
     //qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
@@ -113,7 +109,7 @@ void Requests::getInputs(...)
  * @param budget is the BudgetData we plan to submit
  * @param userid is the userid we plan to add the budget to
  */
-void Requests::addBudget(BudgetData * budget, QString userid)
+bool Requests::addBudget(BudgetData * budget, QString userid)
 {
     // Endpoint
     QUrl url(Location + QString("/submitBudget"));
@@ -149,6 +145,14 @@ void Requests::addBudget(BudgetData * budget, QString userid)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+    if (statusCode == 200)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /* Function to get budget information on a user specific budget
@@ -249,7 +253,7 @@ QStringList Requests::listBudgets(QString userId)
 
 /* Function to login a user and get their oauth
  */
-void Requests::login(...)
+bool Requests::login(...)
 {
     // Endpoint
     QUrl url(Location + QString("/login"));
@@ -280,6 +284,14 @@ void Requests::login(...)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+    if (statusCode != 200)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /* Function for user to log out -- call this when app closes too

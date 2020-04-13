@@ -21,6 +21,7 @@ SOURCES += \
     ChartTemplate.cpp \
     Controller.cpp \
     DashBoard.cpp \
+    Menu.cpp \
     Requests.cpp \
     main.cpp \
     mainapplication.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
     ChartTemplate.h \
     Controller.h \
     DashBoard.h \
+    Menu.h \
     Requests.h \
     mainapplication.h \
     LaunchMenu.h \
