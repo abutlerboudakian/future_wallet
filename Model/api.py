@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import requests
 import json
 import pandas as pd
@@ -12,6 +12,7 @@ modeldir = ''
 fips = pd.read_sql('SELECT ZIP, Lat, Long FROM FIPS', con=mEng)
 app = Flask(__name__)
 app.config["DEBUG"] = True
+active_users = set()
 mfac = ModelFactory()
 
 @app.route('/submitInputs', methods=['POST'])
@@ -135,34 +136,113 @@ def getInputs():
 
 @app.route('/submitBudget', methods=['POST'])
 def submitBudget():
-	return "{}"
+	data = request.get_json()
+	response = {}
+	reponse['budgetid'] = data['budgetid']
+	budget = {}
+	for catname, weight in data['categories'].items():
+		budget['catname'] = catname
+		budget['weight'] = weight
+	budget = pd.DataFrame(budget)
+	budget['userid'] = data['userid']
+	budget['budgetid'] = data['budgetid']
+	with uEng.connect() as uConn:
+		budget.to_sql('BudgetCategories', con=uConn, index=False, if_exists='append')
+	return jsonify(response)
 
 @app.route('/getBudget', methods=['GET'])
 def getBudget():
-	return "{}"
+	data = request.get_json()
+	response = {}
+	with uEng.connect() as uConn:
+		budget = pd.read_sql("SELECT budgetid, catname, weight FROM BudgetCategories WHERE userid='"
+			+ data['userid'] + "' AND budgetid='" + data['budgetid'] + "';", con=uConn)
+	response['name'] = data['budgetid']
+	response['categories'] = {catname:weight for catname, weight in (budget['catname'].tolist(), budget['weight'].tolist())}
+	return jsonify(response)
 
 @app.route('/getAllBudgets', methods=['GET'])
 def getAllBudgets():
-	return "{}"
+	data = request.get_json()
+	response = {}
+	with uEng.connect() as uConn:
+		budgets = pd.read_sql("SELECT DISTINCT budgetid FROM BudgetCategories WHERE userid='" + data['userid'] + "';", con=uConn)
+	response['budgets'] = budgets['budgetid'].tolist()
+	return jsonify(response)
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def login():
-	return "{}"
+	userid = request.authorization['username']
+	password = request.authorization['password']
+	with uEng.connect() as uConn:
+		results = uConn.execute("SELECT * FROM Users WHERE userid='" + userid + "';")
+		user = results.fetchone()
+	if user and user.password == password:
+		active_users.add(userid)
+		return make_response('Auth Succeeded', 200)
+	return make_response('Bad Credentials', 403)
 
 @app.route('/logout', methods=['POST'])
 def logout():
-	return "{}"
+	data = request.get_json()
+	try:
+		active_users.remove(data['userid'])
+		return make_response('Logout Succeeded', 200)
+	except Exception:
+		return make_response('User Not Found', 404)
 
 @app.route('/register', methods=['POST'])
 def register():
-	return "{}"
+	data = request.get_json()
+	with uEng.connect() as uConn:
+		check = uConn.execute("SELECT * FROM Users WHERE userid='" + data['userid'] + "';")
+		user = check.fetchone()
+		if user:
+			return make_response('User Already Exists', 400)
+		else:
+			uConn.execute("INSERT INTO Users VALUES ('" + data['userid'] + "', '" + data['password'] + "');")
+			active_users.add(data['userid'])
+			return make_response('Registration Completed Successfully', 200)
 
 @app.route('/update', methods=['POST'])
 def update():
-	return "{}"
+	data = request.get_json()
+	with uEng.connect() as uConn:
+		if 'userid' in data['updates'] and 'password' in data['updates']:
+			uConn.execute("UPDATE Users SET userid='"
+				+ data['updates']['userid']
+				+ "', password='"
+				+ data['updates']['password']
+				+ "' WHERE userid='"
+				+ data['userid'] + "';")
+		elif 'userid' in data['updates']:
+			uConn.execute("UPDATE Users SET userid='"
+				+ data['updates']['userid']
+				+ "' WHERE userid='" + data['userid'] + "';")
+		elif 'password' in data['updates']:
+			uConn.execute("UPDATE Users SET password='"
+				+ data['updates']['password']
+				+ "' WHERE userid='" + data['userid'] + "';")
+		else:
+			return make_response('No Updates Provided', 400)
+	return make_response('Account Updated', 200)
 
 @app.route('/getIndustries', methods=['GET'])
 def getIndustries():
-	return "{}"
+	response = {}
+	with mEng.connect() as mConn:
+		industries = pd.read_sql("SELECT DISTINCT Name FROM NAICS ORDER BY IndustryCode ASC")
+
+	response['industries'] = industries['Name'].tolist()
+	return jsonify(response)
+
+@app.route('/getTickers', methods=['GET'])
+def getTickers():
+	response = {}
+	with mEng.connect() as mConn:
+		tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks ORDER BY Ticker ASC")
+
+	response['tickers'] = tickers['Ticker'].tolist()
+	return jsonify(response)
 
 app.run()
