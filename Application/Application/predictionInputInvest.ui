@@ -264,7 +264,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QLineEdit" name="Share">
+               <widget class="QLineEdit" name="StockData1">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>

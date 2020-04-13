@@ -33,7 +33,7 @@ void predictionInputInvest::setupValidator()
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);    ui->Saving->setValidator(validDouble);
     ui->CD->setValidator(validDouble);
     ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
-    ui->Share->setValidator(validDouble);
+    ui->StockData1->setValidator(validDouble);
     ui->Mutual->setValidator(validDouble);
     ui->Bond->setValidator(validDouble);
     ui->TBond->setValidator(validDouble);
@@ -87,7 +87,6 @@ void predictionInputInvest::getStockData()
     }
     std::cout<<"Done"<<std::endl;
 }
-
 
 // Function modifies the ui to add a new stock field
 /* @modifies this->ui

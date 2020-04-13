@@ -32,10 +32,10 @@ void predictionInputAssets::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
     validInt = new QIntValidator(0, 99999, this);
-    ui->ResidenceLocation->setValidator(validInt);
-    ui->ResidenceValue->setValidator(validDouble);
-    ui->RentValue->setValidator(validDouble);
-    ui->RentLocation->setValidator(validInt);
+    ui->ResidenceData0->setValidator(validDouble);
+    ui->ResidenceData1->setValidator(validInt);
+    ui->RentalData0->setValidator(validDouble);
+    ui->RentalData1->setValidator(validInt);
     ui->Metal->setValidator(validDouble);
 }
 
@@ -81,41 +81,48 @@ void predictionInputAssets::getResidenceData()
 
 void predictionInputAssets::addResidence()
 {
-//    QWidget * Residence = new QWidget();
-//    QHBoxLayout * ResidenceLayout = new QHBoxLayout;
-//    ResidenceLayout->addWidget(new QLabel("Residence")); // Throw label on the left
 
-//    QVBoxLayout * Contents = new QVBoxLayout; // Contents of the stock
-//    ResidenceLayout->addLayout(Contents);
-//    QHBoxLayout * row1 = new QHBoxLayout, *row2 = new QHBoxLayout;
-//    QLineEdit * ResidenceValue = new QLineEdit, * Location = new QLineEdit;
-//    ResidenceValue->setObjectName(QString("ResidenceData") + QString::number(resCounter++));
-//    Location->setObjectName(QString("ResidenceData") + QString::number(resCounter++));
-//    row1->addWidget(new QLabel("Value"));
-//    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-//    row1->addWidget(ResidenceValue);
-//    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-//    row2->addWidget(new QLabel("Location"));
-//    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-//    row2->addWidget(Location);
-//    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-//    Contents->addLayout(row1);
-//    Contents->addLayout(row2);
+    QWidget * Residence = new QWidget();
+    QHBoxLayout * ResidenceLayout = new QHBoxLayout;
+    ResidenceLayout->addWidget(new QLabel("Residence")); // Throw label on the left
 
-//    QHBoxLayout * Buttons = new QHBoxLayout;  // Contains all the buttons
-//    QPushButton * Add = new QPushButton("Add Residence"), * Remove = new QPushButton("Remove Residence");
-//    Buttons->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
-//    Buttons->addWidget(Add);
-//    Buttons->addWidget(Remove);
-//    Contents->addLayout(Buttons);
+    QVBoxLayout * Contents = new QVBoxLayout; // Contents of the stock
+    ResidenceLayout->addLayout(Contents);
+    QHBoxLayout * row1 = new QHBoxLayout, *row2 = new QHBoxLayout;
+    QLineEdit * ResidenceValue = new QLineEdit, * Location = new QLineEdit;
+    ResidenceValue->setObjectName(QString("ResidenceData") + QString::number(resCounter++));
+    Location->setObjectName(QString("ResidenceData") + QString::number(resCounter++));
+    row1->addWidget(new QLabel("Value"));
+    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row1->addWidget(ResidenceValue);
+    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row2->addWidget(new QLabel("Location"));
+    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row2->addWidget(Location);
+    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Contents->addLayout(row1);
+    Contents->addLayout(row2);
 
-//    // Adds the stock field
-//    Residence->setLayout(ResidenceLayout);
-//    this->ui->Residences->addWidget(Residence);
+    QHBoxLayout * Buttons = new QHBoxLayout;  // Contains all the buttons
+    QPushButton * Add = new QPushButton("Add Residence"), * Remove = new QPushButton("Remove Residence");
+    Buttons->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Buttons->addWidget(Add);
+    Buttons->addWidget(Remove);
+    Buttons->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Contents->addLayout(Buttons);
 
-//    // Binds the event trigger
-//    connect(Add, SIGNAL(released()), this, SLOT(addResidence()));
-//    connect(Remove, SIGNAL(released()), this, SLOT(removeResidence()));
+    // SetValidator for shares
+    ResidenceValue->setValidator(validDouble);
+    Location->setValidator(validInt);
+
+    // Adds the stock field
+    Residence->setLayout(ResidenceLayout);
+    this->ui->Residences->addWidget(Residence);
+
+    // Binds the event trigger
+    connect(Add, SIGNAL(released()), this, SLOT(addResidence()));
+    connect(Remove, SIGNAL(released()), this, SLOT(removeResidence()));
+
 }
 
 void predictionInputAssets::addRental()
@@ -159,13 +166,13 @@ void predictionInputAssets::addRental()
 
 void predictionInputAssets::removeResidence()
 {
-//    if (this->ui->Residences->count() > 1)
-//    {
-//        QPushButton * removeButton = (QPushButton*)sender();
-//        QWidget * target = removeButton->parentWidget();
-//        this->ui->Residences->removeWidget(target);
-//        delete target;
-//    }
+    if (this->ui->Residences->count() > 1)
+    {
+        QPushButton * removeButton = (QPushButton*)sender();
+        QWidget * target = removeButton->parentWidget();
+        this->ui->Residences->removeWidget(target);
+        delete target;
+    }
 }
 
 void predictionInputAssets::removeRental()
