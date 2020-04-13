@@ -6,6 +6,7 @@ class Controller;
 
 #include <QWidget>
 #include <QLabel>
+#include <QSignalMapper>
 
 namespace Ui {
 class InputBudget;
@@ -22,6 +23,7 @@ public:
 private:
     Ui::InputBudget *ui;
     Controller * controller;
+    QSignalMapper * signalMapper;
 
     void getCategoryData();
     // Should have 1 category for budget, for example "100% of my budget is dedicated to collecting empty danimal bottles"

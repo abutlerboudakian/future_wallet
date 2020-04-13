@@ -5,7 +5,27 @@ InputBudget::InputBudget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InputBudget)
 {
+    signalMapper = new QSignalMapper(this);
     ui->setupUi(this);
+    this->controller = controller;
+
+    connect(ui->Cancel, SIGNAL(released()), this, SLOT(Exit()));
+    connect(ui->Create, SIGNAL(released()), this, SLOT(Create()));
+    connect(ui->AddCat, SIGNAL(released()), this, SLOT(addCategory()));
+    connect(ui->RemoveCat, SIGNAL(released()), this, SLOT(removeCategory()));
+
+    // For all possible sliders, listen for a possible value change
+    for (int i = 0; i < ui->Categories->count(); i++)
+    {
+        QList<QSlider*> slider = ((QWidget*) ui->Categories->itemAt(i))
+                ->findChildren<QSlider*>(QRegularExpression(QString("/Slider\\d/g")));
+        QList<QLabel*> label = ((QWidget*) ui->Categories->itemAt(i))
+                ->findChildren<QLabel*>(QRegularExpression(QString("/Value\\d/g")));
+
+        connect(slider[0], SIGNAL(valueChanged(int)), signalMapper, SLOT(map()));
+        signalMapper->setMapping(slider[0], label[0]);
+        connect(signalMapper, SIGNAL(mapped(QWidget*)),this, SLOT(updateLabel(slider[0], label[0])));
+    }
 }
 
 InputBudget::~InputBudget()
@@ -120,9 +140,9 @@ void InputBudget::removeCategory() {
     }
 }
 
-// Function to modify label that has respective slider
-/* @modifies this->ui
+// Function to modify label whenever its respective slider is modified by user
+/* @modifies this->ui->label to value of slider
  */
-void InputBudget::updateLabel(QSlider * slider, QLabel *label) {
-    return;
+void InputBudget::updateLabel(QSlider *slider, QLabel *label) {
+    label->setText(QString::number(slider->value()));
 }
