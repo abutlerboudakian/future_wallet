@@ -11,7 +11,6 @@ uEng = dbutil.connect_engine('accountdata')
 modeldir = ''
 fips = pd.read_sql('SELECT ZIP, Lat, Long FROM FIPS', con=mEng)
 app = Flask(__name__)
-app.config["DEBUG"] = True
 active_users = set()
 mfac = ModelFactory()
 
@@ -231,18 +230,27 @@ def update():
 def getIndustries():
 	response = {}
 	with mEng.connect() as mConn:
-		industries = pd.read_sql("SELECT DISTINCT Name FROM NAICS ORDER BY IndustryCode ASC")
+		industries = pd.read_sql("SELECT DISTINCT Name FROM NAICS", con=mConn)
 
 	response['industries'] = industries['Name'].tolist()
-	return jsonify(response)
+	return make_response(response, 200)
 
 @app.route('/getTickers', methods=['GET'])
 def getTickers():
 	response = {}
 	with mEng.connect() as mConn:
-		tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks ORDER BY Ticker ASC")
+		tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks", con=mConn)
 
 	response['tickers'] = tickers['Ticker'].tolist()
-	return jsonify(response)
+	return make_response(response, 200)
 
-app.run()
+@app.route('/getActiveUsers', methods=['GET'])
+def getActiveUsers():
+	response = {}
+	with uEng.connect() as uConn:
+		response['users'] = list(active_users)
+
+	return make_response(response, 200)
+
+if __name__ == '__main__':
+	app.run()

@@ -52,7 +52,7 @@ private slots:
 private:
     QNetworkAccessManager NAMSender;
     QByteArray Data;
-    QString Location = "http://127.0.0.1:5000";
+    QString Location = "http://butlea2.cs.rpi.edu";
 };
 
 #endif // REQUESTS_H
