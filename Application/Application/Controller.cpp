@@ -172,8 +172,7 @@ void Controller::login(QString userid, QString Password)
 {
     // Andrew should implement this
 
-    this->main->setUserName(userid);
-    //this->main->showMenu();
+    ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
     ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
     this->switchToDashBoard();
 }
@@ -182,9 +181,13 @@ void Controller::login(QString userid, QString Password)
 // @requires user is already logged in
 void Controller::logout()
 {
-    //ReqObj->logout(...);
-    this->main->hideMenu();
-    this->switchToLogin();
+    // If not logged in
+    if (this->Views->currentIndex() != Views::Login)
+    {
+        //ReqObj->logout(...);
+        this->switchToLogin();
+        qDebug() << "Hello there";
+    }
 }
 
 /* Function posts registration information to the database

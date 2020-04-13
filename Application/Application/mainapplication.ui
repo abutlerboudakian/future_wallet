@@ -26,7 +26,7 @@
    </property>
    <widget class="QMenu" name="UserName">
     <property name="title">
-     <string>UserName</string>
+     <string>Options</string>
     </property>
     <addaction name="AccountPage"/>
     <addaction name="LogOut"/>
