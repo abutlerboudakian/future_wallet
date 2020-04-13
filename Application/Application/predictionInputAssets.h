@@ -17,6 +17,7 @@ class predictionInputAssets : public QWidget
 public:
     explicit predictionInputAssets(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~predictionInputAssets();
+    QJsonObject toJSON();
 
 private:
     Ui::predictionInputAssets *ui;
