@@ -24,6 +24,7 @@ private:
     Controller * controller;
     QDoubleValidator * validDouble;
     QIntValidator * validInt;
+    QIntValidator * validInt2;
 
 private:
     void setupValidator();

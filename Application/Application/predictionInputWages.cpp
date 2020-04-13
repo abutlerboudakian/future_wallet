@@ -17,6 +17,8 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
 predictionInputWages::~predictionInputWages()
 {
     delete ui;
+    delete validDouble;
+    delete validInt;
 }
 
 // Function to setup validators for all inputs
@@ -24,8 +26,10 @@ void predictionInputWages::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
     validInt = new QIntValidator(0, 99, this);
-    ui->lineEdit->setValidator(validInt);
-    ui->lineEdit_2->setValidator(validDouble);
+    validInt2 = new QIntValidator(0, 99999, this);
+    ui->Time->setValidator(validInt);
+    ui->Location->setValidator(validInt2);
+    ui->Amount->setValidator(validDouble);
 }
 
 // Slots
