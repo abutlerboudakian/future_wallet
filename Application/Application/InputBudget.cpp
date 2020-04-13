@@ -42,14 +42,13 @@ void InputBudget::getCategoryData() {
     std::cout<<"Done"<<std::endl;
 }
 
-// Function to save budget and then save to dashboard with updated budget
+// Function to save budget and then switch to dashboard with updated budget
 void InputBudget::Create() {
     // Add code to tell controller to update it's AssetModel
     this->controller->switchToDashBoard();
 }
 
-// Function to switch view back to the dashboard and save current
-// progress in controller
+// Function to switch view back to the dashboard and abandon budget
 void InputBudget::Exit() {
     // Add code to tell controller to update it's AssetModel
     this->controller->switchToDashBoard();
@@ -61,7 +60,49 @@ void InputBudget::Exit() {
  *
  */
 void InputBudget::addCategory() {
-   return;
+    // Horizontal layout that will contain new category
+    QHBoxLayout *horizonalLayout = new QHBoxLayout();
+    std::string layoutName = "horizontalLayout_" + std::to_string(counter - 1);
+    horizonalLayout->setObjectName(QString::fromUtf8(layoutName));
+
+    // New category line edit
+    QLineEdit *newCategory = new QLineEdit;
+    std::string catName = "Category" + std::to_string(counter - 1);
+    newCategory->setObjectName(QString::fromUtf8(catName));
+
+    // New slider
+    QSlider *slider = new QSlider;
+    std::string sliderName = "Slider" + std::to_string(counter - 1);
+    slider->setObjectName(QString::fromUtf8(sliderName));
+    slider->setMaximum(100);
+    slider->setOrientation(Qt::Horizontal);
+    slider->setTickPosition(QSlider::TicksBelow);
+    slider->setTickInterval(1);
+
+    // New value of slider
+    QLabel *valueOfSlider = new QLabel;
+    std::string valueName = "Value" + std::to_string(counter - 1);
+    valueOfSlider->setObjectName(QString::fromUtf8(valueName));
+
+    // Horizontal spacer/size policy of layout
+    QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    sizePolicy.setHorizontalStretch(0);
+    sizePolicy.setVerticalStretch(0);
+    sizePolicy.setHeightForWidth(newCategory->sizePolicy().hasHeightForWidth());
+
+    newCategory->setSizePolicy(sizePolicy);
+    newCategory->setMinimumSize(QSize(0, 0));
+
+    // Add all newly created widgets and items to layout
+    horizonalLayout->addWidget(newCategory);
+    horizonalLayout->addItem(horizontalSpacer);
+    horizonalLayout->addWidget(slider);
+    horizonalLayout->addWidget(valueOfSlider);
+
+    // Add layout to categories
+    ui->Categories->addLayout(horizonalLayout);
 }
 
 // Function modifies the ui to remove a category field
