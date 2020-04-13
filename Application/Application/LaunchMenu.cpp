@@ -25,7 +25,7 @@ LaunchMenu::~LaunchMenu()
 void LaunchMenu::runLogin()
 {
     std::cout<<"Hello World";
-    controller->switchToDashBoard();
+    controller->login(ui->UserField->text(), ui->PassField->text());
     return;
 }
 

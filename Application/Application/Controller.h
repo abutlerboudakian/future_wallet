@@ -13,6 +13,12 @@
 #include "predictionInputInvest.h"
 
 #include "Requests.h"
+#include <QMessageBox>
+
+class MainApplication;
+#include "mainapplication.h"
+class Menu;
+#include "Menu.h"
 
 enum Views
 {
@@ -51,10 +57,26 @@ class Controller
     void setSelectedBudget(QString budgetId);
 
     // Endpoints
+    void getPrediction();
+    void getInputs();
+
+    void addBudget(BudgetData * budget);
     QStringList getBudgetList();
+
+    void login(QString userid, QString Password);
+    void logout();
+    void Register(QString userid, QString Password);
+    void UpdateUserInfo(QString newUserId = QString(""), QString Password = QString(""));
+
+    QStringList getIndustries();
+    QStringList getTickers();
+
+    void setMain(MainApplication * main);
 
   private:
     QStackedWidget * Views;
+    MainApplication * main;
+    Menu * menubar;
 
     // Template Method Creators for the charts
     PieGUI * PieCreator;

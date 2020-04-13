@@ -2,7 +2,7 @@
 #include "ui_BudgetPage.h"
 
 BudgetPage::BudgetPage(QWidget *parent) :
-    QDialog(parent, Qt::WindowStaysOnTopHint),
+    QDialog(parent),
     ui(new Ui::BudgetPage)
 {
     ui->setupUi(this);
