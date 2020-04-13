@@ -28,6 +28,7 @@ private:
     unsigned int rentCounter = 2;
 
     QDoubleValidator * validDouble;
+    QIntValidator * validInt;
 
 private:
     void setupValidator();
