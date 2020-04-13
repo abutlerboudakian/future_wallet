@@ -21,6 +21,7 @@ SOURCES += \
     ChartTemplate.cpp \
     Controller.cpp \
     DashBoard.cpp \
+    InputBudget.cpp \
     Menu.cpp \
     Requests.cpp \
     main.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     ChartTemplate.h \
     Controller.h \
     DashBoard.h \
+    InputBudget.h \
     Menu.h \
     Requests.h \
     mainapplication.h \
@@ -49,6 +51,7 @@ FORMS += \
     BudgetPage.ui \
     DashBoard.ui \
     LaunchMenu.ui \
+    InputBudget.ui \
     predictionInputAssets.ui \
     mainapplication.ui \
     predictionInputInvest.ui \
