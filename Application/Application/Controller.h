@@ -26,7 +26,8 @@ enum Views
     Dashboard = 1,
     WagePredict = 2,
     InvestPredict = 3,
-    AssetPredict = 4
+    AssetPredict = 4,
+    InputBudget = 5
 };
 
 class Controller
@@ -44,6 +45,7 @@ class Controller
     void switchToInputWages();
     void switchToInputInvest();
     void switchToInputAsset();
+    void switchToInputBudget();
 
     void closeBudgetPage();
 

@@ -350,6 +350,14 @@ void Controller::switchToInputInvest()
     this->Views->setCurrentIndex(Views::InvestPredict);
 }
 
+/* Creates and displays the InputBudget view
+ * @modifies this->View
+ * @effects this->View's top most QWidget is now Views::InputBudget
+ */
+void Controller::switchToInputBudget(){
+    this->Views->setCurrentIndex(Views::InputBudget);
+}
+
 //-------------------------------------
 // Charts                             |
 //-------------------------------------
