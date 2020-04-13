@@ -51,7 +51,8 @@ void BudgetPage::getLoadBudgetView()
 
 void BudgetPage::getCreateBudgetView()
 {
-
+    this->controller->switchToInputBudget();
+    return;
 }
 
 /* Function ensures that only one item in either list can be selected
