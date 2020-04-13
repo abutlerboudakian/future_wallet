@@ -72,7 +72,7 @@
        <item>
         <layout class="QVBoxLayout" name="Categories">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <layout class="QHBoxLayout" name="CategoryLayout0">
            <item>
             <widget class="QLineEdit" name="Category0">
              <property name="sizePolicy">
@@ -134,7 +134,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QHBoxLayout" name="CategoryLayout1">
            <item>
             <widget class="QLineEdit" name="Category1">
              <property name="sizePolicy">
@@ -190,7 +190,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <layout class="QHBoxLayout" name="CategoryLayout2">
            <item>
             <widget class="QLineEdit" name="Category2">
              <property name="sizePolicy">
@@ -243,7 +243,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <layout class="QHBoxLayout" name="CategoryLayout3">
            <item>
             <widget class="QLineEdit" name="Category3">
              <property name="sizePolicy">
