@@ -83,18 +83,18 @@ void InputBudget::Exit() {
 void InputBudget::addCategory() {
     // Horizontal layout that will contain new category
     QHBoxLayout *horizonalLayout = new QHBoxLayout();
-    std::string layoutName = "horizontalLayout_" + std::to_string(counter);
-    horizonalLayout->setObjectName(QString::fromUtf8(layoutName));
+    std::string layoutName = "CategoryLayout" + std::to_string(counter - 1);
+    horizonalLayout->setObjectName(QString::fromStdString(layoutName));
 
     // New category line edit
     QLineEdit *newCategory = new QLineEdit;
-    std::string catName = "Category" + std::to_string(counter);
-    newCategory->setObjectName(QString::fromUtf8(catName));
+    std::string catName = "Category" + std::to_string(counter - 1);
+    newCategory->setObjectName(QString::fromStdString(catName));
 
     // New slider
     QSlider *slider = new QSlider;
-    std::string sliderName = "Slider" + std::to_string(counter);
-    slider->setObjectName(QString::fromUtf8(sliderName));
+    std::string sliderName = "Slider" + std::to_string(counter - 1);
+    slider->setObjectName(QString::fromStdString(sliderName));
     slider->setMaximum(100);
     slider->setOrientation(Qt::Horizontal);
     slider->setTickPosition(QSlider::TicksBelow);
@@ -103,7 +103,7 @@ void InputBudget::addCategory() {
     // New value of slider
     QLabel *valueOfSlider = new QLabel;
     std::string valueName = "Value" + std::to_string(counter - 1);
-    valueOfSlider->setObjectName(QString::fromUtf8(valueName));
+    valueOfSlider->setObjectName(QString::fromStdString(valueName));
 
     // Horizontal spacer/size policy of layout
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -124,6 +124,7 @@ void InputBudget::addCategory() {
 
     // Add layout to categories
     ui->Categories->addLayout(horizonalLayout);
+    counter++;
 }
 
 // Function modifies the ui to remove a category field
@@ -133,10 +134,11 @@ void InputBudget::addCategory() {
 void InputBudget::removeCategory() {
     // There should always be at least "counter" amount of budgets
     if (this->ui->Categories->count() > counter) {
-        QPushButton * removeButton = (QPushButton*)sender();
-        QWidget * target = removeButton->parentWidget();
-        this->ui->Categories->removeWidget(target);
-        delete target;
+        std::string lastLayoutStr = "CategoryLayout" + std::to_string(counter - 1);
+        QHBoxLayout* lastLayout = ui->Categories->findChild<QHBoxLayout*>(QString::fromStdString(lastLayoutStr));
+
+        this->ui->Categories->removeItem(lastLayout);
+        delete lastLayout;
     }
 }
 
