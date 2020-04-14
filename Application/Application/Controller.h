@@ -11,6 +11,7 @@
 #include "predictionInputAssets.h"
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
+#include "InputBudget.h"
 
 #include "Requests.h"
 #include <QMessageBox>
