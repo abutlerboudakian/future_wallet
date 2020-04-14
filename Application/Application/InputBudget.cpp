@@ -82,7 +82,7 @@ void InputBudget::Exit() {
  */
 void InputBudget::addCategory() {
     // Horizontal layout that will contain new category
-    QHBoxLayout *horizonalLayout = new QHBoxLayout();
+    QHBoxLayout *horizonalLayout = new QHBoxLayout;
     std::string layoutName = "CategoryLayout" + std::to_string(counter - 1);
     horizonalLayout->setObjectName(QString::fromStdString(layoutName));
 
@@ -101,7 +101,7 @@ void InputBudget::addCategory() {
     slider->setTickInterval(1);
 
     // New value of slider
-    QLabel *valueOfSlider = new QLabel;
+    QLabel * valueOfSlider = new QLabel;
     std::string valueName = "Value" + std::to_string(counter - 1);
     valueOfSlider->setObjectName(QString::fromStdString(valueName));
 
