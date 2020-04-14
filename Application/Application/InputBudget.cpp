@@ -1,7 +1,7 @@
 #include "InputBudget.h"
 #include "ui_InputBudget.h"
 
-InputBudget::InputBudget(QWidget *parent) :
+InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     QWidget(parent),
     ui(new Ui::InputBudget)
 {

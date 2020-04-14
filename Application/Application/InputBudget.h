@@ -7,6 +7,7 @@ class Controller;
 #include <QWidget>
 #include <QLabel>
 #include <QSignalMapper>
+#include <QSlider>
 
 namespace Ui {
 class InputBudget;
@@ -17,7 +18,7 @@ class InputBudget : public QWidget
     Q_OBJECT
 
 public:
-    explicit InputBudget(QWidget *parent = nullptr);
+    explicit InputBudget(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~InputBudget();
 
 private:
