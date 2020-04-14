@@ -286,7 +286,7 @@ bool Requests::login(QString userId, QString Password)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-    if (statusCode != 200)
+    if (statusCode == 200)
     {
         return true;
     }
