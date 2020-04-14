@@ -15,6 +15,7 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     connect(ui->RemoveCat, SIGNAL(released()), this, SLOT(removeCategory()));
 
     // For all possible sliders, listen for a possible value change
+    /**
     for (int i = 0; i < ui->Categories->count(); i++)
     {
         QList<QSlider*> slider = ((QWidget*) ui->Categories->itemAt(i))
@@ -26,6 +27,7 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
         signalMapper->setMapping(slider[0], label[0]);
         connect(signalMapper, SIGNAL(mapped(QWidget*)),this, SLOT(updateLabel(slider[0], label[0])));
     }
+    **/
 }
 
 InputBudget::~InputBudget()
