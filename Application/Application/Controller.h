@@ -28,7 +28,7 @@ enum Views
     WagePredict = 2,
     InvestPredict = 3,
     AssetPredict = 4,
-    InputBudget = 5
+    BudgetInput = 5
 };
 
 class Controller

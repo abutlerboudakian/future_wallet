@@ -355,7 +355,7 @@ void Controller::switchToInputInvest()
  * @effects this->View's top most QWidget is now Views::InputBudget
  */
 void Controller::switchToInputBudget(){
-    this->Views->setCurrentIndex(Views::InputBudget);
+    this->Views->setCurrentIndex(Views::BudgetInput);
 }
 
 //-------------------------------------
