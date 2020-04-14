@@ -5,7 +5,7 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     QWidget(parent),
     ui(new Ui::InputBudget)
 {
-    signalMapper = new QSignalMapper(this);
+    // signalMapper = new QSignalMapper(this);
     ui->setupUi(this);
     this->controller = controller;
 
