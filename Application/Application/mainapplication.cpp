@@ -77,7 +77,7 @@ void MainApplication::CreateViews(Controller * maincontroller)
     Views->addWidget(new predictionInputWages(this, maincontroller));
     Views->addWidget(new predictionInputInvest(this, maincontroller));
     Views->addWidget(new predictionInputAssets(this, maincontroller));
-    Views->addWidget(new class InputBudget(this, maincontroller));
+    Views->addWidget(new InputBudget(this, maincontroller));
     setCentralWidget(Views);
     Views->show();
 }
