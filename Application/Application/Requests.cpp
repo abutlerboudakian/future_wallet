@@ -129,7 +129,7 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
     // Body
     QJsonObject body, categories;
     body.insert("userid", userid);
-    //body.insert("name", budget->getName());
+    body.insert("name", budget->getName());
     const ChartMap * cats = budget->getBudgetChartMap();
     for (ChartMap::const_iterator i = cats->begin(); i != cats->end(); i++)
     {   // Add each category

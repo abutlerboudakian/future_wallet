@@ -257,7 +257,7 @@ void predictionInputInvest::addStock(QString name, double shares)
 
     // Set default value for stock name and shares
     int index = StockName->findData(name);
-    StockName->setCurrentIndex((index < 0 ? 1 : index));
+    StockName->setCurrentIndex((index < 0 ? 0 : index));
     QString str_shares = QString::number(shares);
     Shares->setText(str_shares);
 

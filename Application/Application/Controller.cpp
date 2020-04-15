@@ -69,7 +69,16 @@ const BudgetData * Controller::getBudgetData(QString budgetId)
             delete this->budget;
         }
         this->budget = ReqObj->loadBudget(budgetId, "Userid");
-        // Include error modal here
+        if (this->budget->isEmpty())
+        {
+            QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", QString("Could not retrieve budget \"") + budgetId + QString("\". Try again."));
+            errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
+            errModal->show();
+        }
+        if (this->budget->getDollar() == 0.0)
+        {   // Set dollar amount
+            this->budget->setDollar((*(this->metrics))[0] + (*(this->metrics))[1] + (*(this->metrics))[2]);
+        }
     }
     return this->budget;
 }
@@ -355,6 +364,7 @@ void Controller::switchToBudgetPage()
  * @effects this->View's top most QWidget is now Views::InputBudget
  */
 void Controller::switchToInputBudget(){
+    ((InputBudget*)this->Views->widget(Views::BudgetInput))->resetBudget();
     this->Views->setCurrentIndex(Views::BudgetInput);
 }
 
