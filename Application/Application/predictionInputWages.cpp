@@ -55,6 +55,45 @@ QJsonObject predictionInputWages::toJSON()
     return data;
 }
 
+void predictionInputWages::fromJson(QJsonObject savedData)
+{
+    // populate Amount
+    QJsonObject::Iterator it = savedData.find("income");
+    if ( it != savedData.end() )
+    {
+        ui->Amount->setText(it.value().toString());
+    }
+
+    // populate Location
+    it = savedData.find("loc");
+    if ( it != savedData.end() )
+    {
+        ui->Location->setText(it.value().toString());
+    }
+
+    // populate Time
+    it = savedData.find("hourspw");
+    if ( it != savedData.end() )
+    {
+        ui->Time->setText(it.value().toString());
+    }
+
+    // set IncomeType to the proper index
+    it = savedData.find("hourly");
+    if ( it != savedData.end() && it.value().toBool() == false )
+    {
+        int index = ui->IncomeType->findData("Salary");
+        ui->IncomeType->setCurrentIndex(index);
+    }
+
+    // set Industry to the proper index
+    it = savedData.find("industryCode");
+    if ( it != savedData.end() )
+    {
+        int index = ui->Industry->findData(it.value().toString());
+        ui->Industry->setCurrentIndex(index);
+    }
+}
 
 // Slots
 
