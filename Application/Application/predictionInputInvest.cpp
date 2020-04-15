@@ -88,6 +88,31 @@ void predictionInputInvest::getStockData()
     std::cout<<"Done"<<std::endl;
 }
 
+QJsonObject predictionInputInvest::toJSON()
+{
+    QJsonObject data;
+
+    data.insert("savings", ui->Saving->text().toDouble());
+    data.insert("cd", ui->CD->text().toDouble());
+
+    QJsonArray stocks;
+
+    QJsonObject json_stock;
+    QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
+    for (int i = 0; i < 2*ui->Stocks->count(); i+=2)
+    {
+        json_stock.insert(list[i]->text(), list[i+1]->text().toDouble());
+        stocks.push_back(json_stock);
+    }
+
+    data.insert("stocks", stocks);
+
+    data.insert("bonds", ui->Bond->text().toDouble());
+    data.insert("tbonds", ui->TBond->text().toDouble());
+
+    return data;
+}
+
 // Function modifies the ui to add a new stock field
 /* @modifies this->ui
  * @effect this->ui->Stocks has a new stock field
