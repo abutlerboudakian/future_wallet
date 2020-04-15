@@ -39,7 +39,7 @@ InputBudget::~InputBudget()
 void InputBudget::getCategoryData() {
     std::unordered_map<std::string, double> catData;
     // Get name of budget
-    QLabel *budgetLabel = this->findChild<QLabel*>(QString::fromStdString("BudgetName"));
+    QLineEdit *budgetLabel = this->findChild<QLineEdit*>(QString::fromStdString("nameBudget"));
     std::string budgetName = budgetLabel->text().toStdString();
 
     for (int i = 0; i < ui->Categories->count(); i++)
@@ -50,7 +50,7 @@ void InputBudget::getCategoryData() {
 
         // Get category int value for layout
         std::string sliderLabel = "Slider" + std::to_string(i);
-        QSlider *sliderVal = this->findChild<QSlider*>(QString::fromStdString(catLabel));
+        QSlider *sliderVal = this->findChild<QSlider*>(QString::fromStdString(sliderLabel));
 
         // Cout values to check
         std::cout << catName->text().toStdString() << sliderVal->value();

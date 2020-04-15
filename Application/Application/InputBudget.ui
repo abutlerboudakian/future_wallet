@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="BudgetName">
+      <widget class="QLabel" name="InputBudgetLabel">
        <property name="text">
         <string>Input Budget</string>
        </property>
