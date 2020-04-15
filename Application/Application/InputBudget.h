@@ -28,7 +28,7 @@ private:
 
     void getCategoryData();
     // Should have 1 category for budget, for example "100% of my budget is dedicated to collecting empty danimal bottles"
-    unsigned int counter = 1;
+    unsigned int counter = 4;
 
 private slots:
     void addCategory();

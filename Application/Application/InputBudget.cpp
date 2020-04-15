@@ -15,6 +15,7 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     connect(ui->RemoveCat, SIGNAL(released()), this, SLOT(removeCategory()));
 
     // For all possible sliders, listen for a possible value change
+    // TODO: Breaks the web-app
     /**
     for (int i = 0; i < ui->Categories->count(); i++)
     {
@@ -83,6 +84,7 @@ void InputBudget::Exit() {
  *
  */
 void InputBudget::addCategory() {
+    counter++;
     // Horizontal layout that will contain new category
     QHBoxLayout *horizonalLayout = new QHBoxLayout;
     std::string layoutName = "CategoryLayout" + std::to_string(counter - 1);
@@ -126,7 +128,6 @@ void InputBudget::addCategory() {
 
     // Add layout to categories
     ui->Categories->addLayout(horizonalLayout);
-    counter++;
 }
 
 // Function modifies the ui to remove a category field
@@ -135,12 +136,30 @@ void InputBudget::addCategory() {
  */
 void InputBudget::removeCategory() {
     // There should always be at least "counter" amount of budgets
-    if (this->ui->Categories->count() > counter) {
+    if (this->ui->Categories->count() > 1) {
         std::string lastLayoutStr = "CategoryLayout" + std::to_string(counter - 1);
-        QHBoxLayout* lastLayout = ui->Categories->findChild<QHBoxLayout*>(QString::fromStdString(lastLayoutStr));
+        /**
+        std::string lastCatStr = "Category" + std::to_string(counter - 1);
+        std::string lastSliderStr = "Slider" + std::to_string(counter - 1);
+        std::string lastValueStr = "Value" + std::to_string(counter - 1);
+        **/
 
-        this->ui->Categories->removeItem(lastLayout);
+        QHBoxLayout* lastLayout = ui->Categories->findChild<QHBoxLayout*>(QString::fromStdString(lastLayoutStr));
+        while(!lastLayout->isEmpty()) {
+            QLayout *hb = lastLayout->takeAt(0)->layout();
+            while(!hb->isEmpty()) {
+                QWidget *target = hb->takeAt(0)->widget();
+                std::cout << "I'm deleting";
+                delete target;
+            }
+            delete hb;
+        }
         delete lastLayout;
+        /**
+        QLineEdit* lastCat = ui->Categories->findChild<QLineEdit*>(QString::fromStdString(lastCatStr));
+        QSlider* lastSlide = ui->Categories->findChild<QSlider*>(QString::fromStdString(lastSliderStr));
+        QLabel* lastVal = ui->Categories->findChild<QLabel*>(QString::fromStdString(lastValueStr));
+        **/
     }
 }
 
