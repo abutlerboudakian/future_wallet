@@ -129,13 +129,14 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
     // Body
     QJsonObject body, categories;
     body.insert("userid", userid);
-    body.insert("name", budget->getName());
+    body.insert("budgetid", budget->getName());
     const ChartMap * cats = budget->getBudgetChartMap();
     for (ChartMap::const_iterator i = cats->begin(); i != cats->end(); i++)
     {   // Add each category
         categories.insert(QString::fromStdString(std::string(i->first)), i->second);
     }
     body.insert("categories", categories);
+    qDebug() << body;
 
     // Set request and callbacks
     QNetworkAccessManager * mgr = new QNetworkAccessManager(this);
@@ -204,7 +205,7 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
         qDebug() << "made it eeeeeeee";
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
         QJsonObject result = (jDoc.isArray() ? jDoc[0].toObject() : jDoc.object());
-        // budget->setName(result["name"].toString().toStdString());
+        budget->setName(result["name"].toString());
         QJsonObject categories = result["categories"].toObject();
         for (int i = 0; i < categories.keys().size(); i++)
         {

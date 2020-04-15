@@ -58,26 +58,41 @@ void Controller::setViews(QStackedWidget * Views)
  */
 const BudgetData * Controller::getBudgetData(QString budgetId)
 {
-    if (budgetId==QString("") && this->budget == nullptr)
-    {
-        this->budget = new BudgetData;
-    }
-    else if (budgetId != QString(""))
+    if (budgetId == "Uniform")
     {
         if (this->budget != nullptr)
         {
             delete this->budget;
         }
-        this->budget = ReqObj->loadBudget(budgetId, "Userid");
-        if (this->budget->isEmpty())
+        this->budget = new BudgetData;
+        this->budget->setName(budgetId);
+        this->budget->setDollar((*(this->metrics))[0] + (*(this->metrics))[1] + (*(this->metrics))[2]);
+        this->budget->addCategory("Savings", 0.5);
+        this->budget->addCategory("Spending", 0.5);
+    }
+    else
+    {
+        if (budgetId==QString("") && this->budget == nullptr)
         {
-            QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", QString("Could not retrieve budget \"") + budgetId + QString("\". Try again."));
-            errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
-            errModal->show();
+            this->budget = new BudgetData;
         }
-        if (this->budget->getDollar() == 0.0)
-        {   // Set dollar amount
-            this->budget->setDollar((*(this->metrics))[0] + (*(this->metrics))[1] + (*(this->metrics))[2]);
+        else if (budgetId != QString(""))
+        {
+            if (this->budget != nullptr)
+            {
+                delete this->budget;
+            }
+            this->budget = ReqObj->loadBudget(budgetId, "Userid");
+            if (this->budget->isEmpty())
+            {
+                QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", QString("Could not retrieve budget \"") + budgetId + QString("\". Try again."));
+                errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
+                errModal->show();
+            }
+            if (this->budget->getDollar() == 0.0)
+            {   // Set dollar amount
+                this->budget->setDollar((*(this->metrics))[0] + (*(this->metrics))[1] + (*(this->metrics))[2]);
+            }
         }
     }
     return this->budget;

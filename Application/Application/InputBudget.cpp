@@ -56,10 +56,10 @@ void InputBudget::resetBudget()
         delete this->budget;
     }
     this->budget = new BudgetData;
-    this->budget->addCategory("Category0", 0);
-    this->budget->addCategory("Category1", 0);
-    this->budget->addCategory("Category2", 0);
-    this->budget->addCategory("Category3", 0);
+    this->budget->addCategory("Category 0", 0);
+    this->budget->addCategory("Category 1", 0);
+    this->budget->addCategory("Category 2", 0);
+    this->budget->addCategory("Category 3", 0);
 
     // Reset the view
     // DO THIS LATER
@@ -100,7 +100,7 @@ void InputBudget::getCategoryData() {
 // Function to save budget and then switch to dashboard with updated budget
 void InputBudget::Create() {
     // Add code to save budget and categories
-    InputBudget::getCategoryData();
+    controller->addBudget(this->budget);
     this->controller->switchToDashBoard();
 }
 
