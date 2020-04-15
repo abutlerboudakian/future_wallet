@@ -20,6 +20,7 @@ public:
     ~predictionInputInvest();
     void getStockData();
     QJsonObject toJSON();
+    void fromJson(QJsonObject savedData);
 
 private:
     Ui::predictionInputInvest *ui;
@@ -39,6 +40,7 @@ private slots:
     void Exit();
 
     void addStock();
+    void addStock(QString name, double shares);
     void removeStock();
 };
 

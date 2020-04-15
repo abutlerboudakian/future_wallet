@@ -85,10 +85,10 @@ QJsonObject predictionInputAssets::toJSON()
 
     QJsonArray residences;
 
-    QJsonObject json_residence;
     QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("ResidenceData*")));
     for (int i = 0; i < 2*ui->Residences->count(); i+=2)
     {
+        QJsonObject json_residence;
         json_residence.insert("value", list[i]->text().toDouble());
         json_residence.insert("loc", list[i+1]->text());
         residences.push_back(json_residence);
@@ -98,10 +98,10 @@ QJsonObject predictionInputAssets::toJSON()
 
     QJsonArray rentals;
 
-    QJsonObject json_rental;
     list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("RentalData*")));
     for (int i = 0; i < 2*ui->Rentals->count(); i+=2)
     {
+        QJsonObject json_rental;
         json_rental.insert("rents", list[i]->text().toDouble());
         json_rental.insert("loc", list[i+1]->text());
         rentals.push_back(json_rental);
