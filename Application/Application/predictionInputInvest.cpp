@@ -17,7 +17,8 @@ predictionInputInvest::predictionInputInvest(QWidget *parent, Controller * contr
     connect(ui->Remove, SIGNAL(released()), this, SLOT(removeStock()));
 
     setupValidator();
-
+    stockList = controller->getTickers();
+    ui->StockData0->addItems(stockList);
 }
 
 predictionInputInvest::~predictionInputInvest()
@@ -32,7 +33,7 @@ void predictionInputInvest::setupValidator()
 
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);    ui->Saving->setValidator(validDouble);
     ui->CD->setValidator(validDouble);
-    ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
+    //ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
     ui->StockData1->setValidator(validDouble);
     ui->Mutual->setValidator(validDouble);
     ui->Bond->setValidator(validDouble);
@@ -42,7 +43,7 @@ void predictionInputInvest::setupValidator()
 // Function to change view to the asset input page
 void predictionInputInvest::getAssetView()
 {
-    this->getStockData();
+    //this->getStockData();
     // Include code to save the input to the controller
     this->controller->switchToInputAsset();
 }
@@ -65,18 +66,18 @@ void predictionInputInvest::Exit()
 /* Function used to get all the stock information
  *
  */
-void predictionInputInvest::getStockData()
+/*void predictionInputInvest::getStockData()
 {
     std::cout<<"Start"<<std::endl;
     std::unordered_map<std::string, int> StockData;
-    std::cout<<ui->Stocks->count()<<std::endl;
+    std::cout<<ui->Stocks->count()<<std::endl;*/
     /*for (unsigned int i = 0; i < ui->Stocks->count(); i++)
     {
 
         QList<QLineEdit*> fields = ((QWidget*)ui->Stocks->itemAt(i))->findChildren<QLineEdit*>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
         StockData.insert(std::pair<std::string, int>(fields[0]->text().toStdString(), fields[1]->text().toInt()));
     }*/
-    QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*"))); // Because its children of this, not children of a layout
+ /*   QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*"))); // Because its children of this, not children of a layout
     for (unsigned int i = 0; i < 2*ui->Stocks->count(); i+=2)
     {
         StockData.insert(std::pair<std::string, int>(list[i]->text().toStdString(), list[i+1]->text().toInt()));
@@ -86,7 +87,7 @@ void predictionInputInvest::getStockData()
         std::cout<<i->first<<" "<<i->second<<std::endl;
     }
     std::cout<<"Done"<<std::endl;
-}
+}*/
 
 QJsonObject predictionInputInvest::toJSON()
 {
@@ -97,11 +98,13 @@ QJsonObject predictionInputInvest::toJSON()
 
     QJsonArray stocks;
 
-    QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
-    for (int i = 0; i < 2*ui->Stocks->count(); i+=2)
+    QList<QComboBox*> names = this->findChildren<QComboBox *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
+    QList<QLineEdit*> shares = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
+    for (int i = 0; i < ui->Stocks->count(); i++)
     {
         QJsonObject json_stock;
-        json_stock.insert(list[i]->text(), list[i+1]->text().toDouble());
+        qDebug() << names[i]->itemText(names[i]->currentIndex());
+        json_stock.insert(names[i]->itemText(names[i]->currentIndex()), shares[i]->text().toDouble());
         stocks.push_back(json_stock);
     }
 
@@ -176,7 +179,9 @@ void predictionInputInvest::addStock()
     QVBoxLayout * Contents = new QVBoxLayout; // Contents of the stock
     StockLayout->addLayout(Contents);
     QHBoxLayout * row1 = new QHBoxLayout, *row2 = new QHBoxLayout;
-    QLineEdit * StockName = new QLineEdit, * Shares = new QLineEdit;
+    QLineEdit * Shares = new QLineEdit;
+    QComboBox * StockName = new QComboBox;
+    StockName->addItems(stockList);
     StockName->setObjectName(QString("StockData") + QString::number(counter++));
     Shares->setObjectName(QString("StockData") + QString::number(counter++));
     row1->addWidget(new QLabel("Stock Name"));
@@ -200,7 +205,7 @@ void predictionInputInvest::addStock()
 
     // SetValidator for shares
     Shares->setValidator(validDouble);
-    StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
+    //StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
 
     // Adds the stock field
     Stock->setLayout(StockLayout);
@@ -213,6 +218,7 @@ void predictionInputInvest::addStock()
 
 void predictionInputInvest::addStock(QString name, double shares)
 {
+    qDebug()<<"Other";
     // Constructs a stock field
     QWidget * Stock = new QWidget();
     QHBoxLayout * StockLayout = new QHBoxLayout;
@@ -221,7 +227,9 @@ void predictionInputInvest::addStock(QString name, double shares)
     QVBoxLayout * Contents = new QVBoxLayout; // Contents of the stock
     StockLayout->addLayout(Contents);
     QHBoxLayout * row1 = new QHBoxLayout, *row2 = new QHBoxLayout;
-    QLineEdit * StockName = new QLineEdit, * Shares = new QLineEdit;
+    QLineEdit * Shares = new QLineEdit;
+    QComboBox * StockName = new QComboBox;
+    StockName->addItems(stockList);
     StockName->setObjectName(QString("StockData") + QString::number(counter++));
     Shares->setObjectName(QString("StockData") + QString::number(counter++));
     row1->addWidget(new QLabel("Stock Name"));
@@ -245,10 +253,11 @@ void predictionInputInvest::addStock(QString name, double shares)
 
     // Set Validator for shares
     Shares->setValidator(validDouble);
-    StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
+    //StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
 
     // Set default value for stock name and shares
-    StockName->setText(name);
+    int index = StockName->findData(name);
+    StockName->setCurrentIndex((index < 0 ? 1 : index));
     QString str_shares = QString::number(shares);
     Shares->setText(str_shares);
 

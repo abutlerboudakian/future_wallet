@@ -14,6 +14,7 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
     setupValidator();
+    ui->Industry->addItems(controller->getIndustries());
 }
 
 predictionInputWages::~predictionInputWages()

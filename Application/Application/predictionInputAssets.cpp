@@ -43,7 +43,8 @@ void predictionInputAssets::setupValidator()
 void predictionInputAssets::submitInputs()
 {
     // add more code to tell the controller to send the data it has to the server and update the model for Assets
-    this->controller->switchToDashBoard(); // Perhaps move this to controller
+    this->controller->getPrediction();
+    //this->controller->switchToDashBoard(); // Perhaps move this to controller
 }
 
 // Function to change view to the previous page, the Wages View

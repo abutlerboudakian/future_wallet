@@ -87,6 +87,7 @@ class Controller
     BudgetData * budget;
     // metrics;
     std::vector<double> * metrics; // [wages growth, investment growth, asset growth, years]
+    int years; // Years for recent prediction
 
     // BudgetModal Boolean
     bool BudgetModal = false;

@@ -18,7 +18,6 @@ Controller::Controller()
   budget->addCategory(QString("Ores"), 0.4);*/
 
   ReqObj = new Requests;
-  this->userid = QString("Hello WOrld");
   ReqObj->getIndustries();
   ReqObj->getStocks();
 }
@@ -126,8 +125,10 @@ void Controller::getPrediction()
         delete this->metrics;
     }
 
-
-    this->metrics = ReqObj->getPrediction();
+    QJsonObject Wages = ((predictionInputWages*)this->Views->widget(Views::WagePredict))->toJSON();
+    QJsonObject Invest = ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->toJSON();
+    QJsonObject Assets = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->toJSON();
+    this->metrics = ReqObj->getPrediction(userid, Wages, Invest, Assets, years);
     if (this->metrics->empty())
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not make prediction. Try again.");
@@ -135,6 +136,7 @@ void Controller::getPrediction()
         errModal->show();
     }
     ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
+    this->switchToDashBoard();
 }
 
 /* Function to get input from the database and populate the views
@@ -144,7 +146,20 @@ void Controller::getPrediction()
  */
 void Controller::getInputs()
 {
-
+    QJsonObject data = ReqObj->getInputs(userid);
+    if (data.contains("error"))
+    {
+        QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not obtain stored input data. Try again after restarting the App.");
+        errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
+        errModal->show();
+    }
+    else
+    {
+        ((predictionInputWages*)this->Views->widget(Views::WagePredict))->fromJson(data["wages"].toObject());
+        ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->fromJson(data["invests"].toObject());
+        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data["assets"].toObject());
+        years = data["years"].toInt();
+    }
 }
 
 /* Function to add a budget to the database
@@ -182,6 +197,7 @@ void Controller::login(QString userid, QString Password)
     // Andrew should implement this
     if (ReqObj->login(userid, Password))
     {
+        this->userid = userid;
         ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
         ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
         this->switchToDashBoard();
@@ -218,9 +234,9 @@ void Controller::Register(QString userid, QString Password)
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully created an account! Please login.");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();
-        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
+        /*((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
         ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
-        this->switchToDashBoard();
+        this->switchToDashBoard();*/
     }
     else
     {
