@@ -17,8 +17,6 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     // For all possible sliders, listen for a possible value change
     // TODO: Breaks the web-app
     /**
-    for (int i = 0; i < ui->Categories->count(); i++)
-    {
         QList<QSlider*> slider = ((QWidget*) ui->Categories->itemAt(i))
                 ->findChildren<QSlider*>(QRegularExpression(QString("/Slider\\d/g")));
         QList<QLabel*> label = ((QWidget*) ui->Categories->itemAt(i))
@@ -27,7 +25,6 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
         connect(slider[0], SIGNAL(valueChanged(int)), signalMapper, SLOT(map()));
         signalMapper->setMapping(slider[0], label[0]);
         connect(signalMapper, SIGNAL(mapped(QWidget*)),this, SLOT(updateLabel(slider[0], label[0])));
-    }
     **/
 }
 
@@ -132,34 +129,27 @@ void InputBudget::addCategory() {
 
 // Function modifies the ui to remove a category field
 /* @modifies this->ui
- * @effect this->ui->Stocks has one less category field, unless only 1 budget category is left. Preferably an error message pops up.
+ * @effect this->ui->Stocks has one less category field, unless only 1 budget category is left. Error message pops up if user attempts to delete
+ * all budgets
  */
 void InputBudget::removeCategory() {
-    // There should always be at least "counter" amount of budgets
+    // There should always be at least 1 budget category
     if (this->ui->Categories->count() > 1) {
         std::string lastLayoutStr = "CategoryLayout" + std::to_string(counter - 1);
-        /**
-        std::string lastCatStr = "Category" + std::to_string(counter - 1);
-        std::string lastSliderStr = "Slider" + std::to_string(counter - 1);
-        std::string lastValueStr = "Value" + std::to_string(counter - 1);
-        **/
 
         QHBoxLayout* lastLayout = ui->Categories->findChild<QHBoxLayout*>(QString::fromStdString(lastLayoutStr));
         while(!lastLayout->isEmpty()) {
-            QLayout *hb = lastLayout->takeAt(0)->layout();
-            while(!hb->isEmpty()) {
-                QWidget *target = hb->takeAt(0)->widget();
-                std::cout << "I'm deleting";
-                delete target;
-            }
-            delete hb;
+            QWidget *target = lastLayout->takeAt(0)->widget();
+            std::cout << "I'm deleting";
+            delete target;
         }
         delete lastLayout;
-        /**
-        QLineEdit* lastCat = ui->Categories->findChild<QLineEdit*>(QString::fromStdString(lastCatStr));
-        QSlider* lastSlide = ui->Categories->findChild<QSlider*>(QString::fromStdString(lastSliderStr));
-        QLabel* lastVal = ui->Categories->findChild<QLabel*>(QString::fromStdString(lastValueStr));
-        **/
+        counter--;
+    } else {
+        QMessageBox messageBox;
+        messageBox.critical(0,"Error","At least one category required for budget.");
+        messageBox.setFixedSize(500,200);
+        return;
     }
 }
 
