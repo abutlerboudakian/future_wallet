@@ -9,10 +9,10 @@ Requests::Requests(QObject * parent) : QObject(parent) {}
 
 /* Function to send user inputs to run the
  * model on for an income prediction
- * @param
+ * @param data is a QJsonObject from all three input forms
  * @returns a vector matching Controller->metrics
  */
-std::vector<double> * Requests::getPrediction(...)
+std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages, QJsonObject Invest, QJsonObject Assets, int years)
 {
     // Endpoint
     QUrl url(Location + QString("/submitInputs"));
@@ -21,13 +21,17 @@ std::vector<double> * Requests::getPrediction(...)
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    // Body
-    QJsonObject body;
-    body.insert("test", 5);
-
     // Set request and callbacks
     QNetworkAccessManager * mgr = new QNetworkAccessManager(this);
     connect(mgr,SIGNAL(finished(QNetworkReply*)),this,SLOT(readData(QNetworkReply*)));
+
+    // Body
+    QJsonObject body;
+    body.insert("userid", userId);
+    body.insert("wages", Wages);
+    body.insert("invests", Invest);
+    body.insert("assets", Assets);
+    body.insert("years", years);
 
     // Send request
     QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
@@ -54,39 +58,31 @@ std::vector<double> * Requests::getPrediction(...)
         metric->push_back(result["years"].toInt());
     }
     return metric;
-    //qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-
-    /*QJsonDocument result = QJsonDocument::fromJson(Data);
-    qDebug() << result;
-    qDebug() << result[0]; // Since it was in array form
-    QJsonObject jsonResult = result[0].toObject(); // since we need the object itself
-    qDebug() << jsonResult; // shows that it is the object
-    qDebug() << jsonResult["BudgetName"].toString(); // to get the budget name*/
-    //std::cout<<((QJsonDocument::fromJson(QString(Data).toUtf8()))["BudgetName"]).toString().toStdString()<<std::endl;
 }
 
 /* Function to get the user's most recent inputs
+ * @param userid is the userid of the currently logged in user
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representation of the returned user inputs,
+ *         or an error if it failed to retrieve it
+ * @returns a QJsonObject of the input data
+ *          or {"error":1} on error
  */
-void Requests::getInputs(...)
+QJsonObject Requests::getInputs(QString userid)
 {
     // Endpoint
-    QUrl url(Location + QString("/getInputs"));
+    QUrl url(Location + QString("/getInputs") + QString("?userid=") + userid);
 
     // Header
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    // Body
-    QJsonObject body;
-    body.insert("test", 5);
 
     // Set request and callbacks
     QNetworkAccessManager * mgr = new QNetworkAccessManager(this);
     connect(mgr,SIGNAL(finished(QNetworkReply*)),this,SLOT(readData(QNetworkReply*)));
 
     // Send request
-    QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
+    QNetworkReply * reply = mgr->get(request);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
@@ -97,8 +93,18 @@ void Requests::getInputs(...)
     reply->close();
     reply->deleteLater();
 
-    // Do stuff
-    std::cout<<"Damn it works"<<std::endl;
+    if (statusCode == 200)
+    {
+        QJsonDocument jDoc = QJsonDocument::fromJson(Data);
+        QJsonObject res = (jDoc.isArray() ? jDoc[0].toObject() : jDoc.object());
+        return res;
+    }
+    else
+    {
+        QJsonObject res;
+        res.insert("error", 1);
+        return res;
+    }
 }
 
 // -----------------------------------------------------
@@ -108,6 +114,7 @@ void Requests::getInputs(...)
 /* Function to add a user created budget to the database
  * @param budget is the BudgetData we plan to submit
  * @param userid is the userid we plan to add the budget to
+ * @returns true if the budget was added, false otherwise
  */
 bool Requests::addBudget(BudgetData * budget, QString userid)
 {
@@ -156,6 +163,10 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
 }
 
 /* Function to get budget information on a user specific budget
+ * @param budgetId is the name of the budget to get
+ * @param userId is the user whose budget we are getting
+ * @returns BugdetData() if it failed to get the budget data
+ *          or the BudgetData representation of the budget on successful retrieval
  */
 BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 {
@@ -194,7 +205,7 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
         QJsonObject result = (jDoc.isArray() ? jDoc[0].toObject() : jDoc.object());
         // budget->setName(result["name"].toString().toStdString());
         QJsonObject categories = result["categories"].toObject();
-        for (unsigned int i = 0; i < categories.keys().size(); i++)
+        for (int i = 0; i < categories.keys().size(); i++)
         {
             QString key = categories.keys()[i];
             budget->addCategory(key, categories.value(key).toDouble());
@@ -204,9 +215,11 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 }
 
 /* Function to get a list of budget names the user created
- * @returns a list of budget names
+ * @param userId is the userid of the currently logged in user
+ * @returns (true, a list of budget names) if successful
+ *          (false, empty) if an error occurred.
  */
-QStringList Requests::listBudgets(QString userId)
+std::pair<bool, QStringList> Requests::listBudgets(QString userId)
 {
     // Endpoint
     QUrl url(Location + QString("/getAllBudgets?userid=") + userId);
@@ -231,19 +244,20 @@ QStringList Requests::listBudgets(QString userId)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-    QStringList BudgetNames;
+    std::pair<bool, QStringList> res;
+    res.first = false;
     if (statusCode == 200)
     {
+        res.first = true;
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
         QJsonObject result = (jDoc.isArray() ? jDoc[0].toObject() : jDoc.object());
         QJsonArray names = result["budgets"].toArray();
-        for (unsigned int i = 0; i < names.size(); i++)
+        for (int i = 0; i < names.size(); i++)
         {
-            BudgetNames.push_back(names[i].toString());
+            res.second.push_back(names[i].toString());
         }
     }
-    qDebug() << BudgetNames;
-    return BudgetNames;
+    return res;
 }
 
 
@@ -252,6 +266,9 @@ QStringList Requests::listBudgets(QString userId)
 // -----------------------------------------------------
 
 /* Function to login a user and get their oauth
+ * @param userId is the username of the person trying to log in
+ * @param Password is the raw password of the person trying to log in
+ * @returns true if the user credentials match, false otherwise
  */
 bool Requests::login(QString userId, QString Password)
 {
@@ -297,6 +314,7 @@ bool Requests::login(QString userId, QString Password)
 }
 
 /* Function for user to log out -- call this when app closes too
+ * @param userId is the id of the currently logged in user
  */
 void Requests::logout(QString userId)
 {
@@ -324,9 +342,6 @@ void Requests::logout(QString userId)
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
-    std::cout<<"Damn it works"<<std::endl;
-    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
 
@@ -476,7 +491,7 @@ QStringList Requests::getIndustries()
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
         QJsonObject result = (jDoc.isArray() ? jDoc[0].toObject() : jDoc.object());
         QJsonArray names = result["industries"].toArray();
-        for (unsigned int i = 0; i < names.size(); i++)
+        for (int i = 0; i < names.size(); i++)
         {
             Industries.push_back(names[i].toString());
         }
@@ -519,7 +534,7 @@ QStringList Requests::getStocks()
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
         QJsonObject result = (jDoc.isArray() ? jDoc[0].toObject() : jDoc.object());
         QJsonArray names = result["tickers"].toArray();
-        for (unsigned int i = 0; i < names.size(); i++)
+        for (int i = 0; i < names.size(); i++)
         {
             Tickers.push_back(names[i].toString());
         }

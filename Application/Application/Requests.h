@@ -26,14 +26,14 @@ public:
     explicit Requests(QObject * parent = nullptr);
 
     // Inputs
-    std::vector<double> * getPrediction(...);
+    std::vector<double> * getPrediction(QString userId, QJsonObject Wages, QJsonObject Invest, QJsonObject Assets, int years);
 
-    void getInputs(...);
+    QJsonObject getInputs(QString userid);
 
     // Budgets
     bool addBudget(BudgetData * budget, QString userid);
     BudgetData * loadBudget(QString budgetId, QString userid);
-    QStringList listBudgets(QString userId);
+    std::pair<bool, QStringList> listBudgets(QString userId);
 
     // Auth
     bool login(QString userId, QString Password);

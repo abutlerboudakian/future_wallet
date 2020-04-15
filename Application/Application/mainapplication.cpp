@@ -133,3 +133,11 @@ void MainApplication::logout()
     this->controller->logout();
 }
 
+
+/* Function to tell the controller that it is closing
+ */
+void MainApplication::closeEvent(QCloseEvent * event)
+{
+    this->controller->logout();
+    event->accept();
+}

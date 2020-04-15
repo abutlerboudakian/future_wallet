@@ -77,14 +77,18 @@ const BudgetData * Controller::getBudgetData(QString budgetId)
 
 
 /* Function returns the std::vector<double> metrics in the controller
- * @returns this->metrics
+ * @modifies this->metrics if there is no current metric stored
+ * @effect this->metrics contains the most recent prediction metrics
+ * @returns this->metrics if there is one set
+ *          otherwise, it makes a prediction and returns that metric
  */
 const std::vector<double> * Controller::getMetricsData()
 {
     if (this->metrics == nullptr)
-    {
+    {   // Only occurs on startup and nothing is populated yet
         // Get inputs and populate views, then do get prediction
-        this->metrics = ReqObj->getPrediction();
+        this->getInputs();
+        this->getPrediction();
         if (this->metrics->empty())
         {
             QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not retrieve recent metrics from Database. Try again.");
@@ -111,8 +115,9 @@ void Controller::setSelectedBudget(QString budgetId)
 //-------------------------------------
 /* Function to submit Input to the database and get metrics back
  * ----------------------------------------------------------------------------------------------------
- * @modifies this->metrics
+ * @modifies this->metrics this->Views->Dashboard
  * @effect this->metrics now contains the new prediction
+ *         the dashboard view updates its metrics in accordance to the prediction returned
  */
 void Controller::getPrediction()
 {
@@ -120,6 +125,7 @@ void Controller::getPrediction()
     {
         delete this->metrics;
     }
+
 
     this->metrics = ReqObj->getPrediction();
     if (this->metrics->empty())
@@ -132,6 +138,9 @@ void Controller::getPrediction()
 }
 
 /* Function to get input from the database and populate the views
+ * @modifies this->Views->predictionInputAssets, this->Views->predictionInputInvest, this->Views->predictionInputWages
+ * @effect all the aforementioned views are updated with their most recent input data
+ * @throws Error message box on error
  */
 void Controller::getInputs()
 {
@@ -158,24 +167,31 @@ void Controller::addBudget(BudgetData * budget)
  */
 QStringList Controller::getBudgetList()
 {
-    QStringList ret = this->ReqObj->listBudgets(this->userid);
-    if (ret.isEmpty())
+    std::pair<bool, QStringList> ret = this->ReqObj->listBudgets(this->userid);
+    if (!ret.first)
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not get list of user budgets. Please try again.");
         errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         errModal->show();
     }
-    return ret;
+    return ret.second;
 }
 
 void Controller::login(QString userid, QString Password)
 {
     // Andrew should implement this
-    ReqObj->login(userid, Password);
-
-    ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
-    ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
-    this->switchToDashBoard();
+    if (ReqObj->login(userid, Password))
+    {
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
+        this->switchToDashBoard();
+    }
+    else
+    { // Failed to Login
+        QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Invalid Credentials. Please try again.");
+        errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
+        errModal->show();
+    }
 }
 
 /* Function destroys menubar, logs user out, and goes back to login page */
