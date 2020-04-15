@@ -8,6 +8,8 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
     ui->setupUi(this);
     this->controller = controller;
 
+    //ui->Industry->addItems(controller->getIndustries());
+
     connect(ui->Next, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
@@ -31,6 +33,28 @@ void predictionInputWages::setupValidator()
     ui->Location->setValidator(validInt2);
     ui->Amount->setValidator(validDouble);
 }
+
+QJsonObject predictionInputWages::toJSON()
+{
+    QJsonObject data;
+
+    data.insert("industryCode", ui->Industry->currentText());
+    data.insert("loc", ui->Location->text());
+    data.insert("income", ui->Amount->text().toDouble());
+    QString hourly = "Hourly";
+    bool hourly_yes = true;
+    if (ui->IncomeType->currentText() == hourly)
+    {
+        data.insert("hourly", hourly_yes);
+    } else {
+        hourly_yes = false;
+        data.insert("hourly", hourly_yes);
+    }
+    data.insert("hourspw", ui->Time->text().toDouble());
+
+    return data;
+}
+
 
 // Slots
 

@@ -19,6 +19,7 @@ public:
     explicit predictionInputInvest(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~predictionInputInvest();
     void getStockData();
+    QJsonObject toJSON();
 
 private:
     Ui::predictionInputInvest *ui;
