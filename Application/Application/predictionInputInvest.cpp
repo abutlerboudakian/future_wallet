@@ -97,10 +97,10 @@ QJsonObject predictionInputInvest::toJSON()
 
     QJsonArray stocks;
 
-    QJsonObject json_stock;
     QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     for (int i = 0; i < 2*ui->Stocks->count(); i+=2)
     {
+        QJsonObject json_stock;
         json_stock.insert(list[i]->text(), list[i+1]->text().toDouble());
         stocks.push_back(json_stock);
     }
@@ -111,6 +111,55 @@ QJsonObject predictionInputInvest::toJSON()
     data.insert("tbonds", ui->TBond->text().toDouble());
 
     return data;
+}
+
+void predictionInputInvest::fromJson(QJsonObject savedData)
+{
+    // populate Saving
+    QJsonObject::Iterator it = savedData.find("savings");
+    if ( it != savedData.end() )
+    {
+        ui->Saving->setText(it.value().toString());
+    }
+
+    // populate CD
+    it = savedData.find("cd");
+    if ( it != savedData.end() )
+    {
+        ui->CD->setText(it.value().toString());
+    }
+
+    // populate Bond
+    it = savedData.find("bonds");
+    if ( it != savedData.end() )
+    {
+        ui->Bond->setText(it.value().toString());
+    }
+
+    // populate Treasury Bond
+    it = savedData.find("tbonds");
+    if ( it != savedData.end() )
+    {
+        ui->TBond->setText(it.value().toString());
+    }
+
+    // populat Stocks
+    it = savedData.find("stocks");
+    if ( it != savedData.end() )
+    {
+        QJsonArray stocksList = it.value().toArray();
+        QJsonArray::iterator it;
+        for ( it = stocksList.begin(); it != stocksList.end(); it++ )
+        {
+            QJsonObject stock = it->toObject();
+            if ( stock.empty() == false )
+            {
+                QString name = stock.begin()->toString();
+                double shares = stock.begin()->toDouble();
+                addStock(name, shares);
+            }
+        }
+    }
 }
 
 // Function modifies the ui to add a new stock field
@@ -152,6 +201,56 @@ void predictionInputInvest::addStock()
     // SetValidator for shares
     Shares->setValidator(validDouble);
     StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
+
+    // Adds the stock field
+    Stock->setLayout(StockLayout);
+    this->ui->Stocks->addWidget(Stock);
+
+    // Binds the event trigger
+    connect(Add, SIGNAL(released()), this, SLOT(addStock()));
+    connect(Remove, SIGNAL(released()), this, SLOT(removeStock()));
+}
+
+void predictionInputInvest::addStock(QString name, double shares)
+{
+    // Constructs a stock field
+    QWidget * Stock = new QWidget();
+    QHBoxLayout * StockLayout = new QHBoxLayout;
+    StockLayout->addWidget(new QLabel("Stock")); // Throw label on the left
+
+    QVBoxLayout * Contents = new QVBoxLayout; // Contents of the stock
+    StockLayout->addLayout(Contents);
+    QHBoxLayout * row1 = new QHBoxLayout, *row2 = new QHBoxLayout;
+    QLineEdit * StockName = new QLineEdit, * Shares = new QLineEdit;
+    StockName->setObjectName(QString("StockData") + QString::number(counter++));
+    Shares->setObjectName(QString("StockData") + QString::number(counter++));
+    row1->addWidget(new QLabel("Stock Name"));
+    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row1->addWidget(StockName);
+    row1->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row2->addWidget(new QLabel("Shares"));
+    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    row2->addWidget(Shares);
+    row2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Contents->addLayout(row1);
+    Contents->addLayout(row2);
+
+    QHBoxLayout * Buttons = new QHBoxLayout;  // Contains all the buttons
+    QPushButton * Add = new QPushButton("Add Stock"), * Remove = new QPushButton("Remove Stock");
+    Buttons->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Buttons->addWidget(Add);
+    Buttons->addWidget(Remove);
+    Buttons->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    Contents->addLayout(Buttons);
+
+    // Set Validator for shares
+    Shares->setValidator(validDouble);
+    StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
+
+    // Set default value for stock name and shares
+    StockName->setText(name);
+    QString str_shares = QString::number(shares);
+    Shares->setText(str_shares);
 
     // Adds the stock field
     Stock->setLayout(StockLayout);

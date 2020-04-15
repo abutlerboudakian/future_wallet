@@ -18,6 +18,7 @@ public:
     explicit predictionInputAssets(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~predictionInputAssets();
     QJsonObject toJSON();
+    void fromJson(QJsonObject savedData);
 
 private:
     Ui::predictionInputAssets *ui;
@@ -37,7 +38,9 @@ private:
 
 private slots:
     void addResidence();
+    void addResidence(QString location, double value);
     void addRental();
+    void addRental(QString location, double value);
     void removeResidence();
     void removeRental();
     void submitInputs();
