@@ -350,6 +350,15 @@ void Controller::switchToBudgetPage()
     }
 }
 
+/* Creates and displays the InputBudget view
+ * @modifies this->View
+ * @effects this->View's top most QWidget is now Views::InputBudget
+ */
+void Controller::switchToInputBudget(){
+    this->Views->setCurrentIndex(Views::BudgetInput);
+}
+
+
 void Controller::closeBudgetPage()
 {
     BudgetModal = false;
