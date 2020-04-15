@@ -21,9 +21,9 @@ public:
     void CreateViews(Controller * maincontroller);
     QStackedWidget * getViews();
     void setController(Controller * controller);
-    void setUserName(QString userId);
+    /*void setUserName(QString userId);
     void showMenu();
-    void hideMenu();
+    void hideMenu();*/
 
 private:
     Ui::MainApplication *ui;

@@ -253,7 +253,7 @@ QStringList Requests::listBudgets(QString userId)
 
 /* Function to login a user and get their oauth
  */
-bool Requests::login(...)
+bool Requests::login(QString userId, QString Password)
 {
     // Endpoint
     QUrl url(Location + QString("/login"));
@@ -262,16 +262,18 @@ bool Requests::login(...)
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    // Body
-    QJsonObject body;
-    body.insert("test", 5);
+    //HTTP Basic authentication
+    QString head = userId + ":" + QString(QCryptographicHash::hash(Password.toLocal8Bit(), QCryptographicHash::Md5).toHex());
+    QByteArray data = head.toLocal8Bit().toBase64();
+    QString auth = "Basic " + data;
+    request.setRawHeader("Authorization", auth.toLocal8Bit());
 
     // Set request and callbacks
     QNetworkAccessManager * mgr = new QNetworkAccessManager(this);
     connect(mgr,SIGNAL(finished(QNetworkReply*)),this,SLOT(readData(QNetworkReply*)));
 
     // Send request
-    QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
+    QNetworkReply * reply = mgr->post(request, "{}");
     //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
@@ -284,7 +286,7 @@ bool Requests::login(...)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-    if (statusCode != 200)
+    if (statusCode == 200)
     {
         return true;
     }
@@ -296,7 +298,7 @@ bool Requests::login(...)
 
 /* Function for user to log out -- call this when app closes too
  */
-void Requests::logout(...)
+void Requests::logout(QString userId)
 {
     // Endpoint
     QUrl url(Location + QString("/predict"));
@@ -307,7 +309,7 @@ void Requests::logout(...)
 
     // Body
     QJsonObject body;
-    body.insert("test", 5);
+    body.insert("userid", userId);
 
     // Set request and callbacks
     QNetworkAccessManager * mgr = new QNetworkAccessManager(this);
@@ -327,6 +329,8 @@ void Requests::logout(...)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    return;
 }
 
 /* Function to POST registration information to the database

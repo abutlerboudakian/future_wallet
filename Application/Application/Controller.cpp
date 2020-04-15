@@ -171,9 +171,9 @@ QStringList Controller::getBudgetList()
 void Controller::login(QString userid, QString Password)
 {
     // Andrew should implement this
+    ReqObj->login(userid, Password);
 
-    this->main->setUserName(userid);
-    //this->main->showMenu();
+    ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
     ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
     this->switchToDashBoard();
 }
@@ -182,9 +182,13 @@ void Controller::login(QString userid, QString Password)
 // @requires user is already logged in
 void Controller::logout()
 {
-    //ReqObj->logout(...);
-    this->main->hideMenu();
-    this->switchToLogin();
+    // If not logged in
+    if (this->Views->currentIndex() != Views::Login)
+    {
+        //ReqObj->logout(...);
+        this->switchToLogin();
+        qDebug() << "Hello there";
+    }
 }
 
 /* Function posts registration information to the database
@@ -198,6 +202,9 @@ void Controller::Register(QString userid, QString Password)
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully created an account! Please login.");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
+        this->switchToDashBoard();
     }
     else
     {

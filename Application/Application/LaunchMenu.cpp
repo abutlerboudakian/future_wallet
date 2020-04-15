@@ -24,13 +24,12 @@ LaunchMenu::~LaunchMenu()
 // Slots
 void LaunchMenu::runLogin()
 {
-    std::cout<<"Hello World";
     controller->login(ui->UserField->text(), ui->PassField->text());
     return;
 }
 
 void LaunchMenu::runCreateAccount()
 {
-    std::cout<<"Hello World";
+    controller->Register(ui->UserField->text(), ui->PassField->text());
     return;
 }

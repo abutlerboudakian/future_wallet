@@ -28,6 +28,15 @@ DashBoard::~DashBoard()
     delete metrics;
 }
 
+// Function used to update welcome message
+/* @modifies ui->Message
+ * @effecst ui->Message = "Welcome " userId
+ */
+void DashBoard::updateMessage(QString userId)
+{
+    ui->Message->setText(QString("Welcome ") + userId);
+}
+
 /* Function used to update the budget in display
  * @modifies this->ui->Budget
  * @effects this->ui->Budget now contains the budget that was recently loaded in

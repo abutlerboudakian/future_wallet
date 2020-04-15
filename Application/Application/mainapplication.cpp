@@ -101,7 +101,7 @@ void MainApplication::setController(Controller * controller)
  * @modifies the menubar
  * @effect the menubar displays the username now
  */
-void MainApplication::setUserName(QString userId)
+/*void MainApplication::setUserName(QString userId)
 {
     ui->UserName->setTitle(userId);
 }
@@ -110,15 +110,15 @@ void MainApplication::setUserName(QString userId)
 // @effects menubar->setvisible(true);
 void MainApplication::showMenu()
 {
-    this->menuBar()->setVisible(true);
+    //this->menuBar()->setVisible(true);
 }
 
 // @modifies menubar
 // @effects menubar->setvisible(false);
 void MainApplication::hideMenu()
 {
-    this->menuBar()->setVisible(false);
-}
+    //this->menuBar()->setVisible(false);
+}*/
 
 
 // Function gets the user account info page

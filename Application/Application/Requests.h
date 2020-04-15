@@ -36,9 +36,9 @@ public:
     QStringList listBudgets(QString userId);
 
     // Auth
-    bool login(...);
+    bool login(QString userId, QString Password);
 
-    void logout(...);
+    void logout(QString userId);
 
     bool Register(QString userId, QString Password);
     bool UpdateUserInfo(QString OriginalUserId, QString userId, QString Password);
@@ -52,7 +52,7 @@ private slots:
 private:
     QNetworkAccessManager NAMSender;
     QByteArray Data;
-    QString Location = "http://127.0.0.1:5000";
+    QString Location = "http://butlea2.cs.rpi.edu";
 };
 
 #endif // REQUESTS_H
