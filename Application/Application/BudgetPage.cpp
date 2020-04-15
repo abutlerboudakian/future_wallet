@@ -8,6 +8,7 @@ BudgetPage::BudgetPage(QWidget *parent) :
     ui->setupUi(this);
 
     ui->Default->setSelectionMode(QListWidget::SingleSelection);
+    ui->Custom->setSelectionMode(QListWidget::SingleSelection);
 }
 
 BudgetPage::~BudgetPage()
