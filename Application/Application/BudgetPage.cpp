@@ -52,7 +52,7 @@ void BudgetPage::getLoadBudgetView()
 void BudgetPage::getCreateBudgetView()
 {
     this->controller->switchToInputBudget();
-    this->controlloer->closeBudgetPage();
+    this->controller->closeBudgetPage();
     return;
 }
 
