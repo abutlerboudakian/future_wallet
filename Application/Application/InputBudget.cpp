@@ -17,8 +17,6 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     // For all possible sliders, listen for a possible value change
     // TODO: Breaks the web-app
     /**
-    for (int i = 0; i < ui->Categories->count(); i++)
-    {
         QList<QSlider*> slider = ((QWidget*) ui->Categories->itemAt(i))
                 ->findChildren<QSlider*>(QRegularExpression(QString("/Slider\\d/g")));
         QList<QLabel*> label = ((QWidget*) ui->Categories->itemAt(i))
@@ -27,7 +25,6 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
         connect(slider[0], SIGNAL(valueChanged(int)), signalMapper, SLOT(map()));
         signalMapper->setMapping(slider[0], label[0]);
         connect(signalMapper, SIGNAL(mapped(QWidget*)),this, SLOT(updateLabel(slider[0], label[0])));
-    }
     **/
 }
 
@@ -40,7 +37,6 @@ InputBudget::~InputBudget()
  *
  */
 void InputBudget::getCategoryData() {
-<<<<<<< HEAD
     std::unordered_map<std::string, double> catData;
     // Get name of budget
     QLineEdit *budgetLabel = this->findChild<QLineEdit*>(QString::fromStdString("nameBudget"));
@@ -61,30 +57,12 @@ void InputBudget::getCategoryData() {
 
         double tickValue = ( sliderVal->value() )/ 100;
         catData.insert(std::pair<std::string, int>(catName->text().toStdString(), tickValue));
-    std::cout<<"Start"<<std::endl;
-    std::unordered_map<std::string, double> catData;
-
-    std::cout<<ui->Categories->count()<<std::endl;
-
-    for (int i = 0; i < ui->Categories->count(); i++)
-    {
-        QList<QLineEdit*> catName = ((QWidget*) ui->Categories->itemAt(i))
-                ->findChildren<QLineEdit*>(QRegularExpression(QString("/Category\\d/g")));
-        QList<QSlider*> catVal = ((QWidget*) ui->Categories->itemAt(i))
-                ->findChildren<QSlider*>(QRegularExpression(QString("/Slider\\d/g")));
-
-        std::cout<<catName[0]->text().toStdString()<<catName[0]->text().toStdString();
-
-        double tickValue = ( catVal[0]->value() )/ 100;
-        catData.insert(std::pair<std::string, int>(catName[0]->text().toStdString(), tickValue));
     }
 
     for (std::unordered_map<std::string, double>::iterator i = catData.begin(); i != catData.end(); i++)
     {
         std::cout<<i->first<<" "<<i->second<<std::endl;
     }
-
-    std::cout<<"Done"<<std::endl;
 }
 
 // Function to save budget and then switch to dashboard with updated budget
@@ -105,10 +83,7 @@ void InputBudget::Exit() {
  *
  */
 void InputBudget::addCategory() {
-<<<<<<< HEAD
     counter++;
-=======
->>>>>>> f164e5c60d97523fd0c9faf278351829cc484cab
     // Horizontal layout that will contain new category
     QHBoxLayout *horizonalLayout = new QHBoxLayout;
     std::string layoutName = "CategoryLayout" + std::to_string(counter - 1);
@@ -132,10 +107,7 @@ void InputBudget::addCategory() {
     QLabel * valueOfSlider = new QLabel;
     std::string valueName = "Value" + std::to_string(counter - 1);
     valueOfSlider->setObjectName(QString::fromStdString(valueName));
-<<<<<<< HEAD
     valueOfSlider->setText(QCoreApplication::translate("InputBudget", "0.00", nullptr));
-=======
->>>>>>> f164e5c60d97523fd0c9faf278351829cc484cab
 
     // Horizontal spacer/size policy of layout
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -156,15 +128,10 @@ void InputBudget::addCategory() {
 
     // Add layout to categories
     ui->Categories->addLayout(horizonalLayout);
-<<<<<<< HEAD
-=======
-    counter++;
->>>>>>> f164e5c60d97523fd0c9faf278351829cc484cab
 }
 
 // Function modifies the ui to remove a category field
 /* @modifies this->ui
-<<<<<<< HEAD
  * @effect this->ui->Stocks has one less category field, unless only 1 budget category is left. Error message pops up if user attempts to delete
  * all budgets
  */
@@ -185,18 +152,6 @@ void InputBudget::removeCategory() {
         messageBox.critical(0,"Error","At least one category required for budget.");
         messageBox.setFixedSize(500,200);
         return;
-=======
- * @effect this->ui->Stocks has one less category field, unless only 1 budget category is left. Preferably an error message pops up.
- */
-void InputBudget::removeCategory() {
-    // There should always be at least "counter" amount of budgets
-    if (this->ui->Categories->count() > counter) {
-        std::string lastLayoutStr = "CategoryLayout" + std::to_string(counter - 1);
-        QHBoxLayout* lastLayout = ui->Categories->findChild<QHBoxLayout*>(QString::fromStdString(lastLayoutStr));
-
-        this->ui->Categories->removeItem(lastLayout);
-        delete lastLayout;
->>>>>>> f164e5c60d97523fd0c9faf278351829cc484cab
     }
 }
 
