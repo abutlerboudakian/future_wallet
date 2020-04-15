@@ -37,30 +37,32 @@ InputBudget::~InputBudget()
  *
  */
 void InputBudget::getCategoryData() {
-    std::cout<<"Start"<<std::endl;
     std::unordered_map<std::string, double> catData;
-
-    std::cout<<ui->Categories->count()<<std::endl;
+    // Get name of budget
+    QLabel *budgetLabel = this->findChild<QLabel*>(QString::fromStdString("BudgetName"));
+    std::string budgetName = budgetLabel->text().toStdString();
 
     for (int i = 0; i < ui->Categories->count(); i++)
     {
-        QList<QLineEdit*> catName = ((QWidget*) ui->Categories->itemAt(i))
-                ->findChildren<QLineEdit*>(QRegularExpression(QString("/Category\\d/g")));
-        QList<QSlider*> catVal = ((QWidget*) ui->Categories->itemAt(i))
-                ->findChildren<QSlider*>(QRegularExpression(QString("/Slider\\d/g")));
+        // Get category name value for layout
+        std::string catLabel = "Category" + std::to_string(i);
+        QLineEdit *catName = this->findChild<QLineEdit*>(QString::fromStdString(catLabel));
 
-        std::cout<<catName[0]->text().toStdString()<<catName[0]->text().toStdString();
+        // Get category int value for layout
+        std::string sliderLabel = "Slider" + std::to_string(i);
+        QSlider *sliderVal = this->findChild<QSlider*>(QString::fromStdString(catLabel));
 
-        double tickValue = ( catVal[0]->value() )/ 100;
-        catData.insert(std::pair<std::string, int>(catName[0]->text().toStdString(), tickValue));
+        // Cout values to check
+        std::cout << catName->text().toStdString() << sliderVal->value();
+
+        double tickValue = ( sliderVal->value() )/ 100;
+        catData.insert(std::pair<std::string, int>(catName->text().toStdString(), tickValue));
     }
 
     for (std::unordered_map<std::string, double>::iterator i = catData.begin(); i != catData.end(); i++)
     {
         std::cout<<i->first<<" "<<i->second<<std::endl;
     }
-
-    std::cout<<"Done"<<std::endl;
 }
 
 // Function to save budget and then switch to dashboard with updated budget
@@ -105,6 +107,7 @@ void InputBudget::addCategory() {
     QLabel * valueOfSlider = new QLabel;
     std::string valueName = "Value" + std::to_string(counter - 1);
     valueOfSlider->setObjectName(QString::fromStdString(valueName));
+    valueOfSlider->setText(QCoreApplication::translate("InputBudget", "0.00", nullptr));
 
     // Horizontal spacer/size policy of layout
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -140,7 +143,6 @@ void InputBudget::removeCategory() {
         QHBoxLayout* lastLayout = ui->Categories->findChild<QHBoxLayout*>(QString::fromStdString(lastLayoutStr));
         while(!lastLayout->isEmpty()) {
             QWidget *target = lastLayout->takeAt(0)->widget();
-            std::cout << "I'm deleting";
             delete target;
         }
         delete lastLayout;
