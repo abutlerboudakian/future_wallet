@@ -11,6 +11,7 @@
 #include "predictionInputAssets.h"
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
+#include "InputBudget.h"
 
 #include "Requests.h"
 #include <QMessageBox>
@@ -26,7 +27,8 @@ enum Views
     Dashboard = 1,
     WagePredict = 2,
     InvestPredict = 3,
-    AssetPredict = 4
+    AssetPredict = 4,
+    BudgetInput = 5
 };
 
 class Controller
@@ -44,6 +46,7 @@ class Controller
     void switchToInputWages();
     void switchToInputInvest();
     void switchToInputAsset();
+    void switchToInputBudget();
 
     void closeBudgetPage();
 
