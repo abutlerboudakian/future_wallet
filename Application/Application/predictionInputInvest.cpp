@@ -152,9 +152,12 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
         for ( it = stocksList.begin(); it != stocksList.end(); it++ )
         {
             QJsonObject stock = it->toObject();
-            QString name = stock.begin()->toString();
-            double shares = stock.begin()->toDouble();
-            addStock(name, shares);
+            if ( stock.empty() == false )
+            {
+                QString name = stock.begin()->toString();
+                double shares = stock.begin()->toDouble();
+                addStock(name, shares);
+            }
         }
     }
 }
