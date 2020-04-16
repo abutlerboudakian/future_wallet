@@ -395,6 +395,24 @@ void Controller::closeBudgetPage()
     BudgetModal = false;
 }
 
+/* Creates and displays the AccountManagement View as a modal
+ */
+void Controller::switchToAccountManage() {
+    if (!AccountModal)
+    {   // Make and show budget modal
+        AccountManagement * manage = new AccountManagement;
+        manage->setController(this);
+        manage->show();
+        AccountModal = true;
+    }
+}
+
+/* Close AccountManagement modal
+ */
+void Controller::closeAccountManage() {
+    AccountModal = false;
+}
+
 /* Creates and displays the predictionInputWages View
  * @modifies this->View
  * @effects this->View's top most QWidget is now Views::WagePredict
