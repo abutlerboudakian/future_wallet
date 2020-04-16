@@ -126,28 +126,28 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
     QJsonObject::Iterator it = savedData.find("savings");
     if ( it != savedData.end() )
     {
-        ui->Saving->setText(it.value().toString());
+        ui->Saving->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populate CD
     it = savedData.find("cd");
     if ( it != savedData.end() )
     {
-        ui->CD->setText(it.value().toString());
+        ui->CD->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populate Bond
     it = savedData.find("bonds");
     if ( it != savedData.end() )
     {
-        ui->Bond->setText(it.value().toString());
+        ui->Bond->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populate Treasury Bond
     it = savedData.find("tbonds");
     if ( it != savedData.end() )
     {
-        ui->TBond->setText(it.value().toString());
+        ui->TBond->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populat Stocks
@@ -155,12 +155,18 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
     if ( it != savedData.end() )
     {
         QJsonObject stocksList = it.value().toObject();
-        for ( it = stocksList.begin(); it != stocksList.end(); it++ )
+        it = stocksList.begin();
+        if (it != stocksList.end())
         {
-
             QString name = it.key();
             double shares = it.value().toDouble();
             addStock(name, shares);
+            for ( it++; it != stocksList.end(); it++ )
+            {
+                QString name = it.key();
+                double shares = it.value().toDouble();
+                addStock(name, shares);
+            }
         }
     }
 }
@@ -218,7 +224,6 @@ void predictionInputInvest::addStock()
 
 void predictionInputInvest::addStock(QString name, double shares)
 {
-    qDebug()<<"Other";
     // Constructs a stock field
     QWidget * Stock = new QWidget();
     QHBoxLayout * StockLayout = new QHBoxLayout;

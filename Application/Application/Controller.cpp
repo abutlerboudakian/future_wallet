@@ -298,6 +298,7 @@ void Controller::UpdateUserInfo(QString newUserId, QString Password)
         {
             this->userid = newUserId;
         }
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(this->userid);
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully updated account information!");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();
@@ -412,14 +413,14 @@ void Controller::closeBudgetPage()
 /* Creates and displays the AccountManagement View as a modal
  */
 void Controller::switchToAccountManage() {
-    /*if (!AccountModal)
+    if (!AccountModal)
     {   // Make and show budget modal
         AccountManagement * manage = new AccountManagement;
         manage->setController(this);
         manage->setAttribute(Qt::WA_DeleteOnClose);
         manage->show();
         AccountModal = true;
-    }*/
+    }
 }
 
 /* Close AccountManagement modal

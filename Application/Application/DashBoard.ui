@@ -20,19 +20,7 @@
       <enum>QLayout::SetNoConstraint</enum>
      </property>
      <item row="3" column="0">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_11">
-         <item>
-          <widget class="QPushButton" name="Account">
-           <property name="text">
-            <string>Change Account Info</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <layout class="QVBoxLayout" name="verticalLayout"/>
      </item>
      <item row="0" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout_2">

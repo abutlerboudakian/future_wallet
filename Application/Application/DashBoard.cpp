@@ -14,7 +14,6 @@ DashBoard::DashBoard(QWidget *parent, Controller * controller) :
     // Set up event triggers:
     connect(ui->Predict, SIGNAL(released()), this, SLOT(getInputView()));
     connect(ui->Budget, SIGNAL(released()), this, SLOT(getBudgetView()));
-    connect(ui->Account, SIGNAL(released()), this, SLOT(getAccountManageView()));
     connect(ui->metricsPie, SIGNAL(released()), this, SLOT(getMetricsPieView()));
     connect(ui->metricsBar, SIGNAL(released()), this, SLOT(getMetricsBarView()));
     connect(ui->metricsLine, SIGNAL(released()), this, SLOT(getMetricsLineView()));

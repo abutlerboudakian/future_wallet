@@ -62,7 +62,7 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     QJsonObject::Iterator it = savedData.find("income");
     if ( it != savedData.end() )
     {
-        ui->Amount->setText(it.value().toString());
+        ui->Amount->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populate Location
@@ -76,7 +76,7 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     it = savedData.find("hourspw");
     if ( it != savedData.end() )
     {
-        ui->Time->setText(it.value().toString());
+        ui->Time->setText(QString::number(int(it.value().toDouble())));
     }
 
     // set IncomeType to the proper index

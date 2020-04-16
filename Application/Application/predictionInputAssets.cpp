@@ -121,7 +121,7 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
     QJsonObject::Iterator it = savedData.find("rm");
     if ( it != savedData.end() )
     {
-        ui->Metal->setText(it.value().toString());
+        ui->Metal->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populat Residences
@@ -130,7 +130,9 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
     {
         QJsonArray resList = it.value().toArray();
         QJsonArray::iterator it;
-        for ( it = resList.begin(); it != resList.end(); it++ )
+
+        it = resList.begin();
+        if (it != resList.end())
         {
             QJsonObject res = it->toObject();
             QJsonObject::Iterator it_loc = res.find("loc");
@@ -139,7 +141,20 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             {
                 QString location = it_loc.value().toString();
                 double value = it_value.value().toDouble();
-                addResidence( location, value );
+                ui->ResidenceData0->setText(location);
+                ui->ResidenceData1->setText(QString::number(value));
+            }
+            for ( it++; it != resList.end(); it++ )
+            {
+                QJsonObject res = it->toObject();
+                QJsonObject::Iterator it_loc = res.find("loc");
+                QJsonObject::Iterator it_value = res.find("value");
+                if ( it_loc != res.end() && it_value != res.end() )
+                {
+                    QString location = it_loc.value().toString();
+                    double value = it_value.value().toDouble();
+                    addResidence( location, value );
+                }
             }
         }
     }
@@ -150,7 +165,9 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
     {
         QJsonArray rentList = it.value().toArray();
         QJsonArray::iterator it;
-        for ( it = rentList.begin(); it != rentList.end(); it++ )
+
+        it = rentList.begin();
+        if (it != rentList.end())
         {
             QJsonObject rent = it->toObject();
             QJsonObject::Iterator it_loc = rent.find("loc");
@@ -159,11 +176,24 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             {
                 QString location = it_loc.value().toString();
                 double value = it_value.value().toDouble();
-                addRental( location, value );
+                ui->RentalData0->setText(location);
+                ui->RentalData1->setText(QString::number(value));
+            }
+            for ( it++; it != rentList.end(); it++ )
+            {
+                QJsonObject rent = it->toObject();
+                QJsonObject::Iterator it_loc = rent.find("loc");
+                QJsonObject::Iterator it_value = rent.find("value");
+                if ( it_loc != rent.end() && it_value != rent.end() )
+                {
+                    QString location = it_loc.value().toString();
+                    double value = it_value.value().toDouble();
+                    addRental( location, value );
+                }
             }
         }
     }
-    ui->Years->setText(savedData["years"].toString());
+    ui->Years->setText(QString::number(savedData["years"].toInt()));
 }
 
 void predictionInputAssets::addResidence()
