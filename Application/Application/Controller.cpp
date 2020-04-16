@@ -18,8 +18,8 @@ Controller::Controller()
   budget->addCategory(QString("Ores"), 0.4);*/
 
   ReqObj = new Requests;
-  ReqObj->getIndustries();
-  ReqObj->getStocks();
+
+  years = 0;
 }
 
 /* Deletes the chart creators. Delegates deletion of the views to MainApplication
@@ -152,6 +152,7 @@ void Controller::getPrediction()
     QJsonObject Wages = ((predictionInputWages*)this->Views->widget(Views::WagePredict))->toJSON();
     QJsonObject Invest = ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->toJSON();
     QJsonObject Assets = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->toJSON();
+    years = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->getYears();
     this->metrics = ReqObj->getPrediction(userid, Wages, Invest, Assets, years);
     if (this->metrics->empty())
     {
@@ -181,8 +182,9 @@ void Controller::getInputs()
     {
         ((predictionInputWages*)this->Views->widget(Views::WagePredict))->fromJson(data["wages"].toObject());
         ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->fromJson(data["invests"].toObject());
-        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data["assets"].toObject());
         years = data["years"].toInt();
+        (data["assets"].toObject()).insert("years", years);
+        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data["assets"].toObject());
     }
 }
 

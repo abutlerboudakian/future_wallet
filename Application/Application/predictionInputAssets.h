@@ -19,6 +19,7 @@ public:
     ~predictionInputAssets();
     QJsonObject toJSON();
     void fromJson(QJsonObject savedData);
+    int getYears();
 
 private:
     Ui::predictionInputAssets *ui;

@@ -49,6 +49,9 @@ std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages,
     reply->close();
     reply->deleteLater();
     std::vector<double> * metric = new std::vector<double>;
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     if (statusCode == 200)
     { // Success
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
@@ -72,7 +75,7 @@ std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages,
 QJsonObject Requests::getInputs(QString userid)
 {
     // Endpoint
-    QUrl url(Location + QString("/getInputs") + QString("?userid=") + userid);
+    QUrl url(QUrl::toPercentEncoding(Location + QString("/getInputs") + QString("?userid=") + userid));
 
     // Header
     QNetworkRequest request(url);
@@ -93,6 +96,8 @@ QJsonObject Requests::getInputs(QString userid)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
@@ -154,6 +159,9 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     if (statusCode == 200)
     {
         return true;
@@ -173,7 +181,7 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
 BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 {
     // Endpoint
-    QUrl url(Location + QString("/getBudget?userid=") + userId + QString("&budgetid=") + budgetId);
+    QUrl url(QUrl::toPercentEncoding(Location + QString("/getBudget?userid=") + userId + QString("&budgetid=") + budgetId));
 
     // Header
     QNetworkRequest request(url);
@@ -198,11 +206,11 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
     reply->deleteLater();
 
     BudgetData * budget = new BudgetData;
-    qDebug() << "made it here";
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
-        qDebug() << "made it eeeeeeee";
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
         QJsonObject result = (jDoc.isArray() ? jDoc[0].toObject() : jDoc.object());
         budget->setName(result["name"].toString());
@@ -224,7 +232,7 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 std::pair<bool, QStringList> Requests::listBudgets(QString userId)
 {
     // Endpoint
-    QUrl url(Location + QString("/getAllBudgets?userid=") + userId);
+    QUrl url(QUrl::toPercentEncoding(Location + QString("/getAllBudgets?userid=") + userId));
 
     // Header
     QNetworkRequest request(url);
@@ -248,6 +256,9 @@ std::pair<bool, QStringList> Requests::listBudgets(QString userId)
     reply->deleteLater();
     std::pair<bool, QStringList> res;
     res.first = false;
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     if (statusCode == 200)
     {
         res.first = true;
@@ -305,6 +316,9 @@ bool Requests::login(QString userId, QString Password)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     if (statusCode == 200)
     {
         return true;
@@ -321,7 +335,7 @@ bool Requests::login(QString userId, QString Password)
 void Requests::logout(QString userId)
 {
     // Endpoint
-    QUrl url(Location + QString("/predict"));
+    QUrl url(Location + QString("/logout"));
 
     // Header
     QNetworkRequest request(url);
@@ -387,6 +401,9 @@ bool Requests::Register(QString UserId, QString Password)
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     if (statusCode == 200)
     {
         return true;
@@ -444,6 +461,9 @@ bool Requests::UpdateUserInfo(QString OriginalUserId, QString userId, QString Pa
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     if (statusCode == 200)
     {
         return true;
@@ -487,6 +507,9 @@ QStringList Requests::getIndustries()
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     QStringList Industries;
     if (statusCode == 200)
     {
@@ -530,6 +553,9 @@ QStringList Requests::getStocks()
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
+
+    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
+
     QStringList Tickers;
     if (statusCode == 200)
     {

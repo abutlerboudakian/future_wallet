@@ -14,6 +14,7 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     connect(ui->Create, SIGNAL(released()), this, SLOT(Create()));
     connect(ui->AddCat, SIGNAL(released()), this, SLOT(addCategory()));
     connect(ui->RemoveCat, SIGNAL(released()), this, SLOT(removeCategory()));
+    connect(ui->nameBudget, SIGNAL(textEdited(QString)), this, SLOT(updateBudgetName()));
 
     // For all possible sliders, listen for a possible value change
     // TODO: Breaks the web-app
@@ -246,4 +247,14 @@ void InputBudget::updateLimits()
         temp->setMaximum(newMax);
     }
     //qDebug() << this->budget->getRemaining();
+}
+
+
+/* Function used to update the budgetname for the budgetdata class
+ * @modifies this->budget
+ * @effect this->budget->getName() = ui->nameBudget
+ */
+void InputBudget::updateBudgetName()
+{
+    this->budget->setName(((QLineEdit*)sender())->text());
 }

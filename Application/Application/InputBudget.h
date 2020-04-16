@@ -42,6 +42,7 @@ private slots:
     void Create();
     void Exit();
     void updateLabel(int);
+    void updateBudgetName();
 };
 
 #endif // INPUTBUDGET_H

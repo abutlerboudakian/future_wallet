@@ -18,6 +18,7 @@ predictionInputInvest::predictionInputInvest(QWidget *parent, Controller * contr
 
     setupValidator();
     stockList = controller->getTickers();
+    stockList.prepend("--");
     ui->StockData0->addItems(stockList);
 }
 
@@ -98,14 +99,19 @@ QJsonObject predictionInputInvest::toJSON()
 
     QJsonArray stocks;
 
+    QString StockName;
     QList<QComboBox*> names = this->findChildren<QComboBox *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     QList<QLineEdit*> shares = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     for (int i = 0; i < ui->Stocks->count(); i++)
     {
         QJsonObject json_stock;
-        qDebug() << names[i]->itemText(names[i]->currentIndex());
-        json_stock.insert(names[i]->itemText(names[i]->currentIndex()), shares[i]->text().toDouble());
-        stocks.push_back(json_stock);
+        //qDebug() << names[i]->itemText(names[i]->currentIndex());
+        StockName = names[i]->itemText(names[i]->currentIndex());
+        if (StockName != QString("--"))
+        {
+            json_stock.insert(StockName, shares[i]->text().toInt());
+            stocks.push_back(json_stock);
+        }
     }
 
     data.insert("stocks", stocks);
