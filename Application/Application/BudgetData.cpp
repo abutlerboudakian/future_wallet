@@ -41,11 +41,11 @@ QString BudgetData::getBudgetString() const
     {
         sum += (i->second * this->totalAmount);
         x += i->first + "\t\t" + QString::number(i->second * 100).toStdString() +
-            "% |\t" + QString::number(i->second * this->totalAmount).toStdString() + "\n";
+            "% |\t $" + QString::number(i->second * this->totalAmount).toStdString() + "\n";
     }
-    x += "\t Total Amount of Income: " + QString::number(this->totalAmount).toStdString() + "\n";
-    x += "\t Total Allocated Income: " + QString::number(sum).toStdString() + "\n";
-    x += "\t Total Remaining Income: " + QString::number(this->totalAmount - sum).toStdString() + "\n";
+    x += "\t Total Amount of Income: $ " + QString::number(this->totalAmount).toStdString() + "\n";
+    x += "\t Total Allocated Income: $ " + QString::number(sum).toStdString() + "\n";
+    x += "\t Total Remaining Income: $ " + QString::number(this->totalAmount - sum).toStdString() + "\n";
     return QString::fromStdString(x);
 }
 
