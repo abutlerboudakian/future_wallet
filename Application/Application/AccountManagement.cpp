@@ -25,9 +25,15 @@ void AccountManagement::setController(Controller * controller)
     connect(ui->UpdateAccount, SIGNAL(released()), this, SLOT(Create()));
 }
 
+/* Function that closes the modal
+ */
 void AccountManagement::Exit() {
     this->controller->closeAccountManage();
+    return;
 }
+
+/* Function that updates user info and closes the modal
+ */
 void AccountManagement::Update() {
     // New info
     std::string newPass = ui->newPassEdit->text().toStdString();
@@ -51,4 +57,5 @@ void AccountManagement::Update() {
             return;
         }
     }
+    AccountManagement::Exit();
 }
