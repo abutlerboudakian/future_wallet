@@ -1,5 +1,5 @@
-#ifndef BUDGETPAGE_H
-#define BUDGETPAGE_H
+#ifndef ACCOUNTMANAGEMENT_H
+#define ACCOUNTMANAGEMENT_H
 
 class Controller;
 
