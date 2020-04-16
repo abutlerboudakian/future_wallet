@@ -97,20 +97,18 @@ QJsonObject predictionInputInvest::toJSON()
     data.insert("savings", ui->Saving->text().toDouble());
     data.insert("cd", ui->CD->text().toDouble());
 
-    QJsonArray stocks;
+    QJsonObject stocks;
 
     QString StockName;
     QList<QComboBox*> names = this->findChildren<QComboBox *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     QList<QLineEdit*> shares = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     for (int i = 0; i < ui->Stocks->count(); i++)
     {
-        QJsonObject json_stock;
         //qDebug() << names[i]->itemText(names[i]->currentIndex());
         StockName = names[i]->itemText(names[i]->currentIndex());
         if (StockName != QString("--"))
         {
-            json_stock.insert(StockName, shares[i]->text().toInt());
-            stocks.push_back(json_stock);
+            stocks.insert(StockName, shares[i]->text().toInt());
         }
     }
 
@@ -156,17 +154,13 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
     it = savedData.find("stocks");
     if ( it != savedData.end() )
     {
-        QJsonArray stocksList = it.value().toArray();
-        QJsonArray::iterator it;
+        QJsonObject stocksList = it.value().toObject();
         for ( it = stocksList.begin(); it != stocksList.end(); it++ )
         {
-            QJsonObject stock = it->toObject();
-            if ( stock.empty() == false )
-            {
-                QString name = stock.begin()->toString();
-                double shares = stock.begin()->toDouble();
-                addStock(name, shares);
-            }
+
+            QString name = it.key();
+            double shares = it.value().toDouble();
+            addStock(name, shares);
         }
     }
 }

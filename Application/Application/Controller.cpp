@@ -110,13 +110,24 @@ const std::vector<double> * Controller::getMetricsData()
     if (this->metrics == nullptr)
     {   // Only occurs on startup and nothing is populated yet
         // Get inputs and populate views, then do get prediction
-        this->getInputs();
-        this->getPrediction();
-        if (this->metrics->empty())
+
+        if (this->getInputs())
         {
-            QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not retrieve recent metrics from Database. Try again.");
-            errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
-            errModal->show();
+            this->getPrediction();
+            if (this->metrics->empty())
+            {
+                QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not retrieve recent metrics from Database. Try again.");
+                errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
+                errModal->show();
+            }
+        }
+        else
+        {
+            this->metrics = new std::vector<double>;
+            this->metrics->push_back(0);
+            this->metrics->push_back(0);
+            this->metrics->push_back(0);
+            this->metrics->push_back(0);
         }
     }
     return this->metrics;
@@ -168,8 +179,9 @@ void Controller::getPrediction()
  * @modifies this->Views->predictionInputAssets, this->Views->predictionInputInvest, this->Views->predictionInputWages
  * @effect all the aforementioned views are updated with their most recent input data
  * @throws Error message box on error
+ * @returns true if successful, false otherwise
  */
-void Controller::getInputs()
+bool Controller::getInputs()
 {
     QJsonObject data = ReqObj->getInputs(this->userid);
     if (data.contains("error"))
@@ -177,6 +189,7 @@ void Controller::getInputs()
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not obtain stored input data. Try again after restarting the App.");
         errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         errModal->show();
+        return false;
     }
     else
     {
@@ -185,6 +198,7 @@ void Controller::getInputs()
         years = data["years"].toInt();
         (data["assets"].toObject()).insert("years", years);
         ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data["assets"].toObject());
+        return true;
     }
 }
 
@@ -398,13 +412,14 @@ void Controller::closeBudgetPage()
 /* Creates and displays the AccountManagement View as a modal
  */
 void Controller::switchToAccountManage() {
-    if (!AccountModal)
+    /*if (!AccountModal)
     {   // Make and show budget modal
         AccountManagement * manage = new AccountManagement;
         manage->setController(this);
+        manage->setAttribute(Qt::WA_DeleteOnClose);
         manage->show();
         AccountModal = true;
-    }
+    }*/
 }
 
 /* Close AccountManagement modal
