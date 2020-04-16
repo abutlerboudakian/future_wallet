@@ -82,7 +82,7 @@ const BudgetData * Controller::getBudgetData(QString budgetId)
             {
                 delete this->budget;
             }
-            this->budget = ReqObj->loadBudget(budgetId, "Userid");
+            this->budget = ReqObj->loadBudget(budgetId, this->userid);
             if (this->budget->isEmpty())
             {
                 QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", QString("Could not retrieve budget \"") + budgetId + QString("\". Try again."));
@@ -153,7 +153,7 @@ void Controller::getPrediction()
     QJsonObject Invest = ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->toJSON();
     QJsonObject Assets = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->toJSON();
     years = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->getYears();
-    this->metrics = ReqObj->getPrediction(userid, Wages, Invest, Assets, years);
+    this->metrics = ReqObj->getPrediction(this->userid, Wages, Invest, Assets, years);
     if (this->metrics->empty())
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not make prediction. Try again.");
@@ -171,7 +171,7 @@ void Controller::getPrediction()
  */
 void Controller::getInputs()
 {
-    QJsonObject data = ReqObj->getInputs(userid);
+    QJsonObject data = ReqObj->getInputs(this->userid);
     if (data.contains("error"))
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not obtain stored input data. Try again after restarting the App.");
@@ -280,6 +280,10 @@ void Controller::UpdateUserInfo(QString newUserId, QString Password)
 {
     if (ReqObj->UpdateUserInfo(this->userid, newUserId, Password))
     {
+        if (newUserId != QString(""))
+        {
+            this->userid = newUserId;
+        }
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully updated account information!");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();

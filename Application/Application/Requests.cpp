@@ -75,7 +75,7 @@ std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages,
 QJsonObject Requests::getInputs(QString userid)
 {
     // Endpoint
-    QUrl url(QUrl::toPercentEncoding(Location + QString("/getInputs") + QString("?userid=") + userid));
+    QUrl url(Location + QString("/getInputs") + QString("?userid=") + userid);
 
     // Header
     QNetworkRequest request(url);
@@ -181,7 +181,7 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
 BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 {
     // Endpoint
-    QUrl url(QUrl::toPercentEncoding(Location + QString("/getBudget?userid=") + userId + QString("&budgetid=") + budgetId));
+    QUrl url(Location + QString("/getBudget?userid=") + userId + QString("&budgetid=") + budgetId);
 
     // Header
     QNetworkRequest request(url);
@@ -232,7 +232,7 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 std::pair<bool, QStringList> Requests::listBudgets(QString userId)
 {
     // Endpoint
-    QUrl url(QUrl::toPercentEncoding(Location + QString("/getAllBudgets?userid=") + userId));
+    QUrl url(Location + QString("/getAllBudgets?userid=") + userId);
 
     // Header
     QNetworkRequest request(url);
