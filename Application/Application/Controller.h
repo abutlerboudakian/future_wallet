@@ -13,6 +13,7 @@
 #include "predictionInputInvest.h"
 #include "InputBudget.h"
 #include "AccountManagement.h"
+#include "Registration.h"
 
 #include "Requests.h"
 #include <QMessageBox>
@@ -29,7 +30,8 @@ enum Views
     WagePredict = 2,
     InvestPredict = 3,
     AssetPredict = 4,
-    BudgetInput = 5
+    BudgetInput = 5,
+    RegistrationPage = 6
 };
 
 class Controller
@@ -48,6 +50,8 @@ class Controller
     void switchToInputInvest();
     void switchToInputAsset();
     void switchToInputBudget();
+    void switchToRegisterPage();
+
     void switchToAccountManage();
 
     void closeBudgetPage();

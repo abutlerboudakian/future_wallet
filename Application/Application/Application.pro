@@ -24,14 +24,14 @@ SOURCES += \
     DashBoard.cpp \
     InputBudget.cpp \
     Menu.cpp \
+    Registration.cpp \
     Requests.cpp \
     main.cpp \
     mainapplication.cpp \
     LaunchMenu.cpp \
     predictionInputAssets.cpp \
     predictionInputInvest.cpp \
-    predictionInputWages.cpp \
-    registration.cpp
+    predictionInputWages.cpp
 
 HEADERS += \
     AccountManagement.h \
@@ -42,13 +42,13 @@ HEADERS += \
     DashBoard.h \
     InputBudget.h \
     Menu.h \
+    Registration.h \
     Requests.h \
     mainapplication.h \
     LaunchMenu.h \
     predictionInputAssets.h \
     predictionInputInvest.h \
     predictionInputWages.h \
-    registration.h \
     types.hpp
 
 FORMS += \
@@ -57,11 +57,11 @@ FORMS += \
     DashBoard.ui \
     InputBudget.ui \
     LaunchMenu.ui \
+    Registration.ui \
     predictionInputAssets.ui \
     mainapplication.ui \
     predictionInputInvest.ui \
-    predictionInputWages.ui \
-    registration.ui
+    predictionInputWages.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

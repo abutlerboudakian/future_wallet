@@ -405,6 +405,15 @@ void Controller::switchToInputBudget(){
     this->Views->setCurrentIndex(Views::BudgetInput);
 }
 
+/* Creates and displays the Registration view
+ * @modifies this->View
+ * @effects this->View's top most QWidget is now Views::RegistrationPage
+ */
+void Controller::switchToRegisterPage()
+{
+    this->Views->setCurrentIndex(Views::RegistrationPage);
+}
+
 
 void Controller::closeBudgetPage()
 {

@@ -36,7 +36,6 @@ void predictionInputInvest::setupValidator()
     ui->CD->setValidator(validDouble);
     //ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
     ui->StockData1->setValidator(validDouble);
-    ui->Mutual->setValidator(validDouble);
     ui->Bond->setValidator(validDouble);
     ui->TBond->setValidator(validDouble);
 }

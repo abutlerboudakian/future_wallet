@@ -1,7 +1,7 @@
 #ifndef REGISTRATION_H
 #define REGISTRATION_H
 
-#include <QDialog>
+#include <QWidget>
 class Controller;
 #include "Controller.h"
 
@@ -9,7 +9,7 @@ namespace Ui {
 class Registration;
 }
 
-class Registration : public QDialog
+class Registration : public QWidget
 {
     Q_OBJECT
 

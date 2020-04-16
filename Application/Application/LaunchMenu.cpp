@@ -30,6 +30,6 @@ void LaunchMenu::runLogin()
 
 void LaunchMenu::runCreateAccount()
 {
-    controller->Register(ui->UserField->text(), ui->PassField->text());
+    controller->switchToRegisterPage();
     return;
 }
