@@ -161,7 +161,7 @@ class DatasetBuilder:
 
 
 		elif mType == modelpack.ModelType.RENTS:
-			self.query = """SELECT
+			self.query = """SELECT TOP(10000000)
 							r1.Timestamp AS Timestamp,
 							r2.Timestamp AS PredTimestamp,
 							r1.Rent AS Rent,
