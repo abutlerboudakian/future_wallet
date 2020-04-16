@@ -24,10 +24,9 @@ public:
 private:
     Ui::InputBudget *ui;
     Controller * controller;
-    QSignalMapper * signalMapper;
 
     void getCategoryData();
-    // Should have 1 category for budget, for example "100% of my budget is dedicated to collecting empty danimal bottles"
+    // Should have at least 1 category for budget, for example "100% of my budget is dedicated to collecting empty danimal bottles"
     unsigned int counter = 4;
 
 private slots:

@@ -24,7 +24,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_11">
          <item>
-          <widget class="QPushButton" name="AccountInfo">
+          <widget class="QPushButton" name="AccountManage">
            <property name="text">
             <string>Change Account Info</string>
            </property>

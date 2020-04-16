@@ -12,6 +12,7 @@
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
 #include "InputBudget.h"
+#include "AccountManagement.h"
 
 #include "Requests.h"
 #include <QMessageBox>
@@ -47,8 +48,10 @@ class Controller
     void switchToInputInvest();
     void switchToInputAsset();
     void switchToInputBudget();
+    void switchToAccountManage();
 
     void closeBudgetPage();
+    void closeAccountManage();
 
     // Charts
     QChartView * getPieChart(const ChartMap * data);
@@ -94,6 +97,9 @@ class Controller
 
     // BudgetModal Boolean
     bool BudgetModal = false;
+
+    // AccountModal Boolean
+    bool AccountModal = false;
 
     Requests * ReqObj;
 

@@ -38,6 +38,7 @@ private slots:
    void getMetricsLineView();
    void getBudgetPieView();
    void getBudgetBarView();
+   void getAccountManageView();
 };
 
 #endif // DASHBOARD_H
