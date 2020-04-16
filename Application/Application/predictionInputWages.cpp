@@ -8,10 +8,13 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
     ui->setupUi(this);
     this->controller = controller;
 
+    //ui->Industry->addItems(controller->getIndustries());
+
     connect(ui->Next, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
     setupValidator();
+    ui->Industry->addItems(controller->getIndustries());
 }
 
 predictionInputWages::~predictionInputWages()
@@ -30,6 +33,67 @@ void predictionInputWages::setupValidator()
     ui->Time->setValidator(validInt);
     ui->Location->setValidator(validInt2);
     ui->Amount->setValidator(validDouble);
+}
+
+QJsonObject predictionInputWages::toJSON()
+{
+    QJsonObject data;
+
+    data.insert("industryCode", ui->Industry->currentText());
+    data.insert("loc", ui->Location->text());
+    data.insert("income", ui->Amount->text().toDouble());
+    QString hourly = "Hourly";
+    bool hourly_yes = true;
+    if (ui->IncomeType->currentText() == hourly)
+    {
+        data.insert("hourly", hourly_yes);
+    } else {
+        hourly_yes = false;
+        data.insert("hourly", hourly_yes);
+    }
+    data.insert("hourspw", ui->Time->text().toDouble());
+
+    return data;
+}
+
+void predictionInputWages::fromJson(QJsonObject savedData)
+{
+    // populate Amount
+    QJsonObject::Iterator it = savedData.find("income");
+    if ( it != savedData.end() )
+    {
+        ui->Amount->setText(it.value().toString());
+    }
+
+    // populate Location
+    it = savedData.find("loc");
+    if ( it != savedData.end() )
+    {
+        ui->Location->setText(it.value().toString());
+    }
+
+    // populate Time
+    it = savedData.find("hourspw");
+    if ( it != savedData.end() )
+    {
+        ui->Time->setText(it.value().toString());
+    }
+
+    // set IncomeType to the proper index
+    it = savedData.find("hourly");
+    if ( it != savedData.end() && it.value().toBool() == false )
+    {
+        int index = ui->IncomeType->findData("Salary");
+        ui->IncomeType->setCurrentIndex(index);
+    }
+
+    // set Industry to the proper index
+    it = savedData.find("industryCode");
+    if ( it != savedData.end() )
+    {
+        int index = ui->Industry->findData(it.value().toString());
+        ui->Industry->setCurrentIndex(index);
+    }
 }
 
 // Slots

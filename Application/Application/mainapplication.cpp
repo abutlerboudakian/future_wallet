@@ -77,6 +77,7 @@ void MainApplication::CreateViews(Controller * maincontroller)
     Views->addWidget(new predictionInputWages(this, maincontroller));
     Views->addWidget(new predictionInputInvest(this, maincontroller));
     Views->addWidget(new predictionInputAssets(this, maincontroller));
+    Views->addWidget(new InputBudget(this, maincontroller));
     setCentralWidget(Views);
     Views->show();
 }
@@ -133,3 +134,11 @@ void MainApplication::logout()
     this->controller->logout();
 }
 
+
+/* Function to tell the controller that it is closing
+ */
+void MainApplication::closeEvent(QCloseEvent * event)
+{
+    this->controller->logout();
+    event->accept();
+}

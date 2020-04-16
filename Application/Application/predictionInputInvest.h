@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QValidator>
 #include <QDoubleValidator>
+#include <QComboBox>
 class Controller;
 #include "Controller.h"
 
@@ -18,7 +19,9 @@ class predictionInputInvest : public QWidget
 public:
     explicit predictionInputInvest(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~predictionInputInvest();
-    void getStockData();
+    //void getStockData();
+    QJsonObject toJSON();
+    void fromJson(QJsonObject savedData);
 
 private:
     Ui::predictionInputInvest *ui;
@@ -29,7 +32,9 @@ private:
     QDoubleValidator * validDouble;
 
 private:
+    QStringList stockList;
     void setupValidator();
+    void addStock(QString name, double shares);
 
 
 private slots:

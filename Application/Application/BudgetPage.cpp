@@ -8,6 +8,7 @@ BudgetPage::BudgetPage(QWidget *parent) :
     ui->setupUi(this);
 
     ui->Default->setSelectionMode(QListWidget::SingleSelection);
+    ui->Custom->setSelectionMode(QListWidget::SingleSelection);
 }
 
 BudgetPage::~BudgetPage()
@@ -51,7 +52,8 @@ void BudgetPage::getLoadBudgetView()
 
 void BudgetPage::getCreateBudgetView()
 {
-
+    this->controller->switchToInputBudget();
+    this->close();
 }
 
 /* Function ensures that only one item in either list can be selected

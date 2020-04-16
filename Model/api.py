@@ -226,6 +226,14 @@ def update():
 			return make_response('No Updates Provided', 400)
 	return make_response('Account Updated', 200)
 
+@app.route('/register', methods=['POST'])
+def register():
+	return "{}"
+
+@app.route('/update', methods=['POST'])
+def update():
+	return "{}"
+
 @app.route('/getIndustries', methods=['GET'])
 def getIndustries():
 	response = {}

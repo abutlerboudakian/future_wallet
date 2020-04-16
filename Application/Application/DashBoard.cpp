@@ -97,28 +97,28 @@ void DashBoard::getInputView()
 // Function to start the Budget Modal when the "Budget" button is pressed
 void DashBoard::getBudgetView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
   controller->switchToBudgetPage();
   return;
 }
 
 // Function to show the metric as a pie chart
+// @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsPieView()
 {
-  this->updateMetrics();
   controller->getPieChart(metrics)->show();
   return;
 }
 
 // Function to show the metric as a vertical bar graph
+// @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsBarView()
 {
-    this->updateMetrics();
     controller->getBarGraph(metrics)->show();
     return;
 }
 
 // Function to show the metric as a line graph
+// @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsLineView()
 {
     //this->updateMetrics();

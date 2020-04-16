@@ -25,6 +25,9 @@ public:
     void showMenu();
     void hideMenu();*/
 
+protected:
+    virtual void closeEvent(QCloseEvent * event) override;
+
 private:
     Ui::MainApplication *ui;
     QStackedWidget * Views;

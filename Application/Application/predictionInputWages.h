@@ -17,6 +17,8 @@ class predictionInputWages : public QWidget
 
 public:
     explicit predictionInputWages(QWidget *parent = nullptr, Controller * controller = nullptr);
+    QJsonObject toJSON();
+    void fromJson(QJsonObject savedData);
     ~predictionInputWages();
 
 private:
