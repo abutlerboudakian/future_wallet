@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    AccountManagement.cpp \
     BudgetData.cpp \
     BudgetPage.cpp \
     ChartTemplate.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
     registration.cpp
 
 HEADERS += \
+    AccountManagement.h \
     BudgetData.h \
     BudgetPage.h \
     ChartTemplate.h \
@@ -50,6 +52,7 @@ HEADERS += \
     types.hpp
 
 FORMS += \
+    AccountManagement.ui \
     BudgetPage.ui \
     DashBoard.ui \
     InputBudget.ui \
