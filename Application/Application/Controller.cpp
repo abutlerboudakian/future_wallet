@@ -260,6 +260,7 @@ void Controller::Register(QString userid, QString Password)
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully created an account! Please login.");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();
+        this->switchToLogin();
         /*((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
         ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
         this->switchToDashBoard();*/
