@@ -163,6 +163,7 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             }
         }
     }
+    ui->Years->setText(savedData["years"].toString());
 }
 
 void predictionInputAssets::addResidence()
@@ -377,3 +378,10 @@ void predictionInputAssets::removeRental()
     }
 }
 
+/* Function to get the number of years to predict with
+ * @returns ui->Years;
+ */
+int predictionInputAssets::getYears()
+{
+    return ui->Years->text().toInt();
+}

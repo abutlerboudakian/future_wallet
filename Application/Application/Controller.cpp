@@ -18,8 +18,8 @@ Controller::Controller()
   budget->addCategory(QString("Ores"), 0.4);*/
 
   ReqObj = new Requests;
-  ReqObj->getIndustries();
-  ReqObj->getStocks();
+
+  years = 0;
 }
 
 /* Deletes the chart creators. Delegates deletion of the views to MainApplication
@@ -58,18 +58,42 @@ void Controller::setViews(QStackedWidget * Views)
  */
 const BudgetData * Controller::getBudgetData(QString budgetId)
 {
-    if (budgetId==QString("") && this->budget == nullptr)
-    {
-        this->budget = new BudgetData;
-    }
-    else if (budgetId != QString(""))
+    if (budgetId == "Uniform")
     {
         if (this->budget != nullptr)
         {
             delete this->budget;
         }
-        this->budget = ReqObj->loadBudget(budgetId, "Userid");
-        // Include error modal here
+        this->budget = new BudgetData;
+        this->budget->setName(budgetId);
+        this->budget->setDollar((*(this->metrics))[0] + (*(this->metrics))[1] + (*(this->metrics))[2]);
+        this->budget->addCategory("Savings", 0.5);
+        this->budget->addCategory("Spending", 0.5);
+    }
+    else
+    {
+        if (budgetId==QString("") && this->budget == nullptr)
+        {
+            this->budget = new BudgetData;
+        }
+        else if (budgetId != QString(""))
+        {
+            if (this->budget != nullptr)
+            {
+                delete this->budget;
+            }
+            this->budget = ReqObj->loadBudget(budgetId, this->userid);
+            if (this->budget->isEmpty())
+            {
+                QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", QString("Could not retrieve budget \"") + budgetId + QString("\". Try again."));
+                errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
+                errModal->show();
+            }
+            if (this->budget->getDollar() == 0.0)
+            {   // Set dollar amount
+                this->budget->setDollar((*(this->metrics))[0] + (*(this->metrics))[1] + (*(this->metrics))[2]);
+            }
+        }
     }
     return this->budget;
 }
@@ -128,7 +152,8 @@ void Controller::getPrediction()
     QJsonObject Wages = ((predictionInputWages*)this->Views->widget(Views::WagePredict))->toJSON();
     QJsonObject Invest = ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->toJSON();
     QJsonObject Assets = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->toJSON();
-    this->metrics = ReqObj->getPrediction(userid, Wages, Invest, Assets, years);
+    years = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->getYears();
+    this->metrics = ReqObj->getPrediction(this->userid, Wages, Invest, Assets, years);
     if (this->metrics->empty())
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not make prediction. Try again.");
@@ -146,7 +171,7 @@ void Controller::getPrediction()
  */
 void Controller::getInputs()
 {
-    QJsonObject data = ReqObj->getInputs(userid);
+    QJsonObject data = ReqObj->getInputs(this->userid);
     if (data.contains("error"))
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not obtain stored input data. Try again after restarting the App.");
@@ -157,8 +182,9 @@ void Controller::getInputs()
     {
         ((predictionInputWages*)this->Views->widget(Views::WagePredict))->fromJson(data["wages"].toObject());
         ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->fromJson(data["invests"].toObject());
-        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data["assets"].toObject());
         years = data["years"].toInt();
+        (data["assets"].toObject()).insert("years", years);
+        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data["assets"].toObject());
     }
 }
 
@@ -254,6 +280,10 @@ void Controller::UpdateUserInfo(QString newUserId, QString Password)
 {
     if (ReqObj->UpdateUserInfo(this->userid, newUserId, Password))
     {
+        if (newUserId != QString(""))
+        {
+            this->userid = newUserId;
+        }
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully updated account information!");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();
@@ -355,6 +385,7 @@ void Controller::switchToBudgetPage()
  * @effects this->View's top most QWidget is now Views::InputBudget
  */
 void Controller::switchToInputBudget(){
+    ((InputBudget*)this->Views->widget(Views::BudgetInput))->resetBudget();
     this->Views->setCurrentIndex(Views::BudgetInput);
 }
 
