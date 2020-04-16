@@ -195,12 +195,12 @@ class DatasetBuilder:
 							r2.Price IS NOT NULL
 						;"""
 		else:
-			raise 'Invalid model type specified. ' + mType
+			raise ValueError('Invalid model type specified. ' + mType)
 
 		if self.query is not None:
 			self.resultset = self.engine.execute(self.query)
 		else:
-			raise 'Missing argument for model specified'
+			raise ValueError('Missing argument for model specified')
 
 	def getData(self, batchsize=None):
 		if batchsize is not None:

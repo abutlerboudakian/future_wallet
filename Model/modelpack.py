@@ -66,7 +66,7 @@ class BaseModel(ABC):
 					break
 
 	def save(self, path):
-		pass
+		self.model.save(path)
 
 	def load(self, path):
 		pass
@@ -141,15 +141,15 @@ class InvestmentModel(BaseModel):
 	def train(self, epochs, batchsize):
 		self.savingsModel.train(epochs, batchsize)
 		self.cdModel.train(epochs, batchsize)
-		for s in self.stockModels:
-			s.train(epochs, batchsize)
+		for ticker, model in self.stockModels.items():
+			model.train(epochs, batchsize)
 		self.bondModel.train(epochs, batchsize)
 		self.tbModel.train(epochs, batchsize)
 
 	def save(self, path):
 		self.savingsModel.save(path)
 		self.cdModel.save(path)
-		for ticker, model in self.stockModels:
+		for ticker, model in self.stockModels.items():
 			model.save(path, ticker)
 		self.bondModel.save(path)
 		self.tbModel.save(path)
@@ -219,7 +219,7 @@ class SavingsModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path):
-		self.model.save(path + 'savingsmodel/')
+		super().save(path + 'savingsmodel/')
 
 	def load(self, path):
 		self.model = keras.models.load_model(path + 'savingsmodel')
@@ -233,7 +233,7 @@ class CDModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path):
-		self.model.save(path + 'cdmodel/')
+		super().save(path + 'cdmodel/')
 
 	def load(self, path):
 		self.model = keras.models.load_model(path + 'cdmodel')
@@ -247,7 +247,7 @@ class StockModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path, ticker):
-		self.model.save(path + 'stockmodel' + ticker + '/')
+		super().save(path + 'stockmodel' + ticker + '/')
 
 	def load(self, model):
 		self.model = keras.models.load_model(path + 'stockmodel' + ticker)
@@ -261,7 +261,7 @@ class BondModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path):
-		self.model.save(path + 'bondmodel/')
+		super().save(path + 'bondmodel/')
 
 	def load(self, path):
 		self.model = keras.models.load_model(path + 'bondmodel')
@@ -275,7 +275,7 @@ class TBModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path):
-		self.model.save(path + 'tbmodel/')
+		super().save(path + 'tbmodel/')
 
 	def load(self, path):
 		self.model = keras.models.load_model(path + 'tbmodel')
@@ -289,7 +289,7 @@ class ResidenceModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path):
-		self.model.save(path + 'resmodel/')
+		super().save(path + 'resmodel/')
 
 	def load(self, path):
 		self.model = keras.models.load_model(path + 'resmodel')
@@ -303,7 +303,7 @@ class RentModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path):
-		self.model.save(path + 'rentmodel/')
+		super().save(path + 'rentmodel/')
 
 	def load(self, path):
 		self.model = keras.models.load_model(path + 'rentmodel')
@@ -317,7 +317,7 @@ class RMModel(BaseModel):
 		super().__init__(dsb)
 
 	def save(self, path):
-		self.model.save(path + 'rmmodel/')
+		super().save(path + 'rmmodel/')
 
 	def load(self, model):
 		self.model = keras.models.load_model(path + 'rmmodel')
