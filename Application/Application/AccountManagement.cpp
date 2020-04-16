@@ -22,7 +22,7 @@ void AccountManagement::setController(Controller * controller)
     this->controller = controller;
 
     connect(ui->cancelUpdateAccount, SIGNAL(released()), this, SLOT(Exit()));
-    connect(ui->UpdateAccount, SIGNAL(released()), this, SLOT(Create()));
+    connect(ui->UpdateAccount, SIGNAL(released()), this, SLOT(Update()));
 }
 
 /* Function that closes the modal

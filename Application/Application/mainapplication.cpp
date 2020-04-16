@@ -125,7 +125,7 @@ void MainApplication::hideMenu()
 // Function gets the user account info page
 void MainApplication::getUserAccountView()
 {
-
+    this->controller->switchToAccountManage();
 }
 
 /* Function Logs the user out */

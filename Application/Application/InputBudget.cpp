@@ -218,7 +218,8 @@ void InputBudget::updateLabel(int val) {
     if (originalValue != -1) {this->budget->removeCategory(catName);} // Remove if category exists
     if (this->budget->addCategory(catName, double(val)/100))
     {   // Can update value display
-        this->findChild<QLabel *>(QString("ValueSlider") + sliderNumber)->setText(QString::number(val) + QString("%"));
+        this->findChild<QLabel *>(QString("ValueSlider") + sliderNumber)->setText(QString::number(val) + QString("% | $") +
+                                                                                  QString::number(this->budget->getDollar() * (double(val)/100), 'f', 2));
     }
     else
     {   // Can't change category value, so don't update display and revert

@@ -97,20 +97,18 @@ QJsonObject predictionInputInvest::toJSON()
     data.insert("savings", ui->Saving->text().toDouble());
     data.insert("cd", ui->CD->text().toDouble());
 
-    QJsonArray stocks;
+    QJsonObject stocks;
 
     QString StockName;
     QList<QComboBox*> names = this->findChildren<QComboBox *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     QList<QLineEdit*> shares = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     for (int i = 0; i < ui->Stocks->count(); i++)
     {
-        QJsonObject json_stock;
         //qDebug() << names[i]->itemText(names[i]->currentIndex());
         StockName = names[i]->itemText(names[i]->currentIndex());
         if (StockName != QString("--"))
         {
-            json_stock.insert(StockName, shares[i]->text().toInt());
-            stocks.push_back(json_stock);
+            stocks.insert(StockName, shares[i]->text().toInt());
         }
     }
 
@@ -128,43 +126,45 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
     QJsonObject::Iterator it = savedData.find("savings");
     if ( it != savedData.end() )
     {
-        ui->Saving->setText(it.value().toString());
+        ui->Saving->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populate CD
     it = savedData.find("cd");
     if ( it != savedData.end() )
     {
-        ui->CD->setText(it.value().toString());
+        ui->CD->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populate Bond
     it = savedData.find("bonds");
     if ( it != savedData.end() )
     {
-        ui->Bond->setText(it.value().toString());
+        ui->Bond->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populate Treasury Bond
     it = savedData.find("tbonds");
     if ( it != savedData.end() )
     {
-        ui->TBond->setText(it.value().toString());
+        ui->TBond->setText(QString::number(int(it.value().toDouble())));
     }
 
     // populat Stocks
     it = savedData.find("stocks");
     if ( it != savedData.end() )
     {
-        QJsonArray stocksList = it.value().toArray();
-        QJsonArray::iterator it;
-        for ( it = stocksList.begin(); it != stocksList.end(); it++ )
+        QJsonObject stocksList = it.value().toObject();
+        it = stocksList.begin();
+        if (it != stocksList.end())
         {
-            QJsonObject stock = it->toObject();
-            if ( stock.empty() == false )
+            QString name = it.key();
+            double shares = it.value().toDouble();
+            addStock(name, shares);
+            for ( it++; it != stocksList.end(); it++ )
             {
-                QString name = stock.begin()->toString();
-                double shares = stock.begin()->toDouble();
+                QString name = it.key();
+                double shares = it.value().toDouble();
                 addStock(name, shares);
             }
         }
@@ -224,7 +224,6 @@ void predictionInputInvest::addStock()
 
 void predictionInputInvest::addStock(QString name, double shares)
 {
-    qDebug()<<"Other";
     // Constructs a stock field
     QWidget * Stock = new QWidget();
     QHBoxLayout * StockLayout = new QHBoxLayout;

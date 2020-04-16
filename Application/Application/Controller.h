@@ -64,7 +64,7 @@ class Controller
 
     // Endpoints
     void getPrediction();
-    void getInputs();
+    bool getInputs();
 
     void addBudget(BudgetData * budget);
     QStringList getBudgetList();

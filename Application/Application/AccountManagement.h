@@ -1,9 +1,8 @@
 #ifndef ACCOUNTMANAGEMENT_H
 #define ACCOUNTMANAGEMENT_H
 
-class Controller;
-
 #include <QDialog>
+class Controller;
 #include "Controller.h"
 
 namespace Ui {
