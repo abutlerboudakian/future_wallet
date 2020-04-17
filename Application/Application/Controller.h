@@ -70,7 +70,7 @@ class Controller
     void getPrediction();
     bool getInputs();
 
-    void addBudget(BudgetData * budget);
+    bool addBudget(BudgetData * budget);
     QStringList getBudgetList();
 
     void login(QString userid, QString Password);
