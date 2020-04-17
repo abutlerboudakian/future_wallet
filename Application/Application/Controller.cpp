@@ -208,7 +208,7 @@ bool Controller::getInputs()
  */
 bool Controller::addBudget(BudgetData * budget)
 {
-    if (!ReqObj->addBudget(budget, this->userid))
+    if (budget->getName() == QString("") || !ReqObj->addBudget(budget, this->userid))
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not add Budget to Database. Try again.");
         errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing

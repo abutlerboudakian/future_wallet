@@ -32,13 +32,14 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     **/
 
     // Connect the slider to the qlabel
-    connect(ui->Slider0, SLOT(valueChanged(int)), this, SLOT(updateLabel(int)));
+    //connect(ui->Slider0, SLOT(valueChanged(int)), this, SLOT(updateLabel(int)));
 
     /*QString sliderName = QString("Slider");
     for (int i = 0; i < ui->Categories->count(); i++)
     {
         connect(this->findChild<QSlider*>(sliderName + QString::number(i)), SIGNAL(valueChanged(int)), this, SLOT(updateLabel(int)));
     }*/
+    connect(this->findChild<QSlider*>(QString("Slider0")), SIGNAL(valueChanged(int)), this, SLOT(updateLabel(int)));
 }
 
 InputBudget::~InputBudget()
@@ -70,12 +71,15 @@ void InputBudget::resetBudget()
     // Remove Excess Categories
     QString CatContainer = QString("CategoryLayout");
     QWidget * Category;
-    for (int i = 1; i < ui->Categories->count(); i++)
+    qDebug() << ui->Categories->count();
+    int numCats = ui->Categories->count(); // since this is prone to change via removeWidget
+    for (int i = 1; i < numCats; i++)
     {
-        Category = ui->Categories->findChild<QWidget*>(CatContainer + QString::number(i));
+        Category = this->findChild<QWidget*>(CatContainer + QString::number(i));
         ui->Categories->removeWidget(Category);
         delete Category;
     }
+    counter = 1;
 }
 
 /* Function used to get all the category budget data
@@ -119,7 +123,7 @@ void InputBudget::Create() {
     for (int i = 0; i < ui->Categories->count(); i++)
     {
         CurrentUIName = UIName + QString::number(i);
-        catName = ui->Categories->findChild<QLineEdit*>(CurrentUIName)->text();
+        catName = this->findChild<QLineEdit*>(CurrentUIName)->text();
         if (!Message->addCategory(catName, this->budget->getCategoryValue(CurrentUIName)))
         {
             QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", QString("Invalid Budget Logic. Please Try again."));
@@ -131,6 +135,7 @@ void InputBudget::Create() {
     }
     delete this->budget;
     this->budget = Message;
+    this->budget->setName(ui->nameBudget->text());
     if (controller->addBudget(this->budget))
     {
         this->controller->switchToDashBoard();
@@ -154,15 +159,15 @@ void InputBudget::addCategory() {
     std::string layoutName = "CategoryLayout" + std::to_string(counter - 1);
     Category->setObjectName(QString::fromStdString(layoutName));
 
-    QHBoxLayout *horizonalLayout = new QHBoxLayout; // Layout of Category
+    QHBoxLayout *horizonalLayout = new QHBoxLayout(Category); // Layout of Category
 
     // New category line edit
-    QLineEdit *newCategory = new QLineEdit;
+    QLineEdit *newCategory = new QLineEdit(Category);
     std::string catName = "Category" + std::to_string(counter - 1);
     newCategory->setObjectName(QString::fromStdString(catName));
 
     // New slider
-    QSlider *slider = new QSlider;
+    QSlider *slider = new QSlider(Category);
     std::string sliderName = "Slider" + std::to_string(counter - 1);
     slider->setObjectName(QString::fromStdString(sliderName));
     slider->setMaximum(100);
@@ -171,7 +176,7 @@ void InputBudget::addCategory() {
     slider->setTickInterval(1);
 
     // New value of slider
-    QLabel * valueOfSlider = new QLabel;
+    QLabel * valueOfSlider = new QLabel(Category);
     std::string valueName = "ValueSlider" + std::to_string(counter - 1);
     valueOfSlider->setObjectName(QString::fromStdString(valueName));
     valueOfSlider->setText(QCoreApplication::translate("InputBudget", "0.00", nullptr));
@@ -212,20 +217,20 @@ void InputBudget::removeCategory() {
         std::string lastLayoutStr = "CategoryLayout" + std::to_string(counter - 1);
 
         // Remove the category from the internal budget representation
-        QString sliderNumber = QString::number(counter - 1);
-        this->budget->removeCategory(QString("Category") + sliderNumber);
+        QString CatName = QString("Category") + QString::number(counter - 1);
+        this->budget->removeCategory(CatName);
 
-        QWidget* lastCategory = ui->Categories->findChild<QWidget*>(QString::fromStdString(lastLayoutStr));
+        QWidget * lastCategory = this->findChild<QWidget*>(QString::fromStdString(lastLayoutStr));
         ui->Categories->removeWidget(lastCategory);
         delete lastCategory;
         counter--;
+        updateLimits();
     } else {
         QMessageBox messageBox;
         messageBox.critical(0,"Error","At least one category required for budget.");
         messageBox.setFixedSize(500,200);
         return;
     }
-    updateLimits();
 }
 
 // Function to modify label whenever its respective slider is modified by user
