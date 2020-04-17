@@ -29,12 +29,7 @@
         <widget class="QListWidget" name="Default">
          <item>
           <property name="text">
-           <string>Orange</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Apple</string>
+           <string>Uniform</string>
           </property>
          </item>
         </widget>
@@ -58,28 +53,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="Custom">
-         <item>
-          <property name="text">
-           <string>Big</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Chungus</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Orange</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Banana</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QListWidget" name="Custom"/>
        </item>
       </layout>
      </item>

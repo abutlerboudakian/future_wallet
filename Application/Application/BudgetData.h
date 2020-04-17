@@ -20,17 +20,29 @@ public:
     BudgetData();
     ~BudgetData();
 
-    // friend QDataStream & operator<<(QDataStream &out, const BudgetData &s);
-    // friend QDataStream & operator>>(QDataStream &in, BudgetData &s);
+    /*friend QDataStream & operator<<(QDataStream &out, const BudgetData &s);
+    friend QDataStream & operator>>(QDataStream &in, BudgetData &s);*/
+
+    void setName(QString budgetName);
+    void setDollar(double val);
+    const QString getName() const;
+    const double getDollar() const;
 
     bool addCategory(QString name, double val);
     bool removeCategory(QString name);
+    double getCategoryValue(QString name) const;
 
+    double getRemaining() const;
     QString getBudgetString() const;
     const ChartMap * getBudgetChartMap() const;
 
+    bool isEmpty();
+
+
 private:
     ChartMap * data;
+    double totalAmount;
+    QString name;
 
     void checkRep();
 };

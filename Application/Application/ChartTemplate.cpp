@@ -110,9 +110,7 @@ ChartTemplate::~ChartTemplate() {}
  */
 void ChartTemplate::make(const ChartMap * data)
 {
-    if (chartView != nullptr) { delete chartView; }
-    else if (chart != nullptr) { delete chart; chart = nullptr; }
-    else if (!series->empty()) { clearSeries(); }
+    if (!series->empty()) { clearSeries(); }
     chartView = nullptr; chart = nullptr;
     setDataAndEffects(data);
     QChartSetup();
@@ -229,9 +227,7 @@ LineGUI::~LineGUI() {}
  */
 void LineGUI::make(const LineMap * data)
 {
-    if (chartView != nullptr) { delete chartView; }
-    else if (chart != nullptr) { delete chart; chart = nullptr; }
-    else if (!series->empty()) { clearSeries(); }
+    if (!series->empty()) { clearSeries(); }
     chartView = nullptr; chart = nullptr;
     setDataAndEffects(data);
     QChartSetup();

@@ -18,6 +18,7 @@ public:
     explicit BudgetPage(QWidget *parent = nullptr);
     ~BudgetPage();
     void setController(Controller * controller);
+    void updateUserList();
 
 protected:
     virtual void closeEvent(QCloseEvent * event) override;

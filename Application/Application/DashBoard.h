@@ -21,11 +21,14 @@ public:
     ~DashBoard();
 
     void updateMetrics();
-    void updateBudget();
+    void updateMessage(QString userId);
+    void updateBudget(QString budgetId);
 
 private:
     Ui::DashBoard *ui;
     Controller * controller;
+    ChartMap * metrics;
+    //LineMap * metricsLine;
 
 private slots:
    void getInputView();
@@ -35,6 +38,7 @@ private slots:
    void getMetricsLineView();
    void getBudgetPieView();
    void getBudgetBarView();
+   void getAccountManageView();
 };
 
 #endif // DASHBOARD_H

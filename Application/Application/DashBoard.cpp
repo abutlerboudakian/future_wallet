@@ -7,8 +7,11 @@ DashBoard::DashBoard(QWidget *parent, Controller * controller) :
 {
     ui->setupUi(this);
     this->controller = controller;
-    // Set up event triggers:
 
+    metrics = nullptr;
+    //metricsLine = nullptr;
+
+    // Set up event triggers:
     connect(ui->Predict, SIGNAL(released()), this, SLOT(getInputView()));
     connect(ui->Budget, SIGNAL(released()), this, SLOT(getBudgetView()));
     connect(ui->metricsPie, SIGNAL(released()), this, SLOT(getMetricsPieView()));
@@ -22,46 +25,63 @@ DashBoard::DashBoard(QWidget *parent, Controller * controller) :
 DashBoard::~DashBoard()
 {
     delete ui;
+    delete metrics;
+}
+
+// Function used to update welcome message
+/* @modifies ui->Message
+ * @effecst ui->Message = "Welcome " userId
+ */
+void DashBoard::updateMessage(QString userId)
+{
+    ui->Message->setText(QString("Welcome ") + userId);
 }
 
 /* Function used to update the budget in display
  * @modifies this->ui->Budget
  * @effects this->ui->Budget now contains the budget that was recently loaded in
  */
-void DashBoard::updateBudget()
+void DashBoard::updateBudget(QString budgetId)
 {
-    ui->budgets->setText(controller->getBudgetData()->getBudgetString());
+    ui->budgets->setText(controller->getBudgetData(budgetId)->getBudgetString());
 }
 
 /* Function used to update the metric in display
- * @modifies this->ui->metrics
+ * @modifies this->ui->metrics, this->metrics
  * @effects this->ui->metrics now contains the recent metric information
+ *          this->metrics contains the Controller's metrics
  */
 void DashBoard::updateMetrics()
 {
     // Ask controller for metric data (basically a preformated string)
-
-/*    delete ui->metrics->takeWidget();
-
-    QTreeWidget * mWidget = new QTreeWidget; // Might need to specify parent
-    mWidget->setColumnCount(2);
-
-    // Wages root
-    QTreeWidgetItem * root = new QTreeWidgetItem(mWidget), * tmpItem;
-    root->setText(0, "Wages");
-    root->setText(1, INSERTTOTALWAGES);
-    mWidget->addTopLevelItem(root);
-    // Input each wage component and value
-    for each component
+    const std::vector<double> * data = controller->getMetricsData();
+    if (!data->empty())
     {
-        tmpItem = new QTreeWidgetItem(root);
-        tmpItem->setText(0, COMPONENT NAME);
-        tmpItem->setText(1, COMPONENT VALUE);
-        root->addChild(tmpItem);
+        std::vector<double>::const_iterator i = data->begin();
+        if (metrics == nullptr)
+        {
+            metrics = new ChartMap;
+            metrics->insert(std::pair<std::string, double>("Wages", *(i++)));
+            metrics->insert(std::pair<std::string, double>("Investment", *(i++)));
+            metrics->insert(std::pair<std::string, double>("Assets", *(i++)));
+        }
+        else
+        {
+            (*metrics)["Wages"] = *(i++);
+            (*metrics)["Investment"] = *(i++);
+            (*metrics)["Assets"] = *(i++);
+        };
+
+        i = data->begin();
+        double sum = 0;
+        while (i != (data->end()-1)) {sum += *(i++);}
+        std::string years = QString::number((*(data->end() - 1)), 'f', 2).toStdString();
+
+        ui->metrics->setText(QString::fromStdString("Your income will grow/shrink by " + QString::number(sum, 'f', 2).toStdString() + " dollars in " + years
+                                                    + "\n\nYour wages will grow/shrink by " + QString::number((*metrics)["Wages"], 'f', 2).toStdString() + " dollars in " + years
+                                                    + "\nYour investments will grow/shrink by " + QString::number((*metrics)["Investment"], 'f', 2).toStdString() + " dollars in " + years
+                                                    + "\nYour assets will grow/shrink by " + QString::number((*metrics)["Assets"], 'f', 2).toStdString() + " dollars in " + years));
     }
-
-
-    ui->metrics->setWidget(mWidget);*/
 }
 
 
@@ -70,47 +90,58 @@ void DashBoard::updateMetrics()
 // Function to switch to the input view when "Predict" button is pressed
 void DashBoard::getInputView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
+  this->controller->switchToInputWages();
   return;
 }
 
 // Function to start the Budget Modal when the "Budget" button is pressed
 void DashBoard::getBudgetView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
   controller->switchToBudgetPage();
   return;
 }
 
+// Function to start the AccountManagement Modal when the "Account" button is pressed
+void DashBoard::getAccountManageView() {
+    controller->switchToAccountManage();
+    return;
+}
+
 // Function to show the metric as a pie chart
+// @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsPieView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
+  controller->getPieChart(metrics)->show();
   return;
 }
 
 // Function to show the metric as a vertical bar graph
+// @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsBarView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
-  return;
+    controller->getBarGraph(metrics)->show();
+    return;
 }
 
 // Function to show the metric as a line graph
+// @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsLineView()
 {
-  std::cout<<"HelloWorld"<<std::endl;
-  return;
+    //this->updateMetrics();
+    //controller->getLineGraph(metricsLine)->show();
+    return;
 }
 
 // Function to show the loaded budget as a pie chart
 void DashBoard::getBudgetPieView()
 {
-
+    const ChartMap * data = controller->getBudgetData(QString(""))->getBudgetChartMap();
+    controller->getPieChart(data)->show();
 }
 
 // Function to show the loaded budget as a bar graph
 void DashBoard::getBudgetBarView()
 {
-
+    const ChartMap * data = controller->getBudgetData(QString(""))->getBudgetChartMap();
+    controller->getBarGraph(data)->show();
 }

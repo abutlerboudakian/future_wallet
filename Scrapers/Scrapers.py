@@ -288,7 +288,8 @@ def parseNAICSCode():
 	Ex: ---> = One click
 	(11) ---> (111110) ---> (Job class, Prev NAICS code, Job Desc)
 	'''
-	NAICS_CODE_LEN = 6
+	NAICS_CODE_LEN_FULL = 6
+	NAICS_CODE_LEN_SHORT = 2
 	# Init dataframe with columns
 	naics_code = pd.DataFrame(columns=["CURRENT_NAICS_CODE", "JOB_CLASS", "JOB_DESCRIPTION"])
 
@@ -320,19 +321,24 @@ def parseNAICSCode():
 				for inner_link in inner_soup.find_all('a'):
 					href_text = inner_link.get_text()
 					# If href text is a 6-digit NAICS code, enter and get NAICS code info
-					if href_text.isdigit() and len(href_text) == NAICS_CODE_LEN:
+					if href_text.isdigit():  # and len(href_text) == NAICS_CODE_LEN:
 						# Wait a random amount of seconds from 1 <= n <= 4 to not get 503 error
 						time.sleep(random.randint(1, 4))
 
 						final_page = requests.get(base + inner_link.get('href'))
-						print("Status Code", final_page.status_code)
 						final_soup = bs4.BeautifulSoup(final_page.text, 'html.parser')
 
 						# Get inside div to get NAICS info
 						middle_col = final_soup.find("div", {"id": "middle-column"})
 						# Get job classification with h3 tag
-						job_class_html = middle_col.find("h3")
-						job_class = job_class_html.get_text()[NAICS_CODE_LEN:len(job_class_html.get_text())]
+						if len(href_text) == NAICS_CODE_LEN_SHORT or len(href_text) == NAICS_CODE_LEN_FULL:
+							jobClassInd = 0
+						else:
+							jobClassInd = 1
+
+						job_class_html = middle_col.findAll('h3')[jobClassInd]
+
+						job_class = job_class_html.get_text()[len(href_text):len(job_class_html.get_text())]
 
 						# Get job description before <br/>
 						job_desc = job_class_html.next_sibling
@@ -342,8 +348,12 @@ def parseNAICSCode():
 
 						# Get naics code
 						curr_naics = href_text
-
-						naics_code = naics_code.append(pd.Series([curr_naics, job_class, job_desc], index=["CURRENT_NAICS_CODE", "JOB_CLASS", "JOB_DESCRIPTION"]), ignore_index=True)
+						print("curr_naics:", curr_naics)
+						print("job_class", job_class)
+						print("job_desc", job_desc)
+						naics_code = naics_code.append(pd.Series([curr_naics, job_class, job_desc],
+																 index=["CURRENT_NAICS_CODE", "JOB_CLASS",
+																		"JOB_DESCRIPTION"]), ignore_index=True)
 				break
 
 	return naics_code
