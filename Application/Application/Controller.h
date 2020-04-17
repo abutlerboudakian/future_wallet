@@ -7,11 +7,13 @@
 
 #include "DashBoard.h"
 #include "LaunchMenu.h"
+class BudgetPage;
 #include "BudgetPage.h"
 #include "predictionInputAssets.h"
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
 #include "InputBudget.h"
+class AccountManagement;
 #include "AccountManagement.h"
 #include "Registration.h"
 
@@ -92,6 +94,9 @@ class Controller
     PieGUI * PieCreator;
     BarGUI * BarCreator;
     LineGUI * LineCreator;
+
+    BudgetPage * BudgetView;
+    AccountManagement * manage;
 
     // ModelData
     BudgetData * budget;

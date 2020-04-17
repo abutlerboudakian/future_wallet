@@ -383,12 +383,16 @@ void Controller::switchToBudgetPage()
 {
     if (!BudgetModal)
     {   // Make and show budget modal
-        BudgetPage * temp = new BudgetPage;
-        temp->setController(this);
-        temp->setAttribute(Qt::WA_DeleteOnClose);
-        temp->updateUserList();
-        temp->show();
+        BudgetView = new BudgetPage;
+        BudgetView->setController(this);
+        BudgetView->setAttribute(Qt::WA_DeleteOnClose);
+        BudgetView->updateUserList();
+        BudgetView->show();
         BudgetModal = true;
+    }
+    else
+    {
+        BudgetView->raise();
     }
 }
 
@@ -419,13 +423,20 @@ void Controller::closeBudgetPage()
 /* Creates and displays the AccountManagement View as a modal
  */
 void Controller::switchToAccountManage() {
-    if (!AccountModal)
-    {   // Make and show budget modal
-        AccountManagement * manage = new AccountManagement;
-        manage->setController(this);
-        manage->setAttribute(Qt::WA_DeleteOnClose);
-        manage->show();
-        AccountModal = true;
+    if (this->Views->currentIndex() != Views::Login)
+    {
+        if (!AccountModal)
+        {   // Make and show budget modal
+            manage = new AccountManagement;
+            manage->setController(this);
+            manage->setAttribute(Qt::WA_DeleteOnClose);
+            manage->show();
+            AccountModal = true;
+        }
+        else
+        {
+            manage->raise();
+        }
     }
 }
 
