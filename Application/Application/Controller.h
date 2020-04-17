@@ -58,9 +58,9 @@ class Controller
     void closeAccountManage();
 
     // Charts
-    QChartView * getPieChart(const ChartMap * data);
-    QChartView * getBarGraph(const ChartMap * data);
-    QChartView * getLineGraph(const LineMap * data);
+    QChartView * getPieChart(QString ChartName, const ChartMap * data);
+    QChartView * getBarGraph(QString ChartName, const ChartMap * data);
+    QChartView * getLineGraph(QString ChartName, const LineMap * data);
 
     const std::vector<double> * getMetricsData();
     const BudgetData * getBudgetData(QString budgetId);

@@ -30,6 +30,7 @@ public:
     VisualTemplate();
     virtual ~VisualTemplate();
     virtual QChartView * getView() const;
+    void setName(QString name);
 
 protected:
     // Common
@@ -44,6 +45,7 @@ protected:
     QChart * chart;
     std::vector<QAbstractSeries *> * series;
     QChartView * chartView;
+    QString ChartName;
 
     // Helper function
     void clearSeries();
