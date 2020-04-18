@@ -1,6 +1,13 @@
 #include "Requests.h"
 
-Requests::Requests(QObject * parent) : QObject(parent) {}
+Requests::Requests(QObject * parent, bool debug) : QObject(parent)
+{
+    this->debug = debug;
+    if (debug)
+    {
+        Location = "http://127.0.0.1:5000";
+    }
+}
 
 // -----------------------------------------------------
 // Inputs                                              |
@@ -15,8 +22,15 @@ Requests::Requests(QObject * parent) : QObject(parent) {}
 std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages, QJsonObject Invest, QJsonObject Assets, int years)
 {
     // Endpoint
-    //QUrl url(Location + QString("/submitInputs"));
-    QUrl url(Location + QString("/storeInputs"));
+    QUrl url;
+    if (this->debug)
+    {
+        url = QUrl(Location + QString("/storeInputs"));
+    }
+    else
+    {
+        url = QUrl(Location + QString("/submitInputs"));
+    }
 
     // Header
     QNetworkRequest request(url);

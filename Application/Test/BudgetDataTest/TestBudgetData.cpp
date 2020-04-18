@@ -1,23 +1,17 @@
-#include <QtTest/QtTest>
-#include "../Application/BudgetData.h"
+#include "TestBudgetData.h"
 
-class TestBudgetData: public QObject
+TestBudgetData::TestBudgetData()
 {
-    Q_OBJECT
 
-// Unit Tests are slot functions
-private slots:
-    void construction();
-    void Name();
-    void Dollars();
-    void Categories();
-    void isEmpty();
-    /*void Remaining();
-    void Display();
-    void ChartMapTest();*/
-};
+}
 
-void TestBudgetData::construction()
+TestBudgetData::~TestBudgetData()
+{
+
+}
+
+
+void TestBudgetData::TestConstruction()
 {   // Test construction
     {
         BudgetData budget;
@@ -31,7 +25,7 @@ void TestBudgetData::construction()
     }
 }
 
-void TestBudgetData::Name()
+void TestBudgetData::TestName()
 {   // Test setName and getName
     BudgetData budget;
     QCOMPARE(budget.getName(), QString("")); // Should be empty string
@@ -39,7 +33,7 @@ void TestBudgetData::Name()
     QCOMPARE(budget.getName(), QString("Test"));
 }
 
-void TestBudgetData::Dollars()
+void TestBudgetData::TestDollars()
 {   // Test setDollar and getDollar
     BudgetData budget;
     QCOMPARE(budget.getDollar(), 0);
@@ -48,7 +42,7 @@ void TestBudgetData::Dollars()
     QCOMPARE(budget.getDollar(), 150.05);
 }
 
-void TestBudgetData::Categories()
+void TestBudgetData::TestCategories()
 {   // Test addCategory, removeCategory, getCategoryValue
     {
         BudgetData budget;
@@ -99,14 +93,15 @@ void TestBudgetData::Categories()
         QCOMPARE(budget.getCategoryValue(QString("Cat 2")), 0.75);
         QCOMPARE(budget.getCategoryValue(QString("Cat 3")), 0.01);
         QCOMPARE(budget.getCategoryValue(QString("Cat 4")), 0.19);
+        QCOMPARE(budget.getCategoryValue(QString("Cat 5")), -1);
     }
 
     {   // setup
         BudgetData budget;
         QCOMPARE(budget.addCategory(QString("Cat 1"), 0.05), true);
         QCOMPARE(budget.addCategory(QString("Cat 2"), 0.75), true);
-        QCOMPARE(budget.addCategory(QString("Cat 3"), 0.01), false);
-        QCOMPARE(budget.addCategory(QString("Cat 4"), 0.19), false);
+        QCOMPARE(budget.addCategory(QString("Cat 3"), 0.01), true);
+        QCOMPARE(budget.addCategory(QString("Cat 4"), 0.19), true);
 
         QCOMPARE(budget.getCategoryValue(QString("Cat 1")), 0.05);
         QCOMPARE(budget.getCategoryValue(QString("Cat 2")), 0.75);
@@ -123,7 +118,7 @@ void TestBudgetData::Categories()
     }
 }
 
-void TestBudgetData::isEmpty()
+void TestBudgetData::TestIsEmpty()
 {
     {
         // setup
@@ -139,23 +134,108 @@ void TestBudgetData::isEmpty()
     }
 }
 
-/*void TestBudgetData::Remaining()
+void TestBudgetData::TestRemaining()
 {   // Test getRemaining
-    double getRemaining() const;
+    {
+        BudgetData budget;
+        QCOMPARE(budget.getRemaining(), 100.0);
+    }
+    {
+        // setup
+        BudgetData budget;
+        QCOMPARE(budget.addCategory(QString("Cat 1"), 0.4), true);
 
+        QCOMPARE(budget.getRemaining(), 60.0);
+    }
+    {
+        // setup
+        BudgetData budget;
+        QCOMPARE(budget.addCategory(QString("Cat 1"), 0.99), true);
+        QCOMPARE(budget.addCategory(QString("Cat 2"), 0.001), true);
+
+        QCOMPARE(budget.getRemaining(), 0.9);
+    }
+    {
+        // setup
+        BudgetData budget;
+        QCOMPARE(budget.addCategory(QString("Cat 1"), 0.99), true);
+        QCOMPARE(budget.addCategory(QString("Cat 2"), 0.01), true);
+
+        QCOMPARE(budget.getRemaining(), 0.0);
+    }
+    {
+        // setup
+        BudgetData budget;
+        QCOMPARE(budget.addCategory(QString("Cat 1"), 0.05), true);
+        QCOMPARE(budget.addCategory(QString("Cat 2"), 0.75), true);
+        QCOMPARE(budget.addCategory(QString("Cat 3"), 0.009), true);
+        QCOMPARE(budget.addCategory(QString("Cat 4"), 0.19), true);
+        QCOMPARE(budget.addCategory(QString("Cat 5"), 0.001), true);
+
+        QCOMPARE(budget.getRemaining(), 0.0);
+    }
 }
 
-void TestBudgetData::Display()
-{   // Test getBudgetString
-    QString getBudgetString() const;
+void TestBudgetData::TestDisplay()
+{   // Test getBudgetString -- Bad since it could be nondeterministic order
+    {
+        // setup
+        BudgetData budget;
+        QCOMPARE(budget.addCategory(QString("Cat 1"), 0.05), true);
+        QCOMPARE(budget.addCategory(QString("Cat 2"), 0.75), true);
+        QCOMPARE(budget.addCategory(QString("Cat 3"), 0.009), true);
+        QCOMPARE(budget.addCategory(QString("Cat 4"), 0.19), true);
+        QCOMPARE(budget.addCategory(QString("Cat 5"), 0.001), true);
+
+        QString Expected = QString("Cat 4\t\t19% |\t $0\n") +
+                           QString("Cat 3\t\t0.9% |\t $0\n") +
+                           QString("Cat 5\t\t0.1% |\t $0\n") +
+                           QString("Cat 1\t\t5% |\t $0\n") +
+                           QString("Cat 2\t\t75% |\t $0\n") +
+                           QString("\t Total Amount of Income: $ 0\n") +
+                           QString("\t Total Allocated Income: $ 0\n") +
+                           QString("\t Total Remaining Income: $ 0\n");
+        QCOMPARE(budget.getBudgetString(), Expected);
+    }
 }
 
-void TestBudgetData::ChartMapTest()
-{   // Test getBudgetChartMap
-    const ChartMap * getBudgetChartMap() const;
-}*/
+void TestBudgetData::TestChartMap()
+{   // Test getBudgetChartMap -- Bad since it could be nondeterministic order
+    {
+        // setup
+        BudgetData budget;
+        QCOMPARE(budget.addCategory(QString("Cat 1"), 0.05), true);
+        QCOMPARE(budget.addCategory(QString("Cat 2"), 0.75), true);
+        QCOMPARE(budget.addCategory(QString("Cat 3"), 0.01), true);
+        QCOMPARE(budget.addCategory(QString("Cat 4"), 0.19), true);
 
+        ChartMap * Perfect = new ChartMap;
+        Perfect->insert(std::pair<std::string, double>("Cat 1", 0.05));
+        Perfect->insert(std::pair<std::string, double>("Cat 2", 0.75));
+        Perfect->insert(std::pair<std::string, double>("Cat 3", 0.01));
+        Perfect->insert(std::pair<std::string, double>("Cat 4", 0.19));
 
-QTEST_MAIN(TestBudgetData)
-#include "testbudgetdata.moc"
+        // getBudgetChartMap
+        const ChartMap * Sample;
+        Sample = budget.getBudgetChartMap();
+        ChartMap::const_iterator it = Sample->begin();
+        QCOMPARE(it != Sample->end(), true);
+        QCOMPARE(it->first, "Cat 4");
+        QCOMPARE(it->second, 0.19);
+        it++;
+        QCOMPARE(it->first, "Cat 3");
+        QCOMPARE(it->second, 0.01);
+        it++;
+        QCOMPARE(it->first, "Cat 1");
+        QCOMPARE(it->second, 0.05);
+        it++;
+        QCOMPARE(it->first, "Cat 2");
+        QCOMPARE(it->second, 0.75);
+        it++;
+        QCOMPARE(it, Sample->end());
 
+    }
+}
+/*QTEST_APPLESS_MAIN(TestBudgetData)
+
+#include "tst_testbudgetdata.moc"*/
