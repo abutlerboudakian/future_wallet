@@ -121,14 +121,6 @@ const std::vector<double> * Controller::getMetricsData()
                 errModal->show();
             }
         }
-        else
-        {
-            this->metrics = new std::vector<double>;
-            this->metrics->push_back(0);
-            this->metrics->push_back(0);
-            this->metrics->push_back(0);
-            this->metrics->push_back(0);
-        }
     }
     return this->metrics;
 }
@@ -170,6 +162,10 @@ void Controller::getPrediction()
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not make prediction. Try again.");
         errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         errModal->show();
+        this->metrics->push_back(0);
+        this->metrics->push_back(0);
+        this->metrics->push_back(0);
+        this->metrics->push_back(0);
     }
     ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
     this->switchToDashBoard();
@@ -387,12 +383,16 @@ void Controller::switchToBudgetPage()
 {
     if (!BudgetModal)
     {   // Make and show budget modal
-        BudgetPage * temp = new BudgetPage;
-        temp->setController(this);
-        temp->setAttribute(Qt::WA_DeleteOnClose);
-        temp->updateUserList();
-        temp->show();
+        BudgetView = new BudgetPage;
+        BudgetView->setController(this);
+        BudgetView->setAttribute(Qt::WA_DeleteOnClose);
+        BudgetView->updateUserList();
+        BudgetView->show();
         BudgetModal = true;
+    }
+    else
+    {
+        BudgetView->raise();
     }
 }
 
@@ -423,13 +423,20 @@ void Controller::closeBudgetPage()
 /* Creates and displays the AccountManagement View as a modal
  */
 void Controller::switchToAccountManage() {
-    if (!AccountModal)
-    {   // Make and show budget modal
-        AccountManagement * manage = new AccountManagement;
-        manage->setController(this);
-        manage->setAttribute(Qt::WA_DeleteOnClose);
-        manage->show();
-        AccountModal = true;
+    if (this->Views->currentIndex() != Views::Login)
+    {
+        if (!AccountModal)
+        {   // Make and show budget modal
+            manage = new AccountManagement;
+            manage->setController(this);
+            manage->setAttribute(Qt::WA_DeleteOnClose);
+            manage->show();
+            AccountModal = true;
+        }
+        else
+        {
+            manage->raise();
+        }
     }
 }
 
@@ -471,22 +478,26 @@ void Controller::switchToInputInvest()
 //-------------------------------------
 /* Creates a pie chart for the given data
  * @requires data to be of the form DataName->PercentDecimal for every pair
+ * @param ChartName is the name of the chart
  * @param data is a hashmap of std::string->double for DataName->PercentDecimal
  * @returns a chartview of the pie chart, representing the given data
  */
-QChartView *Controller::getPieChart(const ChartMap * data)
+QChartView *Controller::getPieChart(QString ChartName, const ChartMap * data)
 {
+  PieCreator->setName(ChartName);
   PieCreator->make(data);
   return PieCreator->getView();
 }
 
 /* Creates a bar graph for the given data
  * @requires data to be a ChartMap with std::string->double denoting BarName->Value pairs
+ * @param ChartName is the name of the chart
  * @param data is a hashmap of std::string->double for BarName->Value
  * @returns a chartview of the pie chart, representing the given data
  */
-QChartView * Controller::getBarGraph(const ChartMap * data)
+QChartView * Controller::getBarGraph(QString ChartName, const ChartMap * data)
 {
+  BarCreator->setName(ChartName);
   BarCreator->make(data);
   return BarCreator->getView();
 }
@@ -495,11 +506,13 @@ QChartView * Controller::getBarGraph(const ChartMap * data)
  * @requires data to be an unorderedmap of std::string->std::vector<std::pair<QDateTime, double> >
  *           where std::string is the line name and std::vector contains points to graph
  *           X Axis is QDateTime, Y is double
+ * @param ChartName is the name of the chart
  * @param data is an unordered map, representing the lines we need to graph
  * @returns a chartview of the line graph, representing the given data
  */
-QChartView * Controller::getLineGraph(const LineMap * data)
+QChartView * Controller::getLineGraph(QString ChartName, const LineMap * data)
 {
+  LineCreator->setName(ChartName);
   LineCreator->make(data);
   return LineCreator->getView();
 }

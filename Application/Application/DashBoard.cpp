@@ -111,7 +111,7 @@ void DashBoard::getAccountManageView() {
 // @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsPieView()
 {
-  controller->getPieChart(metrics)->show();
+  controller->getPieChart(QString("Metrics"), metrics)->show();
   return;
 }
 
@@ -119,7 +119,7 @@ void DashBoard::getMetricsPieView()
 // @requires this->metric to be populated with 0's or actual metric data
 void DashBoard::getMetricsBarView()
 {
-    controller->getBarGraph(metrics)->show();
+    controller->getBarGraph(QString("Metrics"), metrics)->show();
     return;
 }
 
@@ -135,13 +135,15 @@ void DashBoard::getMetricsLineView()
 // Function to show the loaded budget as a pie chart
 void DashBoard::getBudgetPieView()
 {
-    const ChartMap * data = controller->getBudgetData(QString(""))->getBudgetChartMap();
-    controller->getPieChart(data)->show();
+    const BudgetData * budget = controller->getBudgetData(QString(""));
+    const ChartMap * data = budget->getBudgetChartMap();
+    controller->getPieChart(budget->getName(), data)->show();
 }
 
 // Function to show the loaded budget as a bar graph
 void DashBoard::getBudgetBarView()
 {
-    const ChartMap * data = controller->getBudgetData(QString(""))->getBudgetChartMap();
-    controller->getBarGraph(data)->show();
+    const BudgetData * budget = controller->getBudgetData(QString(""));
+    const ChartMap * data = budget->getBudgetChartMap();
+    controller->getBarGraph(budget->getName(), data)->show();
 }

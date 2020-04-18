@@ -7,11 +7,13 @@
 
 #include "DashBoard.h"
 #include "LaunchMenu.h"
+class BudgetPage;
 #include "BudgetPage.h"
 #include "predictionInputAssets.h"
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
 #include "InputBudget.h"
+class AccountManagement;
 #include "AccountManagement.h"
 #include "Registration.h"
 
@@ -58,9 +60,9 @@ class Controller
     void closeAccountManage();
 
     // Charts
-    QChartView * getPieChart(const ChartMap * data);
-    QChartView * getBarGraph(const ChartMap * data);
-    QChartView * getLineGraph(const LineMap * data);
+    QChartView * getPieChart(QString ChartName, const ChartMap * data);
+    QChartView * getBarGraph(QString ChartName, const ChartMap * data);
+    QChartView * getLineGraph(QString ChartName, const LineMap * data);
 
     const std::vector<double> * getMetricsData();
     const BudgetData * getBudgetData(QString budgetId);
@@ -92,6 +94,9 @@ class Controller
     PieGUI * PieCreator;
     BarGUI * BarCreator;
     LineGUI * LineCreator;
+
+    BudgetPage * BudgetView;
+    AccountManagement * manage;
 
     // ModelData
     BudgetData * budget;
