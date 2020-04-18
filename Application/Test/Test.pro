@@ -6,10 +6,14 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-HEADERS += BudgetData.h \
-           Requests.h \
-           types.hpp
-SOURCES +=  tst_testbudgetdata.cpp \
-            BudgetData.cpp \
-            Requests.cpp \
-            tst_testrequests.cpp
+HEADERS += ../Application/BudgetData.h \
+           ../Application/Requests.h \
+           TestBudgetData.h \
+           TestRequests.h \
+           ../Application/types.hpp
+SOURCES +=  \
+            ../Application/BudgetData.cpp \
+            ../Application/Requests.cpp \
+            TestBudgetData.cpp \
+            TestRequests.cpp \
+            tst_RunTests.cpp

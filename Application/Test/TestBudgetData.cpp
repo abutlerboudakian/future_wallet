@@ -1,29 +1,4 @@
-#include <QtTest>
-#include "BudgetData.h"
-
-// add necessary includes here
-// QCOMPARE(actual, expected)
-
-class TestBudgetData : public QObject
-{
-    Q_OBJECT
-
-public:
-    TestBudgetData();
-    ~TestBudgetData();
-
-// Unit Tests are slot functions
-private slots:
-    void construction();
-    void Name();
-    void Dollars();
-    void Categories();
-    void isEmpty();
-    void Remaining();
-    void Display();
-    void ChartMapTest();
-
-};
+#include "TestBudgetData.h"
 
 TestBudgetData::TestBudgetData()
 {
@@ -36,7 +11,7 @@ TestBudgetData::~TestBudgetData()
 }
 
 
-void TestBudgetData::construction()
+void TestBudgetData::TestConstruction()
 {   // Test construction
     {
         BudgetData budget;
@@ -50,7 +25,7 @@ void TestBudgetData::construction()
     }
 }
 
-void TestBudgetData::Name()
+void TestBudgetData::TestName()
 {   // Test setName and getName
     BudgetData budget;
     QCOMPARE(budget.getName(), QString("")); // Should be empty string
@@ -58,7 +33,7 @@ void TestBudgetData::Name()
     QCOMPARE(budget.getName(), QString("Test"));
 }
 
-void TestBudgetData::Dollars()
+void TestBudgetData::TestDollars()
 {   // Test setDollar and getDollar
     BudgetData budget;
     QCOMPARE(budget.getDollar(), 0);
@@ -67,7 +42,7 @@ void TestBudgetData::Dollars()
     QCOMPARE(budget.getDollar(), 150.05);
 }
 
-void TestBudgetData::Categories()
+void TestBudgetData::TestCategories()
 {   // Test addCategory, removeCategory, getCategoryValue
     {
         BudgetData budget;
@@ -143,7 +118,7 @@ void TestBudgetData::Categories()
     }
 }
 
-void TestBudgetData::isEmpty()
+void TestBudgetData::TestIsEmpty()
 {
     {
         // setup
@@ -159,7 +134,7 @@ void TestBudgetData::isEmpty()
     }
 }
 
-void TestBudgetData::Remaining()
+void TestBudgetData::TestRemaining()
 {   // Test getRemaining
     {
         BudgetData budget;
@@ -201,7 +176,7 @@ void TestBudgetData::Remaining()
     }
 }
 
-void TestBudgetData::Display()
+void TestBudgetData::TestDisplay()
 {   // Test getBudgetString -- Bad since it could be nondeterministic order
     {
         // setup
@@ -224,7 +199,7 @@ void TestBudgetData::Display()
     }
 }
 
-void TestBudgetData::ChartMapTest()
+void TestBudgetData::TestChartMap()
 {   // Test getBudgetChartMap -- Bad since it could be nondeterministic order
     {
         // setup
@@ -261,7 +236,6 @@ void TestBudgetData::ChartMapTest()
 
     }
 }
+/*QTEST_APPLESS_MAIN(TestBudgetData)
 
-QTEST_APPLESS_MAIN(TestBudgetData)
-
-#include "tst_testbudgetdata.moc"
+#include "tst_testbudgetdata.moc"*/
