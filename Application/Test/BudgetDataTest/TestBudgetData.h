@@ -3,7 +3,7 @@
 
 
 #include <QtTest>
-#include "../Application/BudgetData.h"
+#include "../../Application/BudgetData.h"
 
 // add necessary includes here
 // QCOMPARE(actual, expected)

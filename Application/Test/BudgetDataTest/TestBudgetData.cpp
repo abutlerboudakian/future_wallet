@@ -187,9 +187,9 @@ void TestBudgetData::TestDisplay()
         QCOMPARE(budget.addCategory(QString("Cat 4"), 0.19), true);
         QCOMPARE(budget.addCategory(QString("Cat 5"), 0.001), true);
 
-        QString Expected = QString("Cat 5\t\t0.1% |\t $0\n") +
-                           QString("Cat 4\t\t19% |\t $0\n") +
+        QString Expected = QString("Cat 4\t\t19% |\t $0\n") +
                            QString("Cat 3\t\t0.9% |\t $0\n") +
+                           QString("Cat 5\t\t0.1% |\t $0\n") +
                            QString("Cat 1\t\t5% |\t $0\n") +
                            QString("Cat 2\t\t75% |\t $0\n") +
                            QString("\t Total Amount of Income: $ 0\n") +
