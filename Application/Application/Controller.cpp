@@ -202,14 +202,16 @@ bool Controller::getInputs()
  * @param budget is a BudgetData* of the budget to add to the database
  * @returns a MessageBox if an error occurs
  */
-void Controller::addBudget(BudgetData * budget)
+bool Controller::addBudget(BudgetData * budget)
 {
-    if (!ReqObj->addBudget(budget, this->userid))
+    if (budget->getName() == QString("") || !ReqObj->addBudget(budget, this->userid))
     {
         QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not add Budget to Database. Try again.");
         errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         errModal->show();
+        return false;
     }
+    return true;
 }
 
 /* Function gets a list of budget names from the ReqObj
