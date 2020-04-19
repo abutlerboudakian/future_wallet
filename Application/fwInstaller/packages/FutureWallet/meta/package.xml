@@ -8,17 +8,4 @@
         <License name="Open Source" file="license.txt" />
     </Licenses>
     <Default>script</Default>
-    <Script>installscript.qs</Script>
-    <UserInterfaces>
-        <UserInterface>AccountManagement.ui</UserInterface>
-        <UserInterface>InputBudget.ui</UserInterface>
-        <UserInterface>BudgetPage.ui</UserInterface>
-        <UserInterface>DashBoard.ui</UserInterface>
-        <UserInterface>LaunchMenu.ui</UserInterface>
-        <UserInterface>mainapplication.ui</UserInterface>
-        <UserInterface>predictionInputAssets.ui</UserInterface>
-        <UserInterface>predictionInputWages.ui</UserInterface>
-        <UserInterface>predictionInputInvest.ui</UserInterface>
-        <UserInterface>Registration.ui</UserInterface>
-    </UserInterfaces>
-</Package>
+    </Package>

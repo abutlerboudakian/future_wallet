@@ -5,5 +5,5 @@
     <Title>Future Wallet Installer</Title>
     <Publisher>SDD Group</Publisher>
     <StartMenuDir>Super App</StartMenuDir>
-    <TargetDir>@HomeDir@/InstallationDirectory</TargetDir>
+    <TargetDir>@HomeDir@/</TargetDir>
 </Installer>
