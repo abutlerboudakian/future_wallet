@@ -81,35 +81,36 @@ def logout():
 
 @app.route("/getInputs", methods=["GET"])
 def getInputs():
-  print(request.get_json(), flush=True)
+  if (request.args.get("userid") != "Dummy"):
+    return jsonify({}, 405)
   return ({
     "assets": {
         "rents": [{
-            "loc": "",
-            "value": 0
+            "loc": "12180",
+            "value": 1
         }],
         "res": [{
-            "loc": "",
-            "value": 0
+            "loc": "12180",
+            "value": 2
         }],
-        "rm": 0
+        "rm": 3
     },
     "invests": {
-        "bonds": 0,
-        "cd": 0,
-        "savings": 0,
+        "bonds": 4,
+        "cd": 5,
+        "savings": 6,
         "stocks": [{
-            "a": 0
+            "a": 7
         }],
-        "tbonds": 0
+        "tbonds": 8
     },
-    "userid": "Hello WOrld",
+    "userid": "Dummy",
     "wages": {
         "hourly": true,
-        "hourspw": 0,
-        "income": 0,
+        "hourspw": 9,
+        "income": 10,
         "industryCode": " Abrasive Product Manufacturing",
-        "loc": ""
+        "loc": "12180"
     },
-    "years": 7536745
+    "years": 11
 }, 200)
