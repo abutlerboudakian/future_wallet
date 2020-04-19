@@ -1,0 +1,2 @@
+Hey QtCreator, it's us, Future Wallet. This project is open source so pls don't sue :o)
+
