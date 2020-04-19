@@ -2,7 +2,7 @@
 #include <QCoreApplication>
 #include "../../Application/Requests.h"
 
-// add necessary includes here
+// NOTE: This test requires app.py, which does some checking, to run.
 
 class TestRequests : public QObject
 {
@@ -16,7 +16,7 @@ public:
 private slots:
     // Inputs
     void TestGetPrediction();
-    /*void TestGetInputs();
+    void TestGetInputs();
     void TestAddBudget();
     void TestLoadBudget();
     void TestListBudgets();
@@ -25,9 +25,7 @@ private slots:
     void TestRegister();
     void TestUpdateUserInfo();
     void TestGetIndustries();
-    void TestRegister();
-    void TestUpdateUserInfo();*/
-
+    void TestGetStocks();
 };
 
 TestRequests::TestRequests()
@@ -87,25 +85,85 @@ void TestRequests::TestGetPrediction()
     }
 }
 
-    /*QJsonObject getInputs(QString userid);
+void TestRequests::TestGetInputs()
+{
+    // Tests getInputs
+    {
+        // QJsonObject getInputs(QString userid);
+    }
+}
 
-    // Budgets
-    bool addBudget(BudgetData * budget, QString userid);
-    BudgetData * loadBudget(QString budgetId, QString userid);
-    std::pair<bool, QStringList> listBudgets(QString userId);
+void TestRequests::TestAddBudget()
+{
+    // Tests addBudget
+    {
+        // bool addBudget(BudgetData * budget, QString userid);
+    }
+}
 
-    // Auth
-    bool login(QString userId, QString Password);
+void TestRequests::TestLoadBudget()
+{
+    // Tests loadBudget
+    {
+        // BudgetData * loadBudget(QString budgetId, QString userid);
+    }
+}
 
-    void logout(QString userId);
+void TestRequests::TestListBudgets()
+{
+    // Tests listBudgets
+    {
+        //std::pair<bool, QStringList> listBudgets(QString userId);
+    }
+}
 
-    bool Register(QString userId, QString Password);
-    bool UpdateUserInfo(QString OriginalUserId, QString userId, QString Password);
+void TestRequests::TestLogin()
+{
+    // Tests login
+    {
+        // bool login(QString userId, QString Password);
+    }
+}
 
-    // Aux
-    QStringList getIndustries();
+void TestRequests::TestLogout()
+{
+    // Tests logout
+    {
+        // void logout(QString userId);
+    }
+}
 
-   QStringList getStocks();*/
+void TestRequests::TestRegister()
+{
+    // Tests Register
+    {
+        // bool Register(QString userId, QString Password);
+    }
+}
+
+void TestRequests::TestUpdateUserInfo()
+{
+    // Tests UpdateUserInfo
+    {
+        // bool UpdateUserInfo(QString OriginalUserId, QString userId, QString Password);
+    }
+}
+
+void TestRequests::TestGetIndustries()
+{
+    // Test getIndustries
+    {
+        // QStringList getIndustries();
+    }
+}
+
+void TestRequests::TestGetStocks()
+{
+    // Test getStocks
+    {
+        // QStringList getStocks();*/
+    }
+}
 
 
 QTEST_MAIN(TestRequests)
