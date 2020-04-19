@@ -29,7 +29,7 @@ private:
 
     void getCategoryData();
     // Should have at least 1 category for budget, for example "100% of my budget is dedicated to collecting empty danimal bottles"
-    unsigned int counter = 4;
+    unsigned int counter = 1;
 
     BudgetData * budget;
 

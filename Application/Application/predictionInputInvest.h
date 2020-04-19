@@ -22,6 +22,7 @@ public:
     //void getStockData();
     QJsonObject toJSON();
     void fromJson(QJsonObject savedData);
+    void clear();
 
 private:
     Ui::predictionInputInvest *ui;

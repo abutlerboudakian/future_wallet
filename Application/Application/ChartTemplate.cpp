@@ -8,6 +8,7 @@ VisualTemplate::VisualTemplate()
     chart = nullptr;
     series = new std::vector<QAbstractSeries *>;
     chartView = nullptr;
+    this->ChartName = QString("");
 }
 
 // Delegate deconstruction of all objects to chartView
@@ -31,7 +32,7 @@ void VisualTemplate::QChartSetup()
   {
       chart->addSeries(*s);
   }
-  chart->setTitle("Whatever you want to name the chart");
+  chart->setTitle(this->ChartName);
   chart->setAnimationOptions(QChart::AllAnimations);
 }
 
@@ -43,6 +44,7 @@ void VisualTemplate::QChartSetup()
 void VisualTemplate::CreateChartView()
 {
     chartView = new QChartView(chart);
+    chartView->setMinimumSize(500, 300);
     chartView->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing the chartview
     chartView->setRenderHint(QPainter::Antialiasing);
 }
@@ -55,6 +57,15 @@ QChartView * VisualTemplate::getView() const
 {
     // Rep invariant, but idk how to fix
     return chartView;
+}
+
+/* Function used to set the chart name
+ * @modifies this->ChartName
+ * @effect this->ChartName = name
+ */
+void VisualTemplate::setName(QString name)
+{
+    this->ChartName = name;
 }
 
 // Hook
