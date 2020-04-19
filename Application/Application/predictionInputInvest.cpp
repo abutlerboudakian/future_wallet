@@ -170,6 +170,23 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
     }
 }
 
+// Function to clear all user inputs and reset the page to default
+void predictionInputInvest::clear()
+{
+    ui->Saving->clear();
+    ui->CD->clear();
+    ui->Bond->clear();
+    ui->TBond->clear();
+
+    // Delete all created stock widgets
+    QLayoutItem *child;
+    while( (child = this->ui->Stocks->takeAt(0)) != 0 )
+    {
+        delete child;
+    }
+    addStock();
+}
+
 // Function modifies the ui to add a new stock field
 /* @modifies this->ui
  * @effect this->ui->Stocks has a new stock field

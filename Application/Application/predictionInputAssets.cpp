@@ -196,6 +196,27 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
     ui->Years->setText(QString::number(savedData["years"].toInt()));
 }
 
+// Function to clear all user inputs and reset the page to default
+void predictionInputAssets::clear()
+{
+    ui->Metal->clear();
+
+    // Delete all created residence widgets, then create a default one
+    QLayoutItem *child;
+    while( (child = this->ui->Residences->takeAt(0)) != 0 )
+    {
+        delete child;
+    }
+    addResidence();
+
+    // Delete all created rental widgets, then create a default one
+    while( (child = this->ui->Rentals->takeAt(0)) != 0 )
+    {
+        delete child;
+    }
+    addRental();
+}
+
 void predictionInputAssets::addResidence()
 {
 
