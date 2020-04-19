@@ -251,7 +251,7 @@ void Controller::login(QString userid, QString Password)
 /* Function destroys menubar, logs user out, and goes back to login page */
 // @requires user is already logged in
 void Controller::logout()
-{
+{   
     // If not logged in
     if (this->Views->currentIndex() != Views::Login)
     {
@@ -259,6 +259,10 @@ void Controller::logout()
         this->switchToLogin();
         qDebug() << "Hello there";
     }
+
+    ((predictionInputWages*)this->Views->widget(Views::WagePredict))->clear();
+    ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->clear();
+    ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->clear();
 }
 
 /* Function posts registration information to the database

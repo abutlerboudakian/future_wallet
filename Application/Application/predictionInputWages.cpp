@@ -96,6 +96,16 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     }
 }
 
+// Function to clear all user inputs and reset the page to default
+void predictionInputWages::clear()
+{
+    ui->IncomeType->setCurrentIndex(0);
+    ui->Industry->setCurrentIndex(0);
+    ui->Amount->clear();
+    ui->Location->clear();
+    ui->Time->clear();
+}
+
 // Slots
 
 // Function to change view to the invest input page
