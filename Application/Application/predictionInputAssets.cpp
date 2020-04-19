@@ -200,19 +200,24 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
 void predictionInputAssets::clear()
 {
     ui->Metal->clear();
+    ui->Years->clear();
 
     // Delete all created residence widgets, then create a default one
     QLayoutItem *child;
     while( (child = this->ui->Residences->takeAt(0)) != 0 )
     {
-        delete child;
+        QWidget *target = child->widget();
+        this->ui->Residences->removeWidget(target);
+        delete target;
     }
     addResidence();
 
     // Delete all created rental widgets, then create a default one
     while( (child = this->ui->Rentals->takeAt(0)) != 0 )
     {
-        delete child;
+        QWidget *target = child->widget();
+        this->ui->Rentals->removeWidget(target);
+        delete target;
     }
     addRental();
 }

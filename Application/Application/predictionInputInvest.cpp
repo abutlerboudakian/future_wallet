@@ -182,7 +182,9 @@ void predictionInputInvest::clear()
     QLayoutItem *child;
     while( (child = this->ui->Stocks->takeAt(0)) != 0 )
     {
-        delete child;
+        QWidget *target = child->widget();
+        this->ui->Stocks->removeWidget(target);
+        delete target;
     }
     addStock();
 }
