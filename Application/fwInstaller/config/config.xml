@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Future Wallet</Name>
+    <Version>1.0.0</Version>
+    <Title>Future Wallet Installer</Title>
+    <Publisher>SDD Group</Publisher>
+    <StartMenuDir>Super App</StartMenuDir>
+    <TargetDir>@HomeDir@/FutureWallet</TargetDir>
+</Installer>
