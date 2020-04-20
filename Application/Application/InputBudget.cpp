@@ -124,7 +124,7 @@ void InputBudget::Create() {
     {
         CurrentUIName = UIName + QString::number(i);
         catName = this->findChild<QLineEdit*>(CurrentUIName)->text();
-        if (!Message->addCategory(catName, this->budget->getCategoryValue(CurrentUIName)))
+        if (catName == QString("") || !Message->addCategory(catName, this->budget->getCategoryValue(CurrentUIName)))
         {
             QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", QString("Invalid Budget Logic. Please Try again."));
             errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
