@@ -27,7 +27,17 @@ predictionInputAssets::~predictionInputAssets()
     delete validInt;
 }
 
-// Function to setup validators for all inputs
+/* Function to setup validators for all inputs
+ * @requires: none
+ * @modifies: ui->ResidenceData0 (QLineEdit)
+ *            ui->ResidenceData1 (QLineEdit)
+ *            ui->RentalData0 (QLineEdit)
+ *            ui->RentalData1 (QLineEdit)
+ *            ui->Metal (QLineEdit)
+ * @effects: set validators for all those modified QLineEdits
+ *           to meet our application requirements
+ * @returns: none
+ */
 void predictionInputAssets::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);

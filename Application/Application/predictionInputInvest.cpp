@@ -28,11 +28,22 @@ predictionInputInvest::~predictionInputInvest()
     delete validDouble;
 }
 
-// Function to setup validators for all inputs
+/* Function to setup validators for all inputs
+ * @requires: none
+ * @modifies: ui->Saving (QLineEdit)
+ *            ui->CD (QLineEdit)
+ *            ui->StockData1 (QLineEdit)
+ *            ui->Bond (QLineEdit)
+ *            ui->TBond (QLineEdit)
+ * @effects: set validators for all those modified QLineEdits
+ *           to meet our application requirements
+ * @returns: none
+ */
 void predictionInputInvest::setupValidator()
 {
 
-    validDouble = new QDoubleValidator(0.00, 99999999.00, 2);    ui->Saving->setValidator(validDouble);
+    validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
+    ui->Saving->setValidator(validDouble);
     ui->CD->setValidator(validDouble);
     //ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
     ui->StockData1->setValidator(validDouble);
