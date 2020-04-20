@@ -12,7 +12,7 @@ def predict():
   print(request.get_json(), flush=True)
   return jsonify({"BudgetName":"Dang", "Categories":["thing", "thing2"], "Values":[0.3, 0.7]}, 200)"""
 
-@app.route("/storeInputs", methods=["POST"])
+@app.route("/submitInputs", methods=["POST"])
 def submitInputs():
   data = request.get_json()
   if (data["years"] != 1 or
