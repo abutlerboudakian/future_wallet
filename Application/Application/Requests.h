@@ -23,7 +23,7 @@ class Requests : public QObject
     /* Class made to communicate with server controller
      */
 public:
-    explicit Requests(QObject * parent = nullptr);
+    explicit Requests(QObject * parent = nullptr, bool debug=false);
 
     // Inputs
     std::vector<double> * getPrediction(QString userId, QJsonObject Wages, QJsonObject Invest, QJsonObject Assets, int years);
@@ -53,7 +53,7 @@ private:
     QNetworkAccessManager NAMSender;
     QByteArray Data;
     QString Location = "http://butlea2.cs.rpi.edu";
-    // QString Location = "http://127.0.0.1:5000";
+    bool debug;
 };
 
 #endif // REQUESTS_H

@@ -36,7 +36,6 @@ void predictionInputInvest::setupValidator()
     ui->CD->setValidator(validDouble);
     //ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
     ui->StockData1->setValidator(validDouble);
-    ui->Mutual->setValidator(validDouble);
     ui->Bond->setValidator(validDouble);
     ui->TBond->setValidator(validDouble);
 }
@@ -169,6 +168,25 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
             }
         }
     }
+}
+
+// Function to clear all user inputs and reset the page to default
+void predictionInputInvest::clear()
+{
+    ui->Saving->clear();
+    ui->CD->clear();
+    ui->Bond->clear();
+    ui->TBond->clear();
+
+    // Delete all created stock widgets
+    QLayoutItem *child;
+    while( (child = this->ui->Stocks->takeAt(0)) != 0 )
+    {
+        QWidget *target = child->widget();
+        this->ui->Stocks->removeWidget(target);
+        delete target;
+    }
+    addStock();
 }
 
 // Function modifies the ui to add a new stock field

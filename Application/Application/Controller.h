@@ -7,12 +7,15 @@
 
 #include "DashBoard.h"
 #include "LaunchMenu.h"
+class BudgetPage;
 #include "BudgetPage.h"
 #include "predictionInputAssets.h"
 #include "predictionInputWages.h"
 #include "predictionInputInvest.h"
 #include "InputBudget.h"
+class AccountManagement;
 #include "AccountManagement.h"
+#include "Registration.h"
 
 #include "Requests.h"
 #include <QMessageBox>
@@ -29,7 +32,8 @@ enum Views
     WagePredict = 2,
     InvestPredict = 3,
     AssetPredict = 4,
-    BudgetInput = 5
+    BudgetInput = 5,
+    RegistrationPage = 6
 };
 
 class Controller
@@ -48,15 +52,17 @@ class Controller
     void switchToInputInvest();
     void switchToInputAsset();
     void switchToInputBudget();
+    void switchToRegisterPage();
+
     void switchToAccountManage();
 
     void closeBudgetPage();
     void closeAccountManage();
 
     // Charts
-    QChartView * getPieChart(const ChartMap * data);
-    QChartView * getBarGraph(const ChartMap * data);
-    QChartView * getLineGraph(const LineMap * data);
+    QChartView * getPieChart(QString ChartName, const ChartMap * data);
+    QChartView * getBarGraph(QString ChartName, const ChartMap * data);
+    QChartView * getLineGraph(QString ChartName, const LineMap * data);
 
     const std::vector<double> * getMetricsData();
     const BudgetData * getBudgetData(QString budgetId);
@@ -66,7 +72,7 @@ class Controller
     void getPrediction();
     bool getInputs();
 
-    void addBudget(BudgetData * budget);
+    bool addBudget(BudgetData * budget);
     QStringList getBudgetList();
 
     void login(QString userid, QString Password);
@@ -88,6 +94,9 @@ class Controller
     PieGUI * PieCreator;
     BarGUI * BarCreator;
     LineGUI * LineCreator;
+
+    BudgetPage * BudgetView;
+    AccountManagement * manage;
 
     // ModelData
     BudgetData * budget;

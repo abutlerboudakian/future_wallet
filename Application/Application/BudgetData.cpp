@@ -11,7 +11,6 @@ BudgetData::~BudgetData()
 {
     delete data;
 }
-
 /*QDataStream & operator<<(QDataStream &out, const BudgetData &b)
 {
     //hashmap of [category] -> percent as a double
