@@ -210,42 +210,45 @@ class DatasetBuilder:
 		df = pd.DataFrame(data, columns=self.resultset.keys())
 		df['Timestamp'] = df['Timestamp'].astype('int64')
 		df['PredTimestamp'] = df['PredTimestamp'].astype('int64')
-		df['DeltaTime'] = 1000*(df['PredTimestamp'] - df['Timestamp']) / df['PredTimestamp']
-		df.drop(columns=['Timestamp', 'PredTimestamp'], inplace=True)
+		df['DeltaTime'] = 1000*((df['PredTimestamp'] - df['Timestamp']) / df['PredTimestamp'])
+		
 		ret = {}
 		if self.mType == modelpack.ModelType.WAGES:
 			ret['X'] = df[['DeltaTime', 'Income', 'Lat', 'Long']]
 			ret['Y'] = df[['PredIncome']]
-		if self.mType == modelpack.ModelType.SAVINGS:
+		elif self.mType == modelpack.ModelType.SAVINGS:
 			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
-		if self.mType == modelpack.ModelType.CDS:
+		elif self.mType == modelpack.ModelType.CDS:
 			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
-		if self.mType == modelpack.ModelType.STOCKS:
+		elif self.mType == modelpack.ModelType.STOCKS:
 			ret['X'] = df[['DeltaTime', 'Price']]
 			ret['Y'] = df[['PredPrice']]
-		if self.mType == modelpack.ModelType.BONDS:
+		elif self.mType == modelpack.ModelType.BONDS:
 			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
-		if self.mType == modelpack.ModelType.TBONDS:
+		elif self.mType == modelpack.ModelType.TBONDS:
 			ret['X'] = df[['DeltaTime', 'Rate']]
 			ret['Y'] = df[['PredRate']]
-		if self.mType == modelpack.ModelType.RES:
+		elif self.mType == modelpack.ModelType.RES:
 			ret['X'] = df[['DeltaTime', 'Price', 'Lat', 'Long']]
 			ret['Y'] = df[['PredPrice']]
-		if self.mType == modelpack.ModelType.RENTS:
+		elif self.mType == modelpack.ModelType.RENTS:
 			ret['X'] = df[['DeltaTime', 'Rent', 'Lat', 'Long']]
 			ret['Y'] = df[['PredRent']]
-		if self.mType == modelpack.ModelType.RMS:
-			ret['X'] = df[['DeltaTime', 'Price']]
-			ret['Y'] = df[['Price']]
-
+		elif self.mType == modelpack.ModelType.RMS:
+			ret['means'] = (df['Timestamp'].mean(), df['PredTimestamp'].mean())
+			ret['stds'] = (df['Timestamp'].std(), df['PredTimestamp'].std())
+			df['Timestamp'] = (df['Timestamp'] - df['Timestamp'].mean()) / df['Timestamp'].std()
+			df['PredTimestamp'] = (df['PredTimestamp'] - df['PredTimestamp'].mean()) / df['PredTimestamp'].std()
+			ret['X'] = df[['Timestamp', 'PredTimestamp', 'Price']]
+			ret['Y'] = df[['PredPrice']]
 		return ret
 
 	def initQuery(self):
 		self.resultset = self.engine.execute(self.query)
 
 	def getTickers(self):
-		tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks;", con=engine)
+		tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks;", con=self.engine)
 		return tickers['Ticker'].tolist()

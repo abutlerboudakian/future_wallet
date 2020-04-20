@@ -38,4 +38,4 @@ class ModelFactory:
 
 
 	def createAllModels(self):
-		return (WageModel(DataSetBuilder(ModelType.WAGES)), InvestmentModel(DatasetBuilder(ModelType.INVESTS)), AssetModel(DataSetBuilder(ModelType.ASSETS)))
+		return (WageModel(DatasetBuilder(ModelType.WAGES)), InvestmentModel(DatasetBuilder(ModelType.INVESTS)), AssetModel(DatasetBuilder(ModelType.ASSETS)))

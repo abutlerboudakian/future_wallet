@@ -60,15 +60,15 @@ if __name__ == "__main__":
 	# 	w.save(savedir)
 	# 	print('Wage model ' + i + ' saved...')
 	
-	investments = mfac.createModel(ModelType.INVESTS, train=True)
-	print('Investment models created...')
+	#investments = mfac.createModel(ModelType.INVESTS, train=True)
+	#print('Investment models created...')
 	assets = mfac.createModel(ModelType.ASSETS, train=True)
 	print('Asset models saved...')	
 
-	investments.train(50, 5000000)
+	#investments.train(500, 5000000)
 	assets.train(50, 5000000)
 
-	investments.save(savedir)
-	print('Investment models saved...')
+	# investments.save(savedir)
+	# print('Investment models saved...')
 	assets.save(savedir)
 	print('Asset models saved...')
