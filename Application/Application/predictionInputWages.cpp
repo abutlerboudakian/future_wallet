@@ -35,6 +35,21 @@ void predictionInputWages::setupValidator()
     ui->Amount->setValidator(validDouble);
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: none
+ * @modifies: none
+ * @effects: none
+ * @returns: a QJsonObject that contains all user inputs from the view
+ *           in the structure of
+ *           {
+ *              “industryCode”: String,
+ *              “loc”: String,
+ *              “income”: double,
+ *              “hourly”: boolean,
+ *              “hourspw”: double
+ *           }
+ */
 QJsonObject predictionInputWages::toJSON()
 {
     QJsonObject data;
@@ -56,6 +71,28 @@ QJsonObject predictionInputWages::toJSON()
     return data;
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: savdData is a QJsonObject that is in structure of:
+ *            {
+ *              “industryCode”: String,
+ *              “loc”: String,
+ *              “income”: double,
+ *              “hourly”: boolean,
+ *              “hourspw”: double
+ *            }
+ * @modifies: ui->Amount (QLineEdit)
+ *            ui->Location (QLineEdit)
+ *            ui->Time (QLineEdit)
+ *            ui->IncomeType (QComboBox)
+ *            ui->Industry (QComboBox)
+ * @effects: - Populate ui->Amount with the corresponding data from savedData.
+ *           - Populate ui->Location with the corresponding data from savedData.
+ *           - Populate ui->Time with the corresponding data from savedData.
+ *           - Set ui->IncomeType to the corresponding ticker same as in savedData.
+ *           - Set ui->Industry to the corresponding ticker same as in savedData.
+ * @returns: none
+ */
 void predictionInputWages::fromJson(QJsonObject savedData)
 {
     // populate Amount
@@ -96,7 +133,20 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     }
 }
 
-// Function to clear all user inputs and reset the page to default
+/* Function to clear all user inputs and reset the page to default
+ * @requires: none
+ * @modifies: ui->Amount (QLineEdit)
+ *            ui->Location (QLineEdit)
+ *            ui->Time (QLineEdit)
+ *            ui->IncomeType (QComboBox)
+ *            ui->Industry (QComboBox)
+ * @effects: - set ui->Amount to 0
+ *           - set ui->Location to 0
+ *           - set ui->Time to 0
+ *           - reset ui->IncomeType ticker to index 0
+ *           - reset ui->Industry ticker to index 0
+ * @returns: none
+ */
 void predictionInputWages::clear()
 {
     ui->IncomeType->setCurrentIndex(0);

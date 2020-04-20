@@ -89,6 +89,21 @@ void predictionInputInvest::Exit()
     std::cout<<"Done"<<std::endl;
 }*/
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: none
+ * @modifies: none
+ * @effects: none
+ * @returns: a QJsonObject that contains all user inputs from the view
+ *           in the structure of:
+ *           {
+ *             “savings”: double,
+ *             “cd”: double,
+ *             “stocks”: [{ticker: shares}],
+ *             “bonds”: double,
+ *             “tbonds”: double
+ *           }
+ */
 QJsonObject predictionInputInvest::toJSON()
 {
     QJsonObject data;
@@ -119,6 +134,29 @@ QJsonObject predictionInputInvest::toJSON()
     return data;
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: savdData is a QJsonObject that is in structure of:
+ *            {
+ *              “savings”: double,
+ *              “cd”: double,
+ *              “stocks”: [{ticker: shares}],
+ *              “bonds”: double,
+ *              “tbonds”: double
+ *            }
+ * @modifies: ui->Saving (QLineEdit)
+ *            ui->CD (QLineEdit)
+ *            ui->Bond (QLineEdit)
+ *            ui->TBond (QLineEdit)
+ *            ui->Stocks (QVBoxLayout)
+ * @effects: - Populate ui->Saving with the corresponding data from savedData.
+ *           - Populate ui->CD with the corresponding data from savedData.
+ *           - Populate ui->Bond with the corresponding data from savedData.
+ *           - Populate ui->TBond with the corresponding data from savedData.
+ *           - Add a QWidget to ui->Stocks to represent owned stocks, call
+ *             addStock( name, value ) to populate view inside the created QWidget.
+ * @returns: none
+ */
 void predictionInputInvest::fromJson(QJsonObject savedData)
 {
     // populate Saving
@@ -170,7 +208,21 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
     }
 }
 
-// Function to clear all user inputs and reset the page to default
+/* Function to clear all user inputs and reset the page to default
+ * @requires: none
+ * @modifies: ui->Saving (QLineEdit)
+ *            ui->CD (QLineEdit)
+ *            ui->Bond (QLineEdit)
+ *            ui->TBond (QLineEdit)
+ *            ui->Stocks (QVBoxLayout)
+ * @effects: - set ui->Saving to 0
+ *           - set ui->CD to 0
+ *           - set ui->Bond to 0
+ *           - set ui->TBond to 0
+ *           - clear and delete all QWidget in ui->Stocks,
+ *             and create a new one as defualt
+ * @returns: none
+ */
 void predictionInputInvest::clear()
 {
     ui->Saving->clear();

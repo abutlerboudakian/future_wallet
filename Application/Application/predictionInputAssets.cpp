@@ -80,6 +80,19 @@ void predictionInputAssets::getResidenceData()
 //    std::cout<<"Done"<<std::endl;
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: none
+ * @modifies: none
+ * @effects: none
+ * @returns: a QJsonObject that contains all user inputs from the view
+ *           in the structure of:
+ *           {
+ *             “res”: [{“value”: double, “loc”: String}],
+ *             “rents”: [{“value”: double, “loc:” String}],
+ *             “rm”: double
+ *           }
+ */
 QJsonObject predictionInputAssets::toJSON()
 {
     QJsonObject data;
@@ -115,6 +128,26 @@ QJsonObject predictionInputAssets::toJSON()
     return data;
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: savdData is a QJsonObject that is in structure of:
+ *            {
+ *             “res”: [{“value”: double, “loc”: String}],
+ *             “rents”: [{“value”: double, “loc:” String}],
+ *             “rm”: double
+ *            }
+ * @modifies: ui->Metal (QLineEdit)
+ *            ui->Residences (QVBoxLayout)
+ *            ui->Rentals (QVBoxLayout)
+ * @effects: - Populate ui->Metal with the corresponding data from savedData.
+ *           - Add a QWidget to ui->Residences to represent owned property,
+ *             call addResidence( location, value ) to populate view inside the
+ *             created QWidget.
+ *           - Add a QWidget to ui->Rentals to represent owned property for rent,
+ *             call addRental( location, value ) to populate view inside the
+ *             created QWidget.
+ * @returns: a QJsonObject that contains all user inputs from the view
+ */
 void predictionInputAssets::fromJson(QJsonObject savedData)
 {
     // populate Rare Metal
@@ -196,7 +229,20 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
     ui->Years->setText(QString::number(savedData["years"].toInt()));
 }
 
-// Function to clear all user inputs and reset the page to default
+/* Function to clear all user inputs and reset the page to default
+ * @requires: none
+ * @modifies: ui->Metal (QLineEdit)
+ *            ui->Years (QLineEdit)
+ *            ui->Residences (QVBoxLayout)
+ *            ui->Rentals (QVBoxLayout)
+ * @effects: - set ui->Metal to 0
+ *           - set ui->Years to 0
+ *           - clear and delete all QWidget in ui->Residences,
+ *             and create a new one as defualt
+ *           - clear and delete all QWidget in ui->Rentals,
+ *             and create a new one as defualt
+ * @returns: none
+ */
 void predictionInputAssets::clear()
 {
     ui->Metal->clear();
