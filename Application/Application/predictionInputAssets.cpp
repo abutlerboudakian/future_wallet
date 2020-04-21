@@ -124,6 +124,7 @@ QJsonObject predictionInputAssets::toJSON()
     data.insert("rents", rentals);
 
     data.insert("rm", ui->Metal->text().toDouble());
+    data.insert("years", ui->Years->text().toDouble());
 
     return data;
 }
@@ -226,7 +227,7 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             }
         }
     }
-    ui->Years->setText(QString::number(savedData["years"].toInt()));
+    ui->Years->setText(QString::number((savedData["years"]).toInt()));
 }
 
 /* Function to clear all user inputs and reset the page to default

@@ -191,9 +191,12 @@ bool Controller::getInputs()
     {
         ((predictionInputWages*)this->Views->widget(Views::WagePredict))->fromJson(data["wages"].toObject());
         ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->fromJson(data["invests"].toObject());
-        years = data["years"].toInt();
-        (data["assets"].toObject()).insert("years", years);
-        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data["assets"].toObject());
+
+        years = (data["years"]).toInt();
+        data = data["assets"].toObject();
+        data.insert("years", years);
+
+        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->fromJson(data);
         return true;
     }
 }
