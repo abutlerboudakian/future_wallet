@@ -6,6 +6,8 @@ AccountManagement::AccountManagement(QWidget *parent) :
     ui(new Ui::AccountManagement)
 {
     ui->setupUi(this);
+    ui->newPassEdit->setEchoMode(QLineEdit::Password);
+    ui->confirmNewPassEdit->setEchoMode(QLineEdit::Password);
 }
 
 AccountManagement::~AccountManagement()
@@ -31,27 +33,42 @@ void AccountManagement::setController(Controller * controller)
 
 /* Function that closes the modal
  */
-void AccountManagement::Exit() {
-    this->controller->closeAccountManage();
+void AccountManagement::Exit()
+{
+    this->close();
     return;
+}
+
+/* Function to tell the controller that it is closing
+ * @param event is the closing event that we delay to call another function in between
+ */
+void AccountManagement::closeEvent(QCloseEvent * event)
+{
+    this->controller->closeAccountManage(); // tells controller it is closing
+    event->accept();
 }
 
 /* Function that updates user info and closes the modal
  */
-void AccountManagement::Update() {
+void AccountManagement::Update()
+{
     // New info
     std::string newPass = ui->newPassEdit->text().toStdString();
     std::string newPassConfirm = ui->confirmNewPassEdit->text().toStdString();
     std::string newUser = ui->changeUserEdit->text().toStdString();
 
-    if(newUser.length() != 0 ) {
+    if(newUser.length() != 0 )
+    {
         // Should update with old password
         this->controller->UpdateUserInfo(QString::fromStdString(newUser), QString::fromStdString(newPass));
     }
-    if(newPass.length() != 0) {
-        if(newPass.compare(newPassConfirm)) {
+    if(newPass.length() != 0)
+    {
+        if(newPass == newPassConfirm)
+        {
             this->controller->UpdateUserInfo(QString::fromStdString(newUser), QString::fromStdString(newPass));
-        } else {
+        } else
+        {
             QMessageBox messageBox;
             messageBox.critical(0,"Error","Passwords do not match.");
             messageBox.setFixedSize(500,200);

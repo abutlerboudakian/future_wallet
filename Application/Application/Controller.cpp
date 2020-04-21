@@ -261,6 +261,10 @@ void Controller::logout()
     {   // Execute if logged in
         ReqObj->logout(this->userid);
         this->userid = QString("");
+        delete this->metrics;
+        delete this->budget;
+        this->metrics = nullptr;
+        this->budget = nullptr;
         this->switchToLogin();
 
         ((predictionInputWages*)this->Views->widget(Views::WagePredict))->clear();
@@ -440,7 +444,8 @@ void Controller::closeBudgetPage()
 
 /* Creates and displays the AccountManagement View as a modal
  */
-void Controller::switchToAccountManage() {
+void Controller::switchToAccountManage()
+{
     if (this->Views->currentIndex() != Views::Login)
     {
         if (!AccountModal)
@@ -462,7 +467,8 @@ void Controller::switchToAccountManage() {
  * @modifies this->AccountModal
  * @effect this->AccountModal = false
  */
-void Controller::closeAccountManage() {
+void Controller::closeAccountManage()
+{
     AccountModal = false;
 }
 

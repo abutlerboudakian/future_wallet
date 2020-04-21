@@ -227,22 +227,24 @@ void predictionInputAssets::clear()
 
     // Delete all created residence widgets, then create a default one
     QLayoutItem *child;
-    while( (child = this->ui->Residences->takeAt(0)) != 0 )
+    while( (child = this->ui->Residences->takeAt(1)) != 0 )
     {
         QWidget *target = child->widget();
         this->ui->Residences->removeWidget(target);
         delete target;
     }
-    addResidence();
+    ui->ResidenceData0->setText(QString(""));
+    ui->ResidenceData1->setText(QString(""));
 
     // Delete all created rental widgets, then create a default one
-    while( (child = this->ui->Rentals->takeAt(0)) != 0 )
+    while( (child = this->ui->Rentals->takeAt(1)) != 0 )
     {
         QWidget *target = child->widget();
         this->ui->Rentals->removeWidget(target);
         delete target;
     }
-    addRental();
+    ui->RentalData0->setText(QString(""));
+    ui->RentalData1->setText(QString(""));
 }
 
 //-------------------------------------

@@ -21,6 +21,9 @@ public:
     ~AccountManagement();
     void setController(Controller * controller);
 
+protected:
+    virtual void closeEvent(QCloseEvent * event) override;
+
 private:
     Ui::AccountManagement *ui;
     Controller * controller;

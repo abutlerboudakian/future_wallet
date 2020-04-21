@@ -8,7 +8,6 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     ui->setupUi(this);
     this->controller = controller;
     this->budget = nullptr;
-    this->resetBudget();
 
     // Bind slots
     connect(ui->Cancel, SIGNAL(released()), this, SLOT(Exit()));
@@ -61,7 +60,6 @@ void InputBudget::resetBudget()
     // Remove Excess Categories
     QString CatContainer = QString("CategoryLayout");
     QWidget * Category;
-    qDebug() << ui->Categories->count();
     int numCats = ui->Categories->count(); // since this is prone to change via removeWidget
     for (int i = 1; i < numCats; i++)
     {
@@ -85,7 +83,6 @@ void InputBudget::updateLimits()
     {
         temp = this->findChild<QSlider *>(name + QString::number(i));
         newMax = temp->value() + remaining;
-        qDebug() << name << i<< " "<<(temp->value()/100.0)<<" "<<remaining<<" "<<newMax << " " << (newMax < 100.0 ? newMax : 100.0);
         newMax = (newMax < 100.0 ? newMax : 100.0);
         temp->setMaximum(newMax);
     }
@@ -101,7 +98,8 @@ void InputBudget::updateLimits()
  * @effect this->budget contains a new BudgetData representing an empty budget on error
  *         or the budget to be created on success
  */
-void InputBudget::Create() {
+void InputBudget::Create()
+{
     // Add code to save budget and categories
     QString UIName = QString("Category"), CurrentUIName;
     QString catName;
@@ -129,7 +127,8 @@ void InputBudget::Create() {
 }
 
 // Function to switch view back to the dashboard and abandon budget
-void InputBudget::Exit() {
+void InputBudget::Exit()
+{
     this->controller->switchToDashBoard();
 }
 
@@ -137,7 +136,8 @@ void InputBudget::Exit() {
  * @modifies this->ui
  * @effect this->ui->Categories has a new category field
  */
-void InputBudget::addCategory() {
+void InputBudget::addCategory()
+{
     counter++;
     // Horizontal layout that will contain new category
     QWidget * Category = new QWidget();
@@ -196,9 +196,11 @@ void InputBudget::addCategory() {
  * @effect this->ui->Categories has one less category field, unless only 1 budget category is left.
  *         Error message pops up if user attempts to delete all budgets
  */
-void InputBudget::removeCategory() {
+void InputBudget::removeCategory()
+{
     // There should always be at least 1 budget category
-    if (this->ui->Categories->count() > 1) {
+    if (this->ui->Categories->count() > 1)
+    {
         std::string lastLayoutStr = "CategoryLayout" + std::to_string(counter - 1);
 
         // Remove the category from the internal budget representation
@@ -210,7 +212,9 @@ void InputBudget::removeCategory() {
         delete lastCategory;
         counter--;
         updateLimits();
-    } else {
+    }
+    else
+    {
         QMessageBox messageBox;
         messageBox.critical(0,"Error","At least one category required for budget.");
         messageBox.setFixedSize(500,200);
@@ -222,7 +226,8 @@ void InputBudget::removeCategory() {
 /* @modifies this->ui->label to value of slider
  * @effect this->ui->label->text() = val if it does not violate this->budget
  */
-void InputBudget::updateLabel(int val) {
+void InputBudget::updateLabel(int val)
+{
     // If increasing, check if increase to value is allowed. decrease all slider maxes to min(val + totalRemaining, 100)
     // If decreasing, expand all slider maxes to min(val + totalRemaining, 100)
 

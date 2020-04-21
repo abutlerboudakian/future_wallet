@@ -65,7 +65,9 @@ QJsonObject predictionInputWages::toJSON()
     if (ui->IncomeType->currentText() == hourly)
     {
         data.insert("hourly", hourly_yes);
-    } else {
+    }
+    else
+    {
         hourly_yes = false;
         data.insert("hourly", hourly_yes);
     }

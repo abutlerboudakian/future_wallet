@@ -41,7 +41,6 @@ std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages,
     body.insert("invests", Invest);
     body.insert("assets", Assets);
     body.insert("years", years);
-    qDebug() << body;
 
     // Send request
     QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());

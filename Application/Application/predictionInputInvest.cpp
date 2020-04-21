@@ -190,13 +190,14 @@ void predictionInputInvest::clear()
 
     // Delete all created stock widgets
     QLayoutItem *child;
-    while( (child = this->ui->Stocks->takeAt(0)) != 0 )
+    while( (child = this->ui->Stocks->takeAt(1)) != 0 )
     {
         QWidget *target = child->widget();
         this->ui->Stocks->removeWidget(target);
         delete target;
     }
-    addStock();
+    ui->StockData0->setCurrentIndex(0);
+    ui->StockData1->setText(QString(""));
 }
 
 //-------------------------------------

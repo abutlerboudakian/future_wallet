@@ -77,10 +77,10 @@ void DashBoard::updateMetrics()
         while (i != (data->end()-1)) {sum += *(i++);}
         std::string years = QString::number((*(data->end() - 1)), 'f', 2).toStdString();
 
-        ui->metrics->setText(QString::fromStdString("Your income will grow/shrink by " + QString::number(sum, 'f', 2).toStdString() + " dollars in " + years
-                                                    + "\n\nYour wages will grow/shrink by " + QString::number((*metrics)["Wages"], 'f', 2).toStdString() + " dollars in " + years
-                                                    + "\nYour investments will grow/shrink by " + QString::number((*metrics)["Investment"], 'f', 2).toStdString() + " dollars in " + years
-                                                    + "\nYour assets will grow/shrink by " + QString::number((*metrics)["Assets"], 'f', 2).toStdString() + " dollars in " + years));
+        ui->metrics->setText(QString::fromStdString("Your income will grow/shrink by " + QString::number(sum, 'f', 2).toStdString() + " dollars in " + years + " years."
+                                                    + "\n\nYour wages will grow/shrink by " + QString::number((*metrics)["Wages"], 'f', 2).toStdString() + " dollars in " + years + " years."
+                                                    + "\nYour investments will grow/shrink by " + QString::number((*metrics)["Investment"], 'f', 2).toStdString() + " dollars in " + years + " years."
+                                                    + "\nYour assets will grow/shrink by " + QString::number((*metrics)["Assets"], 'f', 2).toStdString() + " dollars in " + years + " years."));
     }
 }
 
@@ -104,7 +104,8 @@ void DashBoard::getBudgetView()
 }
 
 // Function to start the AccountManagement Modal when the "Account" button is pressed
-void DashBoard::getAccountManageView() {
+void DashBoard::getAccountManageView()
+{
     controller->switchToAccountManage();
     return;
 }
