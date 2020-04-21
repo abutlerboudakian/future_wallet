@@ -31,7 +31,7 @@ Or you can just run [MakeAndRunTest.bat](./Application/Test/MakeAndRunTest.bat) 
 
 [//]: # (For Windows User dev team, make is C:\Qt\Tools\mingw730_64\bin\mingw32-make.exe)
 
-## Create Future Wallet Instructions
+## Create Future Wallet App Instructions
 
 If FutureWalletInstaller.exe/FutureWalletInstaller.app does not already exist in your repo navigate to /Application/fwInstaller
 
