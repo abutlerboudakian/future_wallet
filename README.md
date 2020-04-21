@@ -10,7 +10,7 @@ Team Members:
 ### Using the Installer for Windows to use the application.
 #### Installing Future Wallet App
 **Warning:** The installer unloads all the object files and other application files in the directory you specify. On uninstallation, Qt removes all contents from that directory, including any existing files from before or after installation in that directory. Make sure to install specifying a new folder to prevent any loss of data. **The installer warns you about this as well.**
-1. On a Windows OS, go to the [Installer Folder](./Windows\ Installer)
+1. On a Windows OS, go to the [Installer Folder](./Windows%20Installer)
 2. Launch the executable installer, and follow the instructions to install the Future Wallet application. (Remember to select all components)
 3. Once the installer is finished, an executable **Application.exe** can be found in the directory you specified to install to. That is the Future Wallet App.
 
