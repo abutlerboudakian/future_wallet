@@ -24,17 +24,13 @@ Team Members:
 3. Create a package information file called package.xml in the config\meta directory. It contains settings for deployment and the installation process. For more information, see Meta Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html#meta-directory).
 4. Create installer content and copy it to the package directory. For more information, see Data Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html#data-directory).
 5. At this point you should have the following directory structure:
-   
+```
    FutureWalletInstaller  --> config -> config.xml & package.xml
-   
-                         |     
-                         
+                         |          
                           --> packages -> FutureWallet  --> data --> content of application
-                          
                                                        |
-                                                       
                                                         --> meta --> license.txt & package.xml
-                                                        
+```                                                        
                                                         
 6. Use the binarycreator tool to create the installer. 
 ```
