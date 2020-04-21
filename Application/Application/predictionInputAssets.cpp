@@ -27,11 +27,22 @@ predictionInputAssets::~predictionInputAssets()
     delete validInt;
 }
 
-// Function to setup validators for all inputs
+/* Function to setup validators for all inputs
+ * @requires: none
+ * @modifies: ui->ResidenceData0 (QLineEdit)
+ *            ui->ResidenceData1 (QLineEdit)
+ *            ui->RentalData0 (QLineEdit)
+ *            ui->RentalData1 (QLineEdit)
+ *            ui->Metal (QLineEdit)
+ * @effects: set validators for all those modified QLineEdits
+ *           to meet our application requirements
+ * @returns: none
+ */
 void predictionInputAssets::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
     validInt = new QIntValidator(0, 99999, this);
+
     ui->ResidenceData0->setValidator(validDouble);
     ui->ResidenceData1->setValidator(validInt);
     ui->RentalData0->setValidator(validDouble);
@@ -44,7 +55,6 @@ void predictionInputAssets::submitInputs()
 {
     // add more code to tell the controller to send the data it has to the server and update the model for Assets
     this->controller->getPrediction();
-    //this->controller->switchToDashBoard(); // Perhaps move this to controller
 }
 
 // Function to change view to the previous page, the Wages View
@@ -63,22 +73,6 @@ void predictionInputAssets::Exit()
     this->controller->switchToDashBoard();
 }
 
-void predictionInputAssets::getResidenceData()
-{
-//    std::cout<<"Start"<<std::endl;
-//    std::unordered_map<std::string, int> ResidenceData;
-//    QObjectList Residences = ui->Residences->children();
-//    for (QObjectList::const_iterator i = Residences.begin(); i != Residences.end(); i++)
-//    {
-//        QList<QLineEdit*> fields = ((QWidget*)*i)->findChildren<QLineEdit*>(QRegularExpression("ResidenceData"));
-//        ResidenceData.insert(std::pair<std::string, int>(fields[0]->text().toStdString(), fields[1]->text().toInt()));
-//    }
-//    for (std::unordered_map<std::string, int>::iterator i = ResidenceData.begin(); i != ResidenceData.end(); i++)
-//    {
-//        std::cout<<i->first<<" "<<i->second<<std::endl;
-//    }
-//    std::cout<<"Done"<<std::endl;
-}
 
 /* Convert user inputs on views from simple types to QJsonObject for
  * controller to grab and send to host server to store

@@ -28,13 +28,23 @@ predictionInputInvest::~predictionInputInvest()
     delete validDouble;
 }
 
-// Function to setup validators for all inputs
+/* Function to setup validators for all inputs
+ * @requires: none
+ * @modifies: ui->Saving (QLineEdit)
+ *            ui->CD (QLineEdit)
+ *            ui->StockData1 (QLineEdit)
+ *            ui->Bond (QLineEdit)
+ *            ui->TBond (QLineEdit)
+ * @effects: set validators for all those modified QLineEdits
+ *           to meet our application requirements
+ * @returns: none
+ */
 void predictionInputInvest::setupValidator()
 {
 
-    validDouble = new QDoubleValidator(0.00, 99999999.00, 2);    ui->Saving->setValidator(validDouble);
+    validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
+    ui->Saving->setValidator(validDouble);
     ui->CD->setValidator(validDouble);
-    //ui->StockData0->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
     ui->StockData1->setValidator(validDouble);
     ui->Bond->setValidator(validDouble);
     ui->TBond->setValidator(validDouble);
@@ -62,32 +72,6 @@ void predictionInputInvest::Exit()
     // Add code to tell controller to update it's AssetModel
     this->controller->switchToDashBoard();
 }
-
-/* Function used to get all the stock information
- *
- */
-/*void predictionInputInvest::getStockData()
-{
-    std::cout<<"Start"<<std::endl;
-    std::unordered_map<std::string, int> StockData;
-    std::cout<<ui->Stocks->count()<<std::endl;*/
-    /*for (unsigned int i = 0; i < ui->Stocks->count(); i++)
-    {
-
-        QList<QLineEdit*> fields = ((QWidget*)ui->Stocks->itemAt(i))->findChildren<QLineEdit*>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
-        StockData.insert(std::pair<std::string, int>(fields[0]->text().toStdString(), fields[1]->text().toInt()));
-    }*/
- /*   QList<QLineEdit*> list = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*"))); // Because its children of this, not children of a layout
-    for (unsigned int i = 0; i < 2*ui->Stocks->count(); i+=2)
-    {
-        StockData.insert(std::pair<std::string, int>(list[i]->text().toStdString(), list[i+1]->text().toInt()));
-    }
-    for (std::unordered_map<std::string, int>::iterator i = StockData.begin(); i != StockData.end(); i++)
-    {
-        std::cout<<i->first<<" "<<i->second<<std::endl;
-    }
-    std::cout<<"Done"<<std::endl;
-}*/
 
 /* Convert user inputs on views from simple types to QJsonObject for
  * controller to grab and send to host server to store
@@ -118,7 +102,6 @@ QJsonObject predictionInputInvest::toJSON()
     QList<QLineEdit*> shares = this->findChildren<QLineEdit *>(QRegularExpression(QRegularExpression::wildcardToRegularExpression("StockData*")));
     for (int i = 0; i < ui->Stocks->count(); i++)
     {
-        //qDebug() << names[i]->itemText(names[i]->currentIndex());
         StockName = names[i]->itemText(names[i]->currentIndex());
         if (StockName != QString("--"))
         {
@@ -282,7 +265,6 @@ void predictionInputInvest::addStock()
 
     // SetValidator for shares
     Shares->setValidator(validDouble);
-    //StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
 
     // Adds the stock field
     Stock->setLayout(StockLayout);
@@ -329,7 +311,6 @@ void predictionInputInvest::addStock(QString name, double shares)
 
     // Set Validator for shares
     Shares->setValidator(validDouble);
-    //StockName->setValidator(new QRegExpValidator( QRegExp("[A-Za-z0-9]{0,5}") , this ));
 
     // Set default value for stock name and shares
     int index = StockName->findText(name);

@@ -8,8 +8,6 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
     ui->setupUi(this);
     this->controller = controller;
 
-    //ui->Industry->addItems(controller->getIndustries());
-
     connect(ui->Next, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
@@ -24,7 +22,15 @@ predictionInputWages::~predictionInputWages()
     delete validInt;
 }
 
-// Function to setup validators for all inputs
+/* Function to setup validators for all inputs
+ * @requires: none
+ * @modifies: ui->Time (QLineEdit)
+ *            ui->Location (QLineEdit)
+ *            ui->Amount (QLineEdit)
+ * @effects: set validators for all those modified QLineEdits
+ *           to meet our application requirements
+ * @returns: none
+ */
 void predictionInputWages::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
