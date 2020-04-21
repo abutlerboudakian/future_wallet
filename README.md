@@ -38,7 +38,7 @@ If FutureWalletInstaller.exe/FutureWalletInstaller.app does not already exist in
 If on windows, run:
 
 ```
- \Qt\Tools\QtInstallerFramework\3.2\bin\binarycreator.exe -c config\config.xml -p packages FutureWalletInstaller.exe
+ <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file>  <installer_name>
  ```
 
 Otherwise if on Mac/Linux: 
