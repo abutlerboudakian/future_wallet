@@ -17,23 +17,22 @@ Team Members:
 #### Uninstalling Future Wallet App
 1. In the directory you installed the Future Wallet App in, launch the **management tool.exe**.
 2. Select the **remove all components** option and let the uninstaller run.
+
 ### Devlopment Instructions for Compiling the Future Wallet App Installer executable
-
-If FutureWalletInstaller.exe/FutureWalletInstaller.app does not already exist in your repo, install QT (https://www.qt.io/download) and navigate to /Application/fwInstaller
-
-If on windows, run:
-
+1. Create a package directory for the installable components. For more information, see Package Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html).
+2. Create a configuration file called config.xml in the config directory. It contains information about how to build the installer binaries and online repositories. For more information about the file format and available settings, see Configuration File (https://doc.qt.io/qtinstallerframework/ifw-globalconfig.html).
+3. Create a package information file called package.xml in the config\meta directory. It contains settings for deployment and the installation process. For more information, see Meta Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html#meta-directory).
+4. Create installer content and copy it to the package directory. For more information, see Data Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html#data-directory).
+5. At this point you should have the following directory structure:
+   FutureWalletInstaller  --> config -> config.xml & package.xml
+                         |           
+                          --> packages -> FutureWallet  --> data --> content of application
+                                                       |
+                                                        --> meta --> license.txt & package.xml
+6. Use the binarycreator tool to create the installer. 
 ```
  <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file>  <installer_name>
  ```
-
-Otherwise if on Mac/Linux: 
-
-```
- /Qt/Tools/QtInstallerFramework/3.2/bin/binarycreator -c config/config.xml -p packages FutureWalletInstaller
-```
-
-This will create a .exe file or a .app file respective to Windows or Mac/Linux OS. Run installer to get an instance of the Future Wallet app on your machine. Should be connected to RPI VPN for the current version of Future Wallet.
 
 ## Deploying the Server
 FutureWallet's REST Server runs on Ubuntu using virtualenv, Flask, uWSGI, and Nginx.
