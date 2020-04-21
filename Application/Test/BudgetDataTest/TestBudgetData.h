@@ -18,6 +18,7 @@ public:
 
 // Unit Tests are slot functions
 private slots:
+    // 8 tests
     void TestConstruction();
     void TestName();
     void TestDollars();

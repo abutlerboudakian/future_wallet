@@ -22,15 +22,7 @@ Requests::Requests(QObject * parent, bool debug) : QObject(parent)
 std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages, QJsonObject Invest, QJsonObject Assets, int years)
 {
     // Endpoint
-    QUrl url;
-    if (this->debug)
-    {
-        url = QUrl(Location + QString("/storeInputs"));
-    }
-    else
-    {
-        url = QUrl(Location + QString("/submitInputs"));
-    }
+    QUrl url = QUrl(Location + QString("/submitInputs"));
 
     // Header
     QNetworkRequest request(url);

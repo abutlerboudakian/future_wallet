@@ -27,11 +27,22 @@ predictionInputAssets::~predictionInputAssets()
     delete validInt;
 }
 
-// Function to setup validators for all inputs
+/* Function to setup validators for all inputs
+ * @requires: none
+ * @modifies: ui->ResidenceData0 (QLineEdit)
+ *            ui->ResidenceData1 (QLineEdit)
+ *            ui->RentalData0 (QLineEdit)
+ *            ui->RentalData1 (QLineEdit)
+ *            ui->Metal (QLineEdit)
+ * @effects: set validators for all those modified QLineEdits
+ *           to meet our application requirements
+ * @returns: none
+ */
 void predictionInputAssets::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
     validInt = new QIntValidator(0, 99999, this);
+
     ui->ResidenceData0->setValidator(validDouble);
     ui->ResidenceData1->setValidator(validInt);
     ui->RentalData0->setValidator(validDouble);
@@ -44,7 +55,6 @@ void predictionInputAssets::submitInputs()
 {
     // add more code to tell the controller to send the data it has to the server and update the model for Assets
     this->controller->getPrediction();
-    //this->controller->switchToDashBoard(); // Perhaps move this to controller
 }
 
 // Function to change view to the previous page, the Wages View
@@ -63,23 +73,20 @@ void predictionInputAssets::Exit()
     this->controller->switchToDashBoard();
 }
 
-void predictionInputAssets::getResidenceData()
-{
-//    std::cout<<"Start"<<std::endl;
-//    std::unordered_map<std::string, int> ResidenceData;
-//    QObjectList Residences = ui->Residences->children();
-//    for (QObjectList::const_iterator i = Residences.begin(); i != Residences.end(); i++)
-//    {
-//        QList<QLineEdit*> fields = ((QWidget*)*i)->findChildren<QLineEdit*>(QRegularExpression("ResidenceData"));
-//        ResidenceData.insert(std::pair<std::string, int>(fields[0]->text().toStdString(), fields[1]->text().toInt()));
-//    }
-//    for (std::unordered_map<std::string, int>::iterator i = ResidenceData.begin(); i != ResidenceData.end(); i++)
-//    {
-//        std::cout<<i->first<<" "<<i->second<<std::endl;
-//    }
-//    std::cout<<"Done"<<std::endl;
-}
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: none
+ * @modifies: none
+ * @effects: none
+ * @returns: a QJsonObject that contains all user inputs from the view
+ *           in the structure of:
+ *           {
+ *             “res”: [{“value”: double, “loc”: String}],
+ *             “rents”: [{“value”: double, “loc:” String}],
+ *             “rm”: double
+ *           }
+ */
 QJsonObject predictionInputAssets::toJSON()
 {
     QJsonObject data;
@@ -111,10 +118,31 @@ QJsonObject predictionInputAssets::toJSON()
     data.insert("rents", rentals);
 
     data.insert("rm", ui->Metal->text().toDouble());
+    data.insert("years", ui->Years->text().toDouble());
 
     return data;
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: savdData is a QJsonObject that is in structure of:
+ *            {
+ *             “res”: [{“value”: double, “loc”: String}],
+ *             “rents”: [{“value”: double, “loc:” String}],
+ *             “rm”: double
+ *            }
+ * @modifies: ui->Metal (QLineEdit)
+ *            ui->Residences (QVBoxLayout)
+ *            ui->Rentals (QVBoxLayout)
+ * @effects: - Populate ui->Metal with the corresponding data from savedData.
+ *           - Add a QWidget to ui->Residences to represent owned property,
+ *             call addResidence( location, value ) to populate view inside the
+ *             created QWidget.
+ *           - Add a QWidget to ui->Rentals to represent owned property for rent,
+ *             call addRental( location, value ) to populate view inside the
+ *             created QWidget.
+ * @returns: a QJsonObject that contains all user inputs from the view
+ */
 void predictionInputAssets::fromJson(QJsonObject savedData)
 {
     // populate Rare Metal
@@ -141,8 +169,8 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             {
                 QString location = it_loc.value().toString();
                 double value = it_value.value().toDouble();
-                ui->ResidenceData0->setText(location);
-                ui->ResidenceData1->setText(QString::number(value));
+                ui->ResidenceData1->setText(location);
+                ui->ResidenceData0->setText(QString::number(value));
             }
             for ( it++; it != resList.end(); it++ )
             {
@@ -176,8 +204,8 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             {
                 QString location = it_loc.value().toString();
                 double value = it_value.value().toDouble();
-                ui->RentalData0->setText(location);
-                ui->RentalData1->setText(QString::number(value));
+                ui->RentalData1->setText(location);
+                ui->RentalData0->setText(QString::number(value));
             }
             for ( it++; it != rentList.end(); it++ )
             {
@@ -193,10 +221,23 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             }
         }
     }
-    ui->Years->setText(QString::number(savedData["years"].toInt()));
+    ui->Years->setText(QString::number((savedData["years"]).toInt()));
 }
 
-// Function to clear all user inputs and reset the page to default
+/* Function to clear all user inputs and reset the page to default
+ * @requires: none
+ * @modifies: ui->Metal (QLineEdit)
+ *            ui->Years (QLineEdit)
+ *            ui->Residences (QVBoxLayout)
+ *            ui->Rentals (QVBoxLayout)
+ * @effects: - set ui->Metal to 0
+ *           - set ui->Years to 0
+ *           - clear and delete all QWidget in ui->Residences,
+ *             and create a new one as defualt
+ *           - clear and delete all QWidget in ui->Rentals,
+ *             and create a new one as defualt
+ * @returns: none
+ */
 void predictionInputAssets::clear()
 {
     ui->Metal->clear();

@@ -8,8 +8,6 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
     ui->setupUi(this);
     this->controller = controller;
 
-    //ui->Industry->addItems(controller->getIndustries());
-
     connect(ui->Next, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
@@ -24,7 +22,15 @@ predictionInputWages::~predictionInputWages()
     delete validInt;
 }
 
-// Function to setup validators for all inputs
+/* Function to setup validators for all inputs
+ * @requires: none
+ * @modifies: ui->Time (QLineEdit)
+ *            ui->Location (QLineEdit)
+ *            ui->Amount (QLineEdit)
+ * @effects: set validators for all those modified QLineEdits
+ *           to meet our application requirements
+ * @returns: none
+ */
 void predictionInputWages::setupValidator()
 {
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
@@ -35,6 +41,21 @@ void predictionInputWages::setupValidator()
     ui->Amount->setValidator(validDouble);
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: none
+ * @modifies: none
+ * @effects: none
+ * @returns: a QJsonObject that contains all user inputs from the view
+ *           in the structure of
+ *           {
+ *              “industryCode”: String,
+ *              “loc”: String,
+ *              “income”: double,
+ *              “hourly”: boolean,
+ *              “hourspw”: double
+ *           }
+ */
 QJsonObject predictionInputWages::toJSON()
 {
     QJsonObject data;
@@ -56,6 +77,28 @@ QJsonObject predictionInputWages::toJSON()
     return data;
 }
 
+/* Convert user inputs on views from simple types to QJsonObject for
+ * controller to grab and send to host server to store
+ * @requires: savdData is a QJsonObject that is in structure of:
+ *            {
+ *              “industryCode”: String,
+ *              “loc”: String,
+ *              “income”: double,
+ *              “hourly”: boolean,
+ *              “hourspw”: double
+ *            }
+ * @modifies: ui->Amount (QLineEdit)
+ *            ui->Location (QLineEdit)
+ *            ui->Time (QLineEdit)
+ *            ui->IncomeType (QComboBox)
+ *            ui->Industry (QComboBox)
+ * @effects: - Populate ui->Amount with the corresponding data from savedData.
+ *           - Populate ui->Location with the corresponding data from savedData.
+ *           - Populate ui->Time with the corresponding data from savedData.
+ *           - Set ui->IncomeType to the corresponding ticker same as in savedData.
+ *           - Set ui->Industry to the corresponding ticker same as in savedData.
+ * @returns: none
+ */
 void predictionInputWages::fromJson(QJsonObject savedData)
 {
     // populate Amount
@@ -83,7 +126,7 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     it = savedData.find("hourly");
     if ( it != savedData.end() && it.value().toBool() == false )
     {
-        int index = ui->IncomeType->findData("Salary");
+        int index = ui->IncomeType->findText("Salary");
         ui->IncomeType->setCurrentIndex(index);
     }
 
@@ -91,12 +134,25 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     it = savedData.find("industryCode");
     if ( it != savedData.end() )
     {
-        int index = ui->Industry->findData(it.value().toString());
+        int index = ui->Industry->findText(it.value().toString());
         ui->Industry->setCurrentIndex(index);
     }
 }
 
-// Function to clear all user inputs and reset the page to default
+/* Function to clear all user inputs and reset the page to default
+ * @requires: none
+ * @modifies: ui->Amount (QLineEdit)
+ *            ui->Location (QLineEdit)
+ *            ui->Time (QLineEdit)
+ *            ui->IncomeType (QComboBox)
+ *            ui->Industry (QComboBox)
+ * @effects: - set ui->Amount to 0
+ *           - set ui->Location to 0
+ *           - set ui->Time to 0
+ *           - reset ui->IncomeType ticker to index 0
+ *           - reset ui->Industry ticker to index 0
+ * @returns: none
+ */
 void predictionInputWages::clear()
 {
     ui->IncomeType->setCurrentIndex(0);

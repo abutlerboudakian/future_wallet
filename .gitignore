@@ -3,7 +3,6 @@ Dockerfile
 .DS_Store
 .idea/
 .iml 
-**/*.exe
 **/__pycache__
 **/**/*.user
 **/build*/
