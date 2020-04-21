@@ -33,18 +33,18 @@ Or you can just run [MakeAndRunTest.bat](./Application/Test/MakeAndRunTest.bat) 
 
 ## Create Future Wallet App Instructions
 
-If FutureWalletInstaller.exe/FutureWalletInstaller.app does not already exist in your repo navigate to /Application/fwInstaller
+If FutureWalletInstaller.exe/FutureWalletInstaller.app does not already exist in your repo, install QT (https://www.qt.io/download) and navigate to /Application/fwInstaller
 
 If on windows, run:
 
 ```
- ..\..\bin\binarycreator.exe -c config\config.xml -p packages FutureWalletInstaller.exe
+ /Qt/Tools/QtInstallerFramework/3.2/bin/binarycreator.exe -c config\config.xml -p packages FutureWalletInstaller.exe
  ```
 
 Otherwise if on Mac/Linux: 
 
 ```
-../../bin/binarycreator -c config/config.xml -p packages FutureWalletInstaller
+ /Qt/Tools/QtInstallerFramework/3.2/bin/binarycreator -c config/config.xml -p packages FutureWalletInstaller
 ```
 
 This will create a .exe file or a .app file respective to Windows or Mac/Linux OS. Run installer to get an instance of the Future Wallet app on your machine. Should be connected to RPI VPN for the current version of Future Wallet.
