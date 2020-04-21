@@ -8,8 +8,6 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
     ui->setupUi(this);
     this->controller = controller;
 
-    //ui->Industry->addItems(controller->getIndustries());
-
     connect(ui->Next, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
