@@ -38,7 +38,7 @@ Team Members:
                                                         --> meta --> license.txt & package.xml
 ```                                                        
                                                         
-7. Use the binarycreator tool to create the installer. 
+7. Go to Qt\Tools\QInstallerFramework\3.2\bin and use the binarycreator tool to create the installer. 
 ```
  <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file>  <installer_name>
  ```
