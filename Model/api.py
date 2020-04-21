@@ -320,7 +320,6 @@ def register():
                 return make_response('User Already Exists', 400)
         else:
                 uEng.execute("INSERT INTO Users VALUES ('" + data['userid'] + "', '" + data['password'] + "');")
-                active_users.add(data['userid'])
                 return make_response('Registration Completed Successfully', 200)
 
 '''
