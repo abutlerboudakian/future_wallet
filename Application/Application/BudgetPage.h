@@ -13,6 +13,9 @@ class BudgetPage;
 class BudgetPage : public QDialog
 {
     Q_OBJECT
+    /*
+     * View class for the Budget Modal
+     */
 
 public:
     explicit BudgetPage(QWidget *parent = nullptr);
@@ -32,7 +35,6 @@ private slots:
     void getCreateBudgetView();
 
     void changeSelected();
-    //void closure();
 };
 
 #endif // BUDGETPAGE_H

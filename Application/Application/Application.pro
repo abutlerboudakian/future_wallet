@@ -23,7 +23,6 @@ SOURCES += \
     Controller.cpp \
     DashBoard.cpp \
     InputBudget.cpp \
-    Menu.cpp \
     Registration.cpp \
     Requests.cpp \
     main.cpp \
@@ -41,7 +40,6 @@ HEADERS += \
     Controller.h \
     DashBoard.h \
     InputBudget.h \
-    Menu.h \
     Registration.h \
     Requests.h \
     mainapplication.h \

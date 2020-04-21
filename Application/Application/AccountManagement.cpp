@@ -25,6 +25,10 @@ void AccountManagement::setController(Controller * controller)
     connect(ui->UpdateAccount, SIGNAL(released()), this, SLOT(Update()));
 }
 
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
+
 /* Function that closes the modal
  */
 void AccountManagement::Exit() {
@@ -39,9 +43,6 @@ void AccountManagement::Update() {
     std::string newPass = ui->newPassEdit->text().toStdString();
     std::string newPassConfirm = ui->confirmNewPassEdit->text().toStdString();
     std::string newUser = ui->changeUserEdit->text().toStdString();
-
-    // Old info
-    // QString oldUser = this->controller->userid;
 
     if(newUser.length() != 0 ) {
         // Should update with old password

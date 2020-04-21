@@ -55,7 +55,6 @@ void VisualTemplate::CreateChartView()
  */
 QChartView * VisualTemplate::getView() const
 {
-    // Rep invariant, but idk how to fix
     return chartView;
 }
 
@@ -178,7 +177,6 @@ void BarGUI::QAxisSetup()
     (*(series->begin()))->attachAxis(XAxis);
 
     QValueAxis * YAxis = new QValueAxis();
-    //YAxis->setRange(0,maxY);
     chart->addAxis(YAxis, Qt::AlignLeft);
     (*(series->begin()))->attachAxis(YAxis);
 }

@@ -13,6 +13,9 @@ class predictionInputAssets;
 class predictionInputAssets : public QWidget
 {
     Q_OBJECT
+    /*
+     * View class for the Assets Input View
+     */
 
 public:
     explicit predictionInputAssets(QWidget *parent = nullptr, Controller * controller = nullptr);

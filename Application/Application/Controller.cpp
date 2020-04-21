@@ -2,20 +2,14 @@
 
 Controller::Controller()
 {
+  // Set default values
   PieCreator = new PieGUI;
   BarCreator = new BarGUI;
   LineCreator = new LineGUI;
 
-  metrics = nullptr;//new std::vector<double>;
-  //metrics->push_back(0);
-  //metrics->push_back(0);
-  //metrics->push_back(0);
-  //metrics->push_back(0);
+  metrics = nullptr;
 
   budget = nullptr;
-  /*budget->addCategory(QString("Alcohol"), 0.05);
-  budget->addCategory(QString("Oranges"), 0.55);
-  budget->addCategory(QString("Ores"), 0.4);*/
 
   ReqObj = new Requests;
 
@@ -23,8 +17,8 @@ Controller::Controller()
 }
 
 /* Deletes the chart creators. Delegates deletion of the views to MainApplication
- * @modifies PieCreator, BarCreator, LineCreator
- * @effects Frees PieCreator, BarCreator, LineCreator from the heap
+ * @modifies PieCreator, BarCreator, LineCreator, budget, metrics, and ReqObj
+ * @effects Frees PieCreator, BarCreator, LineCreator, budget, metrics, and ReqObj from the heap
  */
 Controller::~Controller()
 {
@@ -51,14 +45,55 @@ void Controller::setViews(QStackedWidget * Views)
 // Other Methods                      |
 // ------------------------------------
 
+/* Function returns the std::vector<double> metrics in the controller
+ * @modifies this->metrics if there is no current metric stored
+ * @effect this->metrics contains the most recent prediction metrics
+ * @returns this->metrics if there is one set
+ *          otherwise, it makes a prediction and returns that metric
+ */
+const std::vector<double> * Controller::getMetricsData()
+{
+    if (this->metrics == nullptr)
+    {   // Only occurs on startup and nothing is populated yet
+
+        // Get inputs and populate views, then do get prediction
+        if (this->getInputs())
+        {
+            this->getPrediction();
+            if (this->metrics->empty())
+            {
+                QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not retrieve recent metrics from Database. Try again.");
+                errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
+                errModal->show();
+            }
+        }
+    }
+    return this->metrics;
+}
+
+/* Function gets and sets the budgetid of the Controller and
+ * updates the dashboard
+ * @param budgetId is a string denoting the associated budgetID
+ * @modifies this->budget
+ * @effect this->budget is updated to the budget noted by budgetId
+ */
+void Controller::setSelectedBudget(QString budgetId)
+{
+    ((DashBoard*)this->Views->widget(Views::Dashboard))->updateBudget(budgetId);
+}
+
+//-------------------------------------
+// Endpoints                          |
+//-------------------------------------
 /* Function gets the budget from the databse and returns the BudgetData in the controller
  * @param budgetId is a string denoting the associated budget ID
  * @returns this->budget if budgetId=="" else attempts to grab the budget from the
  *                       database and returns it
+ * @returns a uniform budget if budgetId = "Uniform"
  */
 const BudgetData * Controller::getBudgetData(QString budgetId)
 {
-    if (budgetId == "Uniform")
+    if (budgetId == QString("Uniform"))
     {
         if (this->budget != nullptr)
         {
@@ -98,49 +133,7 @@ const BudgetData * Controller::getBudgetData(QString budgetId)
     return this->budget;
 }
 
-
-/* Function returns the std::vector<double> metrics in the controller
- * @modifies this->metrics if there is no current metric stored
- * @effect this->metrics contains the most recent prediction metrics
- * @returns this->metrics if there is one set
- *          otherwise, it makes a prediction and returns that metric
- */
-const std::vector<double> * Controller::getMetricsData()
-{
-    if (this->metrics == nullptr)
-    {   // Only occurs on startup and nothing is populated yet
-        // Get inputs and populate views, then do get prediction
-
-        if (this->getInputs())
-        {
-            this->getPrediction();
-            if (this->metrics->empty())
-            {
-                QMessageBox * errModal = new QMessageBox(QMessageBox::Critical, "Error", "Could not retrieve recent metrics from Database. Try again.");
-                errModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
-                errModal->show();
-            }
-        }
-    }
-    return this->metrics;
-}
-
-/* Function gets and sets the budgetid of the Controller and
- * updates the dashboard
- * @param budgetId is a string denoting the associated budgetID
- * @modifies this->budget
- * @effect this->budget is updated to the budget noted by budgetId
- */
-void Controller::setSelectedBudget(QString budgetId)
-{
-    ((DashBoard*)this->Views->widget(Views::Dashboard))->updateBudget(budgetId);
-}
-
-//-------------------------------------
-// Endpoints                          |
-//-------------------------------------
 /* Function to submit Input to the database and get metrics back
- * ----------------------------------------------------------------------------------------------------
  * @modifies this->metrics this->Views->Dashboard
  * @effect this->metrics now contains the new prediction
  *         the dashboard view updates its metrics in accordance to the prediction returned
@@ -152,10 +145,13 @@ void Controller::getPrediction()
         delete this->metrics;
     }
 
+    // Get current inputs
     QJsonObject Wages = ((predictionInputWages*)this->Views->widget(Views::WagePredict))->toJSON();
     QJsonObject Invest = ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->toJSON();
     QJsonObject Assets = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->toJSON();
     years = ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->getYears();
+
+    // Make prediction
     this->metrics = ReqObj->getPrediction(this->userid, Wages, Invest, Assets, years);
     if (this->metrics->empty())
     {
@@ -173,7 +169,7 @@ void Controller::getPrediction()
 
 /* Function to get input from the database and populate the views
  * @modifies this->Views->predictionInputAssets, this->Views->predictionInputInvest, this->Views->predictionInputWages
- * @effect all the aforementioned views are updated with their most recent input data
+ * @effect all the aforementioned views are updated with their most recent input data (that was stored in the Database)
  * @throws Error message box on error
  * @returns true if successful, false otherwise
  */
@@ -203,6 +199,7 @@ bool Controller::getInputs()
 
 /* Function to add a budget to the database
  * @param budget is a BudgetData* of the budget to add to the database
+ * @returns true if budget was added, false otherwise on error
  * @returns a MessageBox if an error occurs
  */
 bool Controller::addBudget(BudgetData * budget)
@@ -218,8 +215,8 @@ bool Controller::addBudget(BudgetData * budget)
 }
 
 /* Function gets a list of budget names from the ReqObj
- * @returns QStringList of names of budgets for this->Userid
- * @returns a MessageBox if an error occurs
+ * @returns QStringList of list of names of budgets created by this->Userid
+ * @returns an empty QStringList and MessageBox if an error occurs
  */
 QStringList Controller::getBudgetList()
 {
@@ -233,9 +230,14 @@ QStringList Controller::getBudgetList()
     return ret.second;
 }
 
+/* Function to log a user in and do user login data population
+ * @param userid is the username the user entered
+ * @param Password is the password the user entered
+ * @modifies this->userid
+ * @effect this->userid = userid on successful login
+ */
 void Controller::login(QString userid, QString Password)
 {
-    // Andrew should implement this
     if (ReqObj->login(userid, Password))
     {
         this->userid = userid;
@@ -251,24 +253,25 @@ void Controller::login(QString userid, QString Password)
     }
 }
 
-/* Function destroys menubar, logs user out, and goes back to login page */
+/* Function logs user out, and goes back to login page */
 // @requires user is already logged in
 void Controller::logout()
 {   
-    // If not logged in
     if (this->Views->currentIndex() != Views::Login)
-    {
-        //ReqObj->logout(...);
+    {   // Execute if logged in
+        ReqObj->logout(this->userid);
+        this->userid = QString("");
         this->switchToLogin();
-        qDebug() << "Hello there";
-    }
 
-    ((predictionInputWages*)this->Views->widget(Views::WagePredict))->clear();
-    ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->clear();
-    ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->clear();
+        ((predictionInputWages*)this->Views->widget(Views::WagePredict))->clear();
+        ((predictionInputAssets*)this->Views->widget(Views::AssetPredict))->clear();
+        ((predictionInputInvest*)this->Views->widget(Views::InvestPredict))->clear();
+    }
 }
 
 /* Function posts registration information to the database
+ * @param userid is the username for the new account
+ * @param Password is the password for the new account
  * @returns a MessageBox with an error message if error occurs
  *          a MessageBox with success if successfully created account
  */
@@ -279,10 +282,8 @@ void Controller::Register(QString userid, QString Password)
         QMessageBox * succModal = new QMessageBox(QMessageBox::NoIcon, "", "Successfully created an account! Please login.");
         succModal->setAttribute(Qt::WA_DeleteOnClose, true); // Deconstruct on closing
         succModal->show();
+        ((Registration*)this->Views->widget(Views::RegistrationPage))->clear();
         this->switchToLogin();
-        /*((DashBoard*)this->Views->widget(Views::Dashboard))->updateMessage(userid);
-        ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
-        this->switchToDashBoard();*/
     }
     else
     {
@@ -293,6 +294,9 @@ void Controller::Register(QString userid, QString Password)
 }
 
 /* Function posts updated user information to the database
+ * @param newUserId is the userid to change the current userid to.
+ *        it is "" if the userid should not be updated
+ * @param Password is the new password. It is "" if the password should not be updated
  * @returns a MessageBox with an error message if error occurs
  *          a MessageBox with success if successfully updated
  */
@@ -318,6 +322,8 @@ void Controller::UpdateUserInfo(QString newUserId, QString Password)
 }
 
 /* Function requests for a list of all industry names
+ * @returns a QStringList of all the industries on success
+ *          an empty QStringList on error
  * @returns a MessageBox with an error message if error occurs
  *          a MessageBox with success if successfully retrieved
  */
@@ -334,6 +340,8 @@ QStringList Controller::getIndustries()
 }
 
 /* Function requests for a list of all stock ticker
+ * @returns a QStringList of all stock tickers on success
+ *          an empty QStringList on error
  * @returns a MessageBox with an error message if error occurs
  *          a MessageBox with success if successfully retrieved
  */
@@ -370,8 +378,6 @@ void Controller::setMain(MainApplication * main)
  */
 void Controller::switchToDashBoard()
 {
-  // ((DashBoard*)this->Views->widget(Views::Dashboard))->updateMetrics();
-  // ((DashBoard*)this->Views->widget(Views::Dashboard))->updateBudget(QString(""));
   this->Views->setCurrentIndex(Views::Dashboard);
   return;
 }
@@ -405,7 +411,7 @@ void Controller::switchToBudgetPage()
     }
 }
 
-/* Creates and displays the InputBudget view
+/* Switches views to the InputBudget view
  * @modifies this->View
  * @effects this->View's top most QWidget is now Views::InputBudget
  */
@@ -414,7 +420,7 @@ void Controller::switchToInputBudget(){
     this->Views->setCurrentIndex(Views::BudgetInput);
 }
 
-/* Creates and displays the Registration view
+/* Switches to the Registration view
  * @modifies this->View
  * @effects this->View's top most QWidget is now Views::RegistrationPage
  */
@@ -423,7 +429,10 @@ void Controller::switchToRegisterPage()
     this->Views->setCurrentIndex(Views::RegistrationPage);
 }
 
-
+/* Function to update the state of the budget modal
+ * @modifies this->BudgetModal
+ * @effect this->BudgetModal = false
+ */
 void Controller::closeBudgetPage()
 {
     BudgetModal = false;
@@ -435,7 +444,7 @@ void Controller::switchToAccountManage() {
     if (this->Views->currentIndex() != Views::Login)
     {
         if (!AccountModal)
-        {   // Make and show budget modal
+        {   // Make and show account management modal
             manage = new AccountManagement;
             manage->setController(this);
             manage->setAttribute(Qt::WA_DeleteOnClose);
@@ -450,6 +459,8 @@ void Controller::switchToAccountManage() {
 }
 
 /* Close AccountManagement modal
+ * @modifies this->AccountModal
+ * @effect this->AccountModal = false
  */
 void Controller::closeAccountManage() {
     AccountModal = false;
@@ -511,17 +522,3 @@ QChartView * Controller::getBarGraph(QString ChartName, const ChartMap * data)
   return BarCreator->getView();
 }
 
-/* Creates a line graph for the given data
- * @requires data to be an unorderedmap of std::string->std::vector<std::pair<QDateTime, double> >
- *           where std::string is the line name and std::vector contains points to graph
- *           X Axis is QDateTime, Y is double
- * @param ChartName is the name of the chart
- * @param data is an unordered map, representing the lines we need to graph
- * @returns a chartview of the line graph, representing the given data
- */
-QChartView * Controller::getLineGraph(QString ChartName, const LineMap * data)
-{
-  LineCreator->setName(ChartName);
-  LineCreator->make(data);
-  return LineCreator->getView();
-}

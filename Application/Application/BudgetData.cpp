@@ -11,23 +11,6 @@ BudgetData::~BudgetData()
 {
     delete data;
 }
-/*QDataStream & operator<<(QDataStream &out, const BudgetData &b)
-{
-    //hashmap of [category] -> percent as a double
-     //   checkrep is (sigma percent) <= 100
-
-    //out << s.ID << s.Name;
-    std::cout<<"wrote out"<<std::endl;
-    return out;
-}
-
-QDataStream & operator>>(QDataStream &in, BudgetData &b)
-{
-    std::cout<<"read in"<<std::endl;
-    //s = Student();
-    //in >> s.ID >> s.Name;
-    return in;
-}*/
 
 /* Function converts BudgetData to a QString formated for DashBoard
  * @returns a QString formated representation of this->data
@@ -79,14 +62,11 @@ bool BudgetData::addCategory(QString name, double val)
         }
         sum += i->second;
     }
-    //std::cout<<sum<<std::endl;
     if (sum > 1.0)
     {
-        //std::cout<<"Faield"<<std::endl;
         return false;
     }
     data->insert(std::pair<std::string, double>(category, val));
-    checkRep();
     return true;
 }
 
@@ -106,7 +86,6 @@ bool BudgetData::removeCategory(QString name)
         }
     }
     return false;
-    checkRep();
 }
 
 /* FUnction used to get the value of a category
@@ -125,7 +104,7 @@ double BudgetData::getCategoryValue(QString name) const
 }
 
 /* Function used to get the remaining percentage we can allocate
- * @returns 100 - sum of all the percentages of the current categories
+ * @returns 100 * (1 - sum of all the percentages) of the current categories
  */
 double BudgetData::getRemaining() const
 {
@@ -135,14 +114,6 @@ double BudgetData::getRemaining() const
         sum += i->second;
     }
     return (1.0 - sum) * 100;
-}
-
-// Check rep function
-void BudgetData::checkRep()
-{
-    // Each category name must be unique
-
-    // Sum of all doubles must be <= 100%
 }
 
 /* Function to set budget name

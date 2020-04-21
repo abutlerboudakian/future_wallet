@@ -17,6 +17,8 @@ Requests::Requests(QObject * parent, bool debug) : QObject(parent)
 /* Function to send user inputs to run the
  * model on for an income prediction
  * @param data is a QJsonObject from all three input forms
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns a vector matching Controller->metrics
  */
 std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages, QJsonObject Invest, QJsonObject Assets, int years)
@@ -43,22 +45,19 @@ std::vector<double> * Requests::getPrediction(QString userId, QJsonObject Wages,
 
     // Send request
     QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
     // Assume it is already an object
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
     std::vector<double> * metric = new std::vector<double>;
 
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
-
+    // Process The Returns
     if (statusCode == 200)
     { // Success
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
@@ -104,8 +103,7 @@ QJsonObject Requests::getInputs(QString userid)
     reply->close();
     reply->deleteLater();
 
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
-
+    // Process the Returns
     if (statusCode == 200)
     {
         QJsonDocument jDoc = QJsonDocument::fromJson(Data);
@@ -127,6 +125,8 @@ QJsonObject Requests::getInputs(QString userid)
 /* Function to add a user created budget to the database
  * @param budget is the BudgetData we plan to submit
  * @param userid is the userid we plan to add the budget to
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns true if the budget was added, false otherwise
  */
 bool Requests::addBudget(BudgetData * budget, QString userid)
@@ -148,7 +148,6 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
         categories.insert(QString::fromStdString(std::string(i->first)), i->second);
     }
     body.insert("categories", categories);
-    qDebug() << body;
 
     // Set request and callbacks
     QNetworkAccessManager * mgr = new QNetworkAccessManager(this);
@@ -156,18 +155,16 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
 
     // Send request
     QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
@@ -182,6 +179,8 @@ bool Requests::addBudget(BudgetData * budget, QString userid)
 /* Function to get budget information on a user specific budget
  * @param budgetId is the name of the budget to get
  * @param userId is the user whose budget we are getting
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns BugdetData() if it failed to get the budget data
  *          or the BudgetData representation of the budget on successful retrieval
  */
@@ -200,21 +199,18 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 
     // Send request
     QNetworkReply * reply = mgr->get(request);
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
 
     BudgetData * budget = new BudgetData;
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
@@ -233,6 +229,8 @@ BudgetData * Requests::loadBudget(QString budgetId, QString userId)
 
 /* Function to get a list of budget names the user created
  * @param userId is the userid of the currently logged in user
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns (true, a list of budget names) if successful
  *          (false, empty) if an error occurred.
  */
@@ -257,14 +255,12 @@ std::pair<bool, QStringList> Requests::listBudgets(QString userId)
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
     std::pair<bool, QStringList> res;
     res.first = false;
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
@@ -288,6 +284,8 @@ std::pair<bool, QStringList> Requests::listBudgets(QString userId)
 /* Function to login a user and get their oauth
  * @param userId is the username of the person trying to log in
  * @param Password is the raw password of the person trying to log in
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns true if the user credentials match, false otherwise
  */
 bool Requests::login(QString userId, QString Password)
@@ -311,20 +309,16 @@ bool Requests::login(QString userId, QString Password)
 
     // Send request
     QNetworkReply * reply = mgr->post(request, "{}");
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
-    std::cout<<"Damn it works"<<std::endl;
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
@@ -338,6 +332,8 @@ bool Requests::login(QString userId, QString Password)
 
 /* Function for user to log out -- call this when app closes too
  * @param userId is the id of the currently logged in user
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  */
 void Requests::logout(QString userId)
 {
@@ -358,7 +354,6 @@ void Requests::logout(QString userId)
 
     // Send request
     QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
@@ -372,8 +367,10 @@ void Requests::logout(QString userId)
 }
 
 /* Function to POST registration information to the database
- * @param userId is the user email
+ * @param userId is the username
  * @param password is the user password
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns true if the user was created
  *          false otherwise
  */
@@ -397,19 +394,16 @@ bool Requests::Register(QString UserId, QString Password)
 
     // Send request
     QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
@@ -426,7 +420,9 @@ bool Requests::Register(QString UserId, QString Password)
  * @param userId is the new email (keep it "" if it is not to be updated)
  * @param Password is the new password (keep it "" if it is not to be updated)
  * @modifies database user credentials
+ * @modifies this->Data
  * @effects database user crecentials
+ * @effect this->Data contains the QByteArray representatin of the server's response
  */
 bool Requests::UpdateUserInfo(QString OriginalUserId, QString userId, QString Password)
 {
@@ -457,19 +453,16 @@ bool Requests::UpdateUserInfo(QString OriginalUserId, QString userId, QString Pa
 
     // Send request
     QNetworkReply * reply = mgr->post(request, QJsonDocument(body).toJson());
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     if (statusCode == 200)
     {
@@ -486,6 +479,8 @@ bool Requests::UpdateUserInfo(QString OriginalUserId, QString userId, QString Pa
 // -----------------------------------------------------
 
 /* Function to get a list of all industries for the combo box
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns a QStringList of industry codes
  */
 QStringList Requests::getIndustries()
@@ -503,19 +498,16 @@ QStringList Requests::getIndustries()
 
     // Send request
     QNetworkReply * reply = mgr->get(request);
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     QStringList Industries;
     if (statusCode == 200)
@@ -532,6 +524,8 @@ QStringList Requests::getIndustries()
 }
 
 /* Function to get a list of all stock tickers for the combo box
+ * @modifies this->Data
+ * @effect this->Data contains the QByteArray representatin of the server's response
  * @returns a QStringList of stock tickers
  */
 QStringList Requests::getStocks()
@@ -549,19 +543,16 @@ QStringList Requests::getStocks()
 
     // Send request
     QNetworkReply * reply = mgr->get(request);
-    //QJsonDocument jsonData = QJsonDocument::fromJson(response_data);
 
     // Make it syncrhonous so we can process it here
     QEventLoop MakeSync;
     connect(mgr,SIGNAL(finished(QNetworkReply*)),&MakeSync,SLOT(quit()));
     MakeSync.exec();
 
-    // Do stuff
+    // Process the returns
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply->close();
     reply->deleteLater();
-
-    qDebug()<<url<<": "<<statusCode<<" "<<Data<<"\n";
 
     QStringList Tickers;
     if (statusCode == 200)

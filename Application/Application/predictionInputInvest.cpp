@@ -8,15 +8,17 @@ predictionInputInvest::predictionInputInvest(QWidget *parent, Controller * contr
     ui->setupUi(this);
     this->controller = controller;
 
+    // View switching event triggers
     connect(ui->Next, SIGNAL(released()), this, SLOT(getAssetView()));
     connect(ui->Back, SIGNAL(released()), this, SLOT(getWagesView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
-
+    // Stocks event triggers
     connect(ui->Add, SIGNAL(released()), this, SLOT(addStock()));
     connect(ui->Remove, SIGNAL(released()), this, SLOT(removeStock()));
 
     setupValidator();
+    // Setup data
     stockList = controller->getTickers();
     stockList.prepend("--");
     ui->StockData0->addItems(stockList);
@@ -28,8 +30,11 @@ predictionInputInvest::~predictionInputInvest()
     delete validDouble;
 }
 
+//-------------------------------------
+// Other Methods                      |
+//-------------------------------------
+
 /* Function to setup validators for all inputs
- * @requires: none
  * @modifies: ui->Saving (QLineEdit)
  *            ui->CD (QLineEdit)
  *            ui->StockData1 (QLineEdit)
@@ -37,11 +42,9 @@ predictionInputInvest::~predictionInputInvest()
  *            ui->TBond (QLineEdit)
  * @effects: set validators for all those modified QLineEdits
  *           to meet our application requirements
- * @returns: none
  */
 void predictionInputInvest::setupValidator()
 {
-
     validDouble = new QDoubleValidator(0.00, 99999999.00, 2);
     ui->Saving->setValidator(validDouble);
     ui->CD->setValidator(validDouble);
@@ -50,34 +53,8 @@ void predictionInputInvest::setupValidator()
     ui->TBond->setValidator(validDouble);
 }
 
-// Function to change view to the asset input page
-void predictionInputInvest::getAssetView()
-{
-    //this->getStockData();
-    // Include code to save the input to the controller
-    this->controller->switchToInputAsset();
-}
-
-// Function to change view to the invest input page
-void predictionInputInvest::getWagesView()
-{
-    // Input saving to controller and validation calls here in ifs
-    this->controller->switchToInputWages();
-}
-
-// Function to switch view back to the dashboard and save current
-// progress in controller
-void predictionInputInvest::Exit()
-{
-    // Add code to tell controller to update it's AssetModel
-    this->controller->switchToDashBoard();
-}
-
 /* Convert user inputs on views from simple types to QJsonObject for
  * controller to grab and send to host server to store
- * @requires: none
- * @modifies: none
- * @effects: none
  * @returns: a QJsonObject that contains all user inputs from the view
  *           in the structure of:
  *           {
@@ -138,7 +115,6 @@ QJsonObject predictionInputInvest::toJSON()
  *           - Populate ui->TBond with the corresponding data from savedData.
  *           - Add a QWidget to ui->Stocks to represent owned stocks, call
  *             addStock( name, value ) to populate view inside the created QWidget.
- * @returns: none
  */
 void predictionInputInvest::fromJson(QJsonObject savedData)
 {
@@ -193,7 +169,6 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
 }
 
 /* Function to clear all user inputs and reset the page to default
- * @requires: none
  * @modifies: ui->Saving (QLineEdit)
  *            ui->CD (QLineEdit)
  *            ui->Bond (QLineEdit)
@@ -205,7 +180,6 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
  *           - set ui->TBond to 0
  *           - clear and delete all QWidget in ui->Stocks,
  *             and create a new one as defualt
- * @returns: none
  */
 void predictionInputInvest::clear()
 {
@@ -223,6 +197,29 @@ void predictionInputInvest::clear()
         delete target;
     }
     addStock();
+}
+
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
+
+// Function to change view to the asset input page
+void predictionInputInvest::getAssetView()
+{
+    this->controller->switchToInputAsset();
+}
+
+// Function to change view to the invest input page
+void predictionInputInvest::getWagesView()
+{
+    this->controller->switchToInputWages();
+}
+
+// Function to switch view back to the dashboard and save current
+// progress in controller
+void predictionInputInvest::Exit()
+{
+    this->controller->switchToDashBoard();
 }
 
 // Function modifies the ui to add a new stock field
@@ -275,6 +272,12 @@ void predictionInputInvest::addStock()
     connect(Remove, SIGNAL(released()), this, SLOT(removeStock()));
 }
 
+/* Function modifies the ui to add a new stock field
+ * @param name is the ticker of the stock to populate the new stock field with
+ * @param shares is the number of stock shares to populate the new stock field with
+ * @modifies this->ui
+ * @effect this->ui->Stocks has a new stock field
+ */
 void predictionInputInvest::addStock(QString name, double shares)
 {
     // Constructs a stock field
@@ -328,9 +331,9 @@ void predictionInputInvest::addStock(QString name, double shares)
 }
 
 // Function modifies the ui to remove a stock field
-/* @modifies this->ui
- * @effect this->ui->Stocks has one less stock field
- *         but has at least one
+/* @modifies this->ui->Stocks
+ * @effect this->ui->Stocks has one less stock field (the last stock field was removed)
+ *         if there were at least two stock fields
  */
 void predictionInputInvest::removeStock()
 {

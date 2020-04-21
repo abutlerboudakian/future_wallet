@@ -9,14 +9,12 @@ DashBoard::DashBoard(QWidget *parent, Controller * controller) :
     this->controller = controller;
 
     metrics = nullptr;
-    //metricsLine = nullptr;
 
     // Set up event triggers:
     connect(ui->Predict, SIGNAL(released()), this, SLOT(getInputView()));
     connect(ui->Budget, SIGNAL(released()), this, SLOT(getBudgetView()));
     connect(ui->metricsPie, SIGNAL(released()), this, SLOT(getMetricsPieView()));
     connect(ui->metricsBar, SIGNAL(released()), this, SLOT(getMetricsBarView()));
-    connect(ui->metricsLine, SIGNAL(released()), this, SLOT(getMetricsLineView()));
     connect(ui->budgetPie, SIGNAL(released()), this, SLOT(getBudgetPieView()));
     connect(ui->budgetBar, SIGNAL(released()), this, SLOT(getBudgetBarView()));
 }
@@ -29,8 +27,9 @@ DashBoard::~DashBoard()
 }
 
 // Function used to update welcome message
-/* @modifies ui->Message
- * @effecst ui->Message = "Welcome " userId
+/* @param userId is the username of the current logged in user
+ * @modifies ui->Message
+ * @effects ui->Message = "Welcome " userId
  */
 void DashBoard::updateMessage(QString userId)
 {
@@ -38,8 +37,9 @@ void DashBoard::updateMessage(QString userId)
 }
 
 /* Function used to update the budget in display
+ * @param budgetId is the name of the user's budget
  * @modifies this->ui->Budget
- * @effects this->ui->Budget now contains the budget that was recently loaded in
+ * @effects this->ui->Budget now contains the budget information that was recently loaded in
  */
 void DashBoard::updateBudget(QString budgetId)
 {
@@ -85,7 +85,9 @@ void DashBoard::updateMetrics()
 }
 
 
-// Slots -- aka signals
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
 
 // Function to switch to the input view when "Predict" button is pressed
 void DashBoard::getInputView()
@@ -120,15 +122,6 @@ void DashBoard::getMetricsPieView()
 void DashBoard::getMetricsBarView()
 {
     controller->getBarGraph(QString("Metrics"), metrics)->show();
-    return;
-}
-
-// Function to show the metric as a line graph
-// @requires this->metric to be populated with 0's or actual metric data
-void DashBoard::getMetricsLineView()
-{
-    //this->updateMetrics();
-    //controller->getLineGraph(metricsLine)->show();
     return;
 }
 

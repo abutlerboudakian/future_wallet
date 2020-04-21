@@ -7,6 +7,7 @@ BudgetPage::BudgetPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Set default settings
     ui->Default->setSelectionMode(QListWidget::SingleSelection);
     ui->Custom->setSelectionMode(QListWidget::SingleSelection);
 }
@@ -31,17 +32,16 @@ void BudgetPage::setController(Controller * controller)
     connect(ui->Custom, SIGNAL(itemSelectionChanged()), this, SLOT(changeSelected()));
 }
 
-// Slots
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
 
 /* Function to update DashBoardPage through
  * the controller with the budget to load
  */
 void BudgetPage::getLoadBudgetView()
-{
-    // Get the budget id to load
+{   // Get the budget id to load
     // Figure out if it is ui->Default or ui->Custom. Else, send error modal
-    // ui->THING->currentItem()->text()
-    // controller->setSelectedBudget
     QListWidget * selected;
     selected = (ui->Default->selectionModel()->hasSelection() ? ui->Default : ui->Custom);
     if (selected->selectionModel()->hasSelection())
@@ -50,6 +50,7 @@ void BudgetPage::getLoadBudgetView()
     }
 }
 
+/* Function to switch to the budget creation view */
 void BudgetPage::getCreateBudgetView()
 {
     this->controller->switchToInputBudget();
@@ -58,8 +59,8 @@ void BudgetPage::getCreateBudgetView()
 
 /* Function ensures that only one item in either list can be selected
  * @modifies this->ui->Default and this->ui->Custom
- * @effect only on item in either this->ui->Default or this->ui->Custom, but not
- *         both is allowed to be selected.
+ * @effect only one item in either this->ui->Default or this->ui->Custom, but not
+ *         both are allowed to be selected.
  */
 void BudgetPage::changeSelected()
 {
@@ -72,17 +73,17 @@ void BudgetPage::changeSelected()
 }
 
 /* Function to tell the controller that it is closing
+ * @param event is the closing event that we delay to call another function in between
  */
 void BudgetPage::closeEvent(QCloseEvent * event)
 {
     controller->closeBudgetPage(); // tells controller it is closing
-    //destroy(true, true);
     event->accept();
 }
 
 /* Function used to update the list of user created budgets
- * @modifies this->Custom
- * @effect this->Custom is populate with a list of user created budget names
+ * @modifies ui->Custom
+ * @effect ui->Custom is populate with a list of user created budget names
  */
 void BudgetPage::updateUserList()
 {

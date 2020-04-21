@@ -14,6 +14,9 @@ class predictionInputWages;
 class predictionInputWages : public QWidget
 {
     Q_OBJECT
+    /*
+     * View class for the Wages Input View
+     */
 
 public:
     explicit predictionInputWages(QWidget *parent = nullptr, Controller * controller = nullptr);

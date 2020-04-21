@@ -5,40 +5,17 @@ InputBudget::InputBudget(QWidget *parent,  Controller * controller) :
     QWidget(parent),
     ui(new Ui::InputBudget)
 {
-    // signalMapper = new QSignalMapper(this);
     ui->setupUi(this);
     this->controller = controller;
     this->budget = nullptr;
     this->resetBudget();
 
+    // Bind slots
     connect(ui->Cancel, SIGNAL(released()), this, SLOT(Exit()));
     connect(ui->Create, SIGNAL(released()), this, SLOT(Create()));
     connect(ui->AddCat, SIGNAL(released()), this, SLOT(addCategory()));
     connect(ui->RemoveCat, SIGNAL(released()), this, SLOT(removeCategory()));
     connect(ui->nameBudget, SIGNAL(textEdited(QString)), this, SLOT(updateBudgetName()));
-
-
-    // For all possible sliders, listen for a possible value change
-    // TODO: Breaks the web-app
-    /**
-        QList<QSlider*> slider = ((QWidget*) ui->Categories->itemAt(i))
-                ->findChildren<QSlider*>(QRegularExpression(QString("/Slider\\d/g")));
-        QList<QLabel*> label = ((QWidget*) ui->Categories->itemAt(i))
-                ->findChildren<QLabel*>(QRegularExpression(QString("/Value\\d/g")));
-
-        connect(slider[0], SIGNAL(valueChanged(int)), signalMapper, SLOT(map()));
-        signalMapper->setMapping(slider[0], label[0]);
-        connect(signalMapper, SIGNAL(mapped(QWidget*)),this, SLOT(updateLabel(slider[0], label[0])));
-    **/
-
-    // Connect the slider to the qlabel
-    //connect(ui->Slider0, SLOT(valueChanged(int)), this, SLOT(updateLabel(int)));
-
-    /*QString sliderName = QString("Slider");
-    for (int i = 0; i < ui->Categories->count(); i++)
-    {
-        connect(this->findChild<QSlider*>(sliderName + QString::number(i)), SIGNAL(valueChanged(int)), this, SLOT(updateLabel(int)));
-    }*/
     connect(this->findChild<QSlider*>(QString("Slider0")), SIGNAL(valueChanged(int)), this, SLOT(updateLabel(int)));
 }
 
@@ -48,8 +25,13 @@ InputBudget::~InputBudget()
     delete this->budget;
 }
 
+//-------------------------------------
+// Helpers                            |
+//-------------------------------------
+
 /* Function used to reset this->budget and the view
- * @modifies this->budget and other view elements to the default
+ * @requites this->controller->metrics is populated, or the input forms are populated
+ * @modifies this->budget and other view elements to the default state
  * @effect this->budget = new BugetData()
  *         the create budget page is reset to the default
  */
@@ -60,8 +42,16 @@ void InputBudget::resetBudget()
     {
         delete this->budget;
     }
+    const std::vector<double> * metrics = this->controller->getMetricsData();
+    double sum = 0;
+    if (!metrics->empty())
+    {
+        std::vector<double>::const_iterator i = metrics->begin();
+        sum = *(i) + *(i+1)+ *(i+2);
+    }
     this->budget = new BudgetData;
     this->budget->addCategory("Category0", 0);
+    this->budget->setDollar(sum);
 
     // Reset the view
     ui->nameBudget->setText(QString("Budget Name"));
@@ -82,39 +72,35 @@ void InputBudget::resetBudget()
     counter = 1;
 }
 
-/* Function used to get all the category budget data
- *
+/* Function updates slider limits to match 100% budget limitation
+ * @modifies this->sliders
+ * @effect this->sliders max limit are updated.
  */
-/*void InputBudget::getCategoryData() {
-    std::unordered_map<std::string, double> catData;
-    // Get name of budget
-    QLineEdit *budgetLabel = this->findChild<QLineEdit*>(QString::fromStdString("nameBudget"));
-    std::string budgetName = budgetLabel->text().toStdString();
-
+void InputBudget::updateLimits()
+{
+    double remaining = this->budget->getRemaining(), newMax;
+    QString name = QString("Slider");
+    QSlider * temp;
     for (int i = 0; i < ui->Categories->count(); i++)
     {
-        // Get category name value for layout
-        std::string catLabel = "Category" + std::to_string(i);
-        QLineEdit *catName = this->findChild<QLineEdit*>(QString::fromStdString(catLabel));
-
-        // Get category int value for layout
-        std::string sliderLabel = "Slider" + std::to_string(i);
-        QSlider *sliderVal = this->findChild<QSlider*>(QString::fromStdString(sliderLabel));
-
-        // Cout values to check
-        std::cout << catName->text().toStdString() << sliderVal->value();
-
-        double tickValue = ( sliderVal->value() )/ 100;
-        catData.insert(std::pair<std::string, int>(catName->text().toStdString(), tickValue));
+        temp = this->findChild<QSlider *>(name + QString::number(i));
+        newMax = temp->value() + remaining;
+        qDebug() << name << i<< " "<<(temp->value()/100.0)<<" "<<remaining<<" "<<newMax << " " << (newMax < 100.0 ? newMax : 100.0);
+        newMax = (newMax < 100.0 ? newMax : 100.0);
+        temp->setMaximum(newMax);
     }
+}
 
-    for (std::unordered_map<std::string, double>::iterator i = catData.begin(); i != catData.end(); i++)
-    {
-        std::cout<<i->first<<" "<<i->second<<std::endl;
-    }
-}*/
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
 
-// Function to save budget and then switch to dashboard with updated budget
+/* Function to save budget and then switch to dashboard with updated budget
+ * @requires ui to be populated with some new budget information
+ * @modifies this->budget
+ * @effect this->budget contains a new BudgetData representing an empty budget on error
+ *         or the budget to be created on success
+ */
 void InputBudget::Create() {
     // Add code to save budget and categories
     QString UIName = QString("Category"), CurrentUIName;
@@ -147,10 +133,9 @@ void InputBudget::Exit() {
     this->controller->switchToDashBoard();
 }
 
-// Function modifies the ui to add a new category field
-/* @modifies this->ui
+/* Function modifies the ui to add a new category field
+ * @modifies this->ui
  * @effect this->ui->Categories has a new category field
- *
  */
 void InputBudget::addCategory() {
     counter++;
@@ -208,8 +193,8 @@ void InputBudget::addCategory() {
 
 // Function modifies the ui to remove a category field
 /* @modifies this->ui
- * @effect this->ui->Stocks has one less category field, unless only 1 budget category is left. Error message pops up if user attempts to delete
- * all budgets
+ * @effect this->ui->Categories has one less category field, unless only 1 budget category is left.
+ *         Error message pops up if user attempts to delete all budgets
  */
 void InputBudget::removeCategory() {
     // There should always be at least 1 budget category
@@ -235,6 +220,7 @@ void InputBudget::removeCategory() {
 
 // Function to modify label whenever its respective slider is modified by user
 /* @modifies this->ui->label to value of slider
+ * @effect this->ui->label->text() = val if it does not violate this->budget
  */
 void InputBudget::updateLabel(int val) {
     // If increasing, check if increase to value is allowed. decrease all slider maxes to min(val + totalRemaining, 100)
@@ -242,14 +228,13 @@ void InputBudget::updateLabel(int val) {
 
     QSlider * caller = (QSlider*)sender();
     QString sliderNumber = caller->objectName().split("Slider")[1];
-qDebug()<<val<<" "<<val/100.0 << " "<<caller->maximum();
     if (val > caller->maximum())
-    {
-        caller->setSliderPosition(caller->maximum()); // So it doesn't move past it
+    {   // So it doesn't move past the max
+        caller->setSliderPosition(caller->maximum());
         return;
     }
 
-    // Check if increase to value is allowed
+    // Check if increase to value is allowed/doesn't violate this->budget
     QString catName = QString("Category") + sliderNumber;
     double originalValue = this->budget->getCategoryValue(catName);
     if (originalValue != -1) {this->budget->removeCategory(catName);} // Remove if category exists
@@ -266,27 +251,6 @@ qDebug()<<val<<" "<<val/100.0 << " "<<caller->maximum();
     // Update limits for all sliders
     updateLimits();
 }
-
-/* Function updates slider limits to match 100% budget limitation
- * @modifies this->sliders
- * @effect this->sliders max limit are updated.
- */
-void InputBudget::updateLimits()
-{
-    double remaining = this->budget->getRemaining(), newMax;
-    QString name = QString("Slider");
-    QSlider * temp;
-    for (int i = 0; i < ui->Categories->count(); i++)
-    {
-        temp = this->findChild<QSlider *>(name + QString::number(i));
-        newMax = temp->value() + remaining;
-        qDebug() << name << i<< " "<<(temp->value()/100.0)<<" "<<remaining<<" "<<newMax << " " << (newMax < 100.0 ? newMax : 100.0);
-        newMax = (newMax < 100.0 ? newMax : 100.0);
-        temp->setMaximum(newMax);
-    }
-    qDebug() << this->budget->getRemaining();
-}
-
 
 /* Function used to update the budgetname for the budgetdata class
  * @modifies this->budget

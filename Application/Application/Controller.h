@@ -38,6 +38,9 @@ enum Views
 
 class Controller
 {
+    /*
+     * Controller class for the MVC Architecture
+     */
   public:
     Controller();
     ~Controller();
@@ -62,7 +65,7 @@ class Controller
     // Charts
     QChartView * getPieChart(QString ChartName, const ChartMap * data);
     QChartView * getBarGraph(QString ChartName, const ChartMap * data);
-    QChartView * getLineGraph(QString ChartName, const LineMap * data);
+    // QChartView * getLineGraph(QString ChartName, const LineMap * data);
 
     const std::vector<double> * getMetricsData();
     const BudgetData * getBudgetData(QString budgetId);

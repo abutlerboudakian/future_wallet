@@ -16,6 +16,9 @@ class InputBudget;
 class InputBudget : public QWidget
 {
     Q_OBJECT
+    /*
+     * View class for the Budget Creation View
+     */
 
 public:
     explicit InputBudget(QWidget *parent = nullptr, Controller * controller = nullptr);

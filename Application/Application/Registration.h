@@ -12,10 +12,15 @@ class Registration;
 class Registration : public QWidget
 {
     Q_OBJECT
+    /*
+     * View class for the Registration View
+     */
 
 public:
     explicit Registration(QWidget *parent = nullptr, Controller *controller = nullptr);
     ~Registration();
+
+    void clear();
 
 private:
     Ui::Registration *ui;

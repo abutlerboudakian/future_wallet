@@ -20,9 +20,6 @@ public:
     BudgetData();
     ~BudgetData();
 
-    /*friend QDataStream & operator<<(QDataStream &out, const BudgetData &s);
-    friend QDataStream & operator>>(QDataStream &in, BudgetData &s);*/
-
     void setName(QString budgetName);
     void setDollar(double val);
     const QString getName() const;
@@ -44,7 +41,6 @@ private:
     double totalAmount;
     QString name;
 
-    void checkRep();
 };
 
 #endif // BUDGETDATA_H

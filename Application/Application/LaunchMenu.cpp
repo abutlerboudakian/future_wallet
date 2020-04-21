@@ -21,13 +21,18 @@ LaunchMenu::~LaunchMenu()
     delete ui;
 }
 
-// Slots
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
+
+// Function to call the login function in the controller
 void LaunchMenu::runLogin()
 {
     controller->login(ui->UserField->text(), ui->PassField->text());
     return;
 }
 
+// Function to switch views to Registration
 void LaunchMenu::runCreateAccount()
 {
     controller->switchToRegisterPage();

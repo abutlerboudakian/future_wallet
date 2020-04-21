@@ -13,6 +13,9 @@ class LaunchMenu;
 class LaunchMenu : public QWidget
 {
     Q_OBJECT
+    /*
+     * View class for the login View
+     */
 
 public:
     explicit LaunchMenu(QWidget *parent = nullptr, Controller * controller = nullptr);

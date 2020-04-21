@@ -15,6 +15,9 @@ class DashBoard;
 class DashBoard : public QWidget
 {
     Q_OBJECT
+    /*
+     * View class for the DashBoard View
+     */
 
 public:
     explicit DashBoard(QWidget *parent = nullptr, Controller * controller = nullptr);
@@ -28,14 +31,12 @@ private:
     Ui::DashBoard *ui;
     Controller * controller;
     ChartMap * metrics;
-    //LineMap * metricsLine;
 
 private slots:
    void getInputView();
    void getBudgetView();
    void getMetricsPieView();
    void getMetricsBarView();
-   void getMetricsLineView();
    void getBudgetPieView();
    void getBudgetBarView();
    void getAccountManageView();

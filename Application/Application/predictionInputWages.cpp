@@ -8,10 +8,12 @@ predictionInputWages::predictionInputWages(QWidget *parent, Controller * control
     ui->setupUi(this);
     this->controller = controller;
 
+    // Bind slots
     connect(ui->Next, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
 
     setupValidator();
+    // Add industries to the combobox
     ui->Industry->addItems(controller->getIndustries());
 }
 
@@ -23,13 +25,11 @@ predictionInputWages::~predictionInputWages()
 }
 
 /* Function to setup validators for all inputs
- * @requires: none
  * @modifies: ui->Time (QLineEdit)
  *            ui->Location (QLineEdit)
  *            ui->Amount (QLineEdit)
  * @effects: set validators for all those modified QLineEdits
  *           to meet our application requirements
- * @returns: none
  */
 void predictionInputWages::setupValidator()
 {
@@ -43,9 +43,6 @@ void predictionInputWages::setupValidator()
 
 /* Convert user inputs on views from simple types to QJsonObject for
  * controller to grab and send to host server to store
- * @requires: none
- * @modifies: none
- * @effects: none
  * @returns: a QJsonObject that contains all user inputs from the view
  *           in the structure of
  *           {
@@ -97,7 +94,6 @@ QJsonObject predictionInputWages::toJSON()
  *           - Populate ui->Time with the corresponding data from savedData.
  *           - Set ui->IncomeType to the corresponding ticker same as in savedData.
  *           - Set ui->Industry to the corresponding ticker same as in savedData.
- * @returns: none
  */
 void predictionInputWages::fromJson(QJsonObject savedData)
 {
@@ -140,7 +136,6 @@ void predictionInputWages::fromJson(QJsonObject savedData)
 }
 
 /* Function to clear all user inputs and reset the page to default
- * @requires: none
  * @modifies: ui->Amount (QLineEdit)
  *            ui->Location (QLineEdit)
  *            ui->Time (QLineEdit)
@@ -151,7 +146,6 @@ void predictionInputWages::fromJson(QJsonObject savedData)
  *           - set ui->Time to 0
  *           - reset ui->IncomeType ticker to index 0
  *           - reset ui->Industry ticker to index 0
- * @returns: none
  */
 void predictionInputWages::clear()
 {
@@ -162,12 +156,13 @@ void predictionInputWages::clear()
     ui->Time->clear();
 }
 
-// Slots
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
 
 // Function to change view to the invest input page
 void predictionInputWages::getInvestView()
 {
-    // Input saving to controller and validation calls here in ifs
     this->controller->switchToInputInvest();
 }
 
@@ -175,6 +170,5 @@ void predictionInputWages::getInvestView()
 // and return to the dashboard page
 void predictionInputWages::Exit()
 {
-    // Add code to save input to the controller's model
     this->controller->switchToDashBoard();
 }

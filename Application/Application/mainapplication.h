@@ -14,6 +14,9 @@ QT_END_NAMESPACE
 class MainApplication : public QMainWindow
 {
     Q_OBJECT
+    /*
+     * Class for the main window for our application.
+     */
 
 public:
     MainApplication(QWidget *parent = nullptr);
@@ -21,9 +24,6 @@ public:
     void CreateViews(Controller * maincontroller);
     QStackedWidget * getViews();
     void setController(Controller * controller);
-    /*void setUserName(QString userId);
-    void showMenu();
-    void hideMenu();*/
 
 protected:
     virtual void closeEvent(QCloseEvent * event) override;

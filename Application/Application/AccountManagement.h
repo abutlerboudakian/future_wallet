@@ -12,6 +12,9 @@ class AccountManagement;
 class AccountManagement : public QDialog
 {
     Q_OBJECT
+    /*
+     * View class for the User Account Management View
+     */
 
 public:
     explicit AccountManagement(QWidget *parent = nullptr);

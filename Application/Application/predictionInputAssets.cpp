@@ -9,6 +9,7 @@ predictionInputAssets::predictionInputAssets(QWidget *parent, Controller * contr
 
     this->controller = controller;
 
+    // Bind slots
     connect(ui->Submit, SIGNAL(released()), this, SLOT(submitInputs()));
     connect(ui->Back, SIGNAL(released()), this, SLOT(getInvestView()));
     connect(ui->Exit, SIGNAL(released()), this, SLOT(Exit()));
@@ -27,8 +28,19 @@ predictionInputAssets::~predictionInputAssets()
     delete validInt;
 }
 
+//-------------------------------------
+// Other Methods                      |
+//-------------------------------------
+
+/* Function to get the number of years to predict with
+ * @returns ui->Years;
+ */
+int predictionInputAssets::getYears()
+{
+    return ui->Years->text().toInt();
+}
+
 /* Function to setup validators for all inputs
- * @requires: none
  * @modifies: ui->ResidenceData0 (QLineEdit)
  *            ui->ResidenceData1 (QLineEdit)
  *            ui->RentalData0 (QLineEdit)
@@ -36,7 +48,6 @@ predictionInputAssets::~predictionInputAssets()
  *            ui->Metal (QLineEdit)
  * @effects: set validators for all those modified QLineEdits
  *           to meet our application requirements
- * @returns: none
  */
 void predictionInputAssets::setupValidator()
 {
@@ -50,35 +61,8 @@ void predictionInputAssets::setupValidator()
     ui->Metal->setValidator(validDouble);
 }
 
-// Function to submit all the inputs gathered and return to dashboard
-void predictionInputAssets::submitInputs()
-{
-    // add more code to tell the controller to send the data it has to the server and update the model for Assets
-    this->controller->getPrediction();
-}
-
-// Function to change view to the previous page, the Wages View
-// Also save input to the controller
-void predictionInputAssets::getInvestView()
-{
-    // Include code to save input to the controller's models
-    this->controller->switchToInputInvest();
-}
-
-// Function to change view to the dashboard page
-// Also save input to the controller (not post)
-void predictionInputAssets::Exit()
-{
-    // Include code tos ave input to the controller's models
-    this->controller->switchToDashBoard();
-}
-
-
 /* Convert user inputs on views from simple types to QJsonObject for
  * controller to grab and send to host server to store
- * @requires: none
- * @modifies: none
- * @effects: none
  * @returns: a QJsonObject that contains all user inputs from the view
  *           in the structure of:
  *           {
@@ -125,7 +109,7 @@ QJsonObject predictionInputAssets::toJSON()
 
 /* Convert user inputs on views from simple types to QJsonObject for
  * controller to grab and send to host server to store
- * @requires: savdData is a QJsonObject that is in structure of:
+ * @requires: savedData is a QJsonObject that is in structure of:
  *            {
  *             “res”: [{“value”: double, “loc”: String}],
  *             “rents”: [{“value”: double, “loc:” String}],
@@ -152,7 +136,7 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
         ui->Metal->setText(QString::number(int(it.value().toDouble())));
     }
 
-    // populat Residences
+    // populate Residences
     it = savedData.find("res");
     if ( it != savedData.end() )
     {
@@ -187,7 +171,7 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
         }
     }
 
-    // populat Rentals
+    // populate Rentals
     it = savedData.find("rents");
     if ( it != savedData.end() )
     {
@@ -225,7 +209,6 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
 }
 
 /* Function to clear all user inputs and reset the page to default
- * @requires: none
  * @modifies: ui->Metal (QLineEdit)
  *            ui->Years (QLineEdit)
  *            ui->Residences (QVBoxLayout)
@@ -236,7 +219,6 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
  *             and create a new one as defualt
  *           - clear and delete all QWidget in ui->Rentals,
  *             and create a new one as defualt
- * @returns: none
  */
 void predictionInputAssets::clear()
 {
@@ -263,6 +245,32 @@ void predictionInputAssets::clear()
     addRental();
 }
 
+//-------------------------------------
+// Slots                              |
+//-------------------------------------
+
+// Function to submit all the inputs gathered and return to dashboard
+void predictionInputAssets::submitInputs()
+{
+    this->controller->getPrediction();
+}
+
+// Function to change view to the previous page, the Wages View
+void predictionInputAssets::getInvestView()
+{
+    this->controller->switchToInputInvest();
+}
+
+// Function to change view to the dashboard page
+void predictionInputAssets::Exit()
+{
+    this->controller->switchToDashBoard();
+}
+
+/* FUnction to add another residence field
+ * @modifies this->ui->Residences
+ * @effect this->ui->Residences contains a new residence field
+ */
 void predictionInputAssets::addResidence()
 {
 
@@ -309,6 +317,12 @@ void predictionInputAssets::addResidence()
 
 }
 
+/* Function to add another residence field
+ * @param location is the location to populate it with
+ * @param value is the value of the residence field to populate with
+ * @modifies this->ui->Residences
+ * @effect this->ui->Residences contains a new residence field
+ */
 void predictionInputAssets::addResidence(QString location, double value)
 {
 
@@ -360,6 +374,10 @@ void predictionInputAssets::addResidence(QString location, double value)
 
 }
 
+/* FUnction to add another rental field
+ * @modifies this->ui->Rentals
+ * @effect this->ui->Rentals contains a new rental field
+ */
 void predictionInputAssets::addRental()
 {
     QWidget * Rental = new QWidget();
@@ -404,6 +422,12 @@ void predictionInputAssets::addRental()
     connect(Remove, SIGNAL(released()), this, SLOT(removeRental()));
 }
 
+/* Function to add another rental field
+ * @param location is the location to populate the new rental field with
+ * @param value is the value to populate the new rental field with
+ * @modifies this->ui->Rentals
+ * @effect this->ui->Rentals contains a new rental field
+ */
 void predictionInputAssets::addRental(QString location, double value)
 {
     QWidget * Rental = new QWidget();
@@ -453,6 +477,11 @@ void predictionInputAssets::addRental(QString location, double value)
     connect(Remove, SIGNAL(released()), this, SLOT(removeRental()));
 }
 
+/* Function to remove the very last residence field
+ * @modifies this->Residences
+ * @effect this->Residences' last residence field is removed
+ *         if this->Residences->count() > 1 originally
+ */
 void predictionInputAssets::removeResidence()
 {
     if (this->ui->Residences->count() > 1)
@@ -464,6 +493,11 @@ void predictionInputAssets::removeResidence()
     }
 }
 
+/* Function to remove the very last rental field
+ * @modifies this->Rentals
+ * @effect this->Rentals' last rental field is removed
+ *         if this->Rentals->count() > 1 originally
+ */
 void predictionInputAssets::removeRental()
 {
     if (this->ui->Rentals->count() > 1)
@@ -475,10 +509,3 @@ void predictionInputAssets::removeRental()
     }
 }
 
-/* Function to get the number of years to predict with
- * @returns ui->Years;
- */
-int predictionInputAssets::getYears()
-{
-    return ui->Years->text().toInt();
-}

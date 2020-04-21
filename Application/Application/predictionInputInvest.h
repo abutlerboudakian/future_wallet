@@ -15,11 +15,13 @@ class predictionInputInvest;
 class predictionInputInvest : public QWidget
 {
     Q_OBJECT
+    /*
+     * View class for the Investment Input View
+     */
 
 public:
     explicit predictionInputInvest(QWidget *parent = nullptr, Controller * controller = nullptr);
     ~predictionInputInvest();
-    //void getStockData();
     QJsonObject toJSON();
     void fromJson(QJsonObject savedData);
     void clear();
