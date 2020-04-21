@@ -1,3 +1,4 @@
+# Import statements
 import sqlalchemy as sa
 import pandas as pd
 from datetime import datetime, timedelta
@@ -5,7 +6,21 @@ import dbutil
 from enum import Enum
 import modelpack
 
+# Class Definition
 class DatasetBuilder:
+
+	'''
+		@params:
+			mType:		ModelType to generate dataset for
+			batchsize:	Maximum number of rows to be fetched per batch for dataset
+			**kwargs:
+				industryCode:	Industry code to generate wages dataset for
+				ticker:			Stock ticker to generate stock dataset for
+		@requres:	mType is a valid ModelType, industryCode is specified if mType is WAGES, ticker is specified if mType is STOCKS
+		@modifies:	self, engine, self.mType, self.batchsize, resultset, query
+		@effects:	Instantiates a new DatasetBuilder object, initializes all instance fields, initializes database connection and pre-executes query
+		@returns:	New DatasetBuilder instance
+	'''
 	def __init__(self, mType, batchsize=None, **kwargs):
 		self.engine = dbutil.connect_engine('modeldata')
 		self.mType = mType
@@ -202,6 +217,13 @@ class DatasetBuilder:
 		else:
 			raise ValueError('Missing argument for model specified')
 
+	'''
+		@params:	batchsize - Custom size to override instance batchsize
+		@requires:	Object is already instantiated, valid query pre-loaded
+		@modifies:	resultset
+		@effects:	Fetches [batchsize] rows from resultset, preprocesses data for training
+		@returns:	Pandas dataframe containing batch of training data
+	'''
 	def getData(self, batchsize=None):
 		if batchsize is not None:
 			data = self.resultset.fetchmany(batchsize)
@@ -246,9 +268,11 @@ class DatasetBuilder:
 			ret['Y'] = df[['PredPrice']]
 		return ret
 
+	'''
+		@requires:	Instance query is valid
+		@modifies:	resultset
+		@effects:	Initializes database query and stores it into resultset
+		@returns:	None
+	'''
 	def initQuery(self):
 		self.resultset = self.engine.execute(self.query)
-
-	def getTickers(self):
-		tickers = pd.read_sql("SELECT DISTINCT Ticker FROM Stocks;", con=self.engine)
-		return tickers['Ticker'].tolist()
