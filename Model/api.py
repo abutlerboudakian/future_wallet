@@ -31,6 +31,7 @@ def submitInputs():
         data = request.get_json(force=True)
         if float(data['years']) == 0:
             return make_response(jsonify({'wages': 0, 'invests': 0, 'assets': 0, 'years': 0}))
+        userid = data['userid'].replace("'", "''")
         wages_data = data['wages']
         invests_data = data['invests']
         assets_data = data['assets']
@@ -84,12 +85,12 @@ def submitInputs():
         response['assets'] = assets.predict(res, rents, float(assets_data['rm']), int(data['years']))
         response['years'] = data['years']
 
-        uEng.execute("DELETE FROM Inputs WHERE userid='" + data['userid'] + "';")
-        uEng.execute("DELETE FROM UserStocks WHERE userid='" + data['userid'] + "';")
-        uEng.execute("DELETE FROM UserRes WHERE userid='" + data['userid'] + "';")
-        uEng.execute("DELETE FROM UserRent WHERE userid='" + data['userid'] + "';")
+        uEng.execute("DELETE FROM Inputs WHERE userid='" + userid + "';")
+        uEng.execute("DELETE FROM UserStocks WHERE userid='" + userid + "';")
+        uEng.execute("DELETE FROM UserRes WHERE userid='" + userid + "';")
+        uEng.execute("DELETE FROM UserRent WHERE userid='" + userid + "';")
 
-        uEng.execute("INSERT INTO Inputs VALUES ('" + data['userid'] + "', '" 
+        uEng.execute("INSERT INTO Inputs VALUES ('" + userid + "', '" 
                 + wages_data['industryCode'] + "', '"
                 + wages_data['loc'] + "', "
                 + str(wages_data['income']) + ", " 
@@ -103,13 +104,13 @@ def submitInputs():
                 + str(data['years']) + ");")
 
         for ticker, shares in invests_data['stocks'].items():
-                uEng.execute("INSERT INTO UserStocks VALUES ('" + data['userid'] + "', '" + ticker + "', " + str(shares) + ");")
+                uEng.execute("INSERT INTO UserStocks VALUES ('" + userid + "', '" + ticker + "', " + str(shares) + ");")
 
         for r in assets_data['res']:
-                uEng.execute("INSERT INTO UserRes VALUES('" + data['userid'] + "', '" + r['loc'] + "', " + str(r['value']) + ");")
+                uEng.execute("INSERT INTO UserRes VALUES('" + userid + "', '" + r['loc'] + "', " + str(r['value']) + ");")
 
         for r in assets_data['rents']:
-                uEng.execute("INSERT INTO UserRent VALUES('" + data['userid'] + "', '" + r['loc'] + "', " + str(r['value']) + ");")
+                uEng.execute("INSERT INTO UserRent VALUES('" + userid + "', '" + r['loc'] + "', " + str(r['value']) + ");")
 
         return jsonify(response)
 
@@ -126,12 +127,13 @@ def storeInputs():
         wages_data = data['wages']
         invests_data = data['invests']
         assets_data = data['assets']
-        uEng.execute("DELETE FROM Inputs WHERE userid='" + data['userid'] + "';")
-        uEng.execute("DELETE FROM UserStocks WHERE userid='" + data['userid'] + "';")
-        uEng.execute("DELETE FROM UserRes WHERE userid='" + data['userid'] + "';")
-        uEng.execute("DELETE FROM UserRent WHERE userid='" + data['userid'] + "';")
+        userid = data['userid'].replace("'", "''")
+        uEng.execute("DELETE FROM Inputs WHERE userid='" + userid + "';")
+        uEng.execute("DELETE FROM UserStocks WHERE userid='" + userid + "';")
+        uEng.execute("DELETE FROM UserRes WHERE userid='" + userid + "';")
+        uEng.execute("DELETE FROM UserRent WHERE userid='" + userid + "';")
 
-        uEng.execute("INSERT INTO Inputs VALUES ('" + data['userid'] + "', '"
+        uEng.execute("INSERT INTO Inputs VALUES ('" + userid + "', '"
                 + wages_data['industryCode'] + "', '"
                 + wages_data['loc'] + "', "
                 + str(wages_data['income']) + ", "
@@ -145,13 +147,13 @@ def storeInputs():
                 + str(data['years']) + ");")
 
         for ticker, shares in invests_data['stocks'].items():
-                uEng.execute("INSERT INTO UserStocks VALUES ('" + data['userid'] + "', '" + ticker + "', " + str(shares) + ");")
+                uEng.execute("INSERT INTO UserStocks VALUES ('" + userid + "', '" + ticker + "', " + str(shares) + ");")
 
         for r in assets_data['res']:
-                uEng.execute("INSERT INTO UserRes VALUES('" + data['userid'] + "', '" + r['loc'] + "', " + str(r['value']) + ");")
+                uEng.execute("INSERT INTO UserRes VALUES('" + userid + "', '" + r['loc'] + "', " + str(r['value']) + ");")
 
         for r in assets_data['rents']:
-            uEng.execute("INSERT INTO UserRent VALUES('" + data['userid'] + "', '" + r['loc'] + "', " + str(r['value']) + ");")
+            uEng.execute("INSERT INTO UserRent VALUES('" + userid + "', '" + r['loc'] + "', " + str(r['value']) + ");")
 
         return make_response('Input stored', 200)
 
@@ -166,13 +168,14 @@ def storeInputs():
 def getInputs():
         response = {}
         response['userid'] = request.args.get('userid')
+        userid = request.args.get('userid').replace("'", "''")
         wages = {}
         invests = {}
         assets = {}
-        inputs = pd.read_sql("SELECT * FROM Inputs WHERE userid='" + request.args.get('userid') + "';", con=uEng)
-        stocks = pd.read_sql("SELECT ticker, shares FROM UserStocks WHERE userid='" + request.args.get('userid') + "';", con=uEng)
-        res = pd.read_sql("SELECT loc, price AS value FROM UserRes WHERE userid='" + request.args.get('userid') + "';", con=uEng)
-        rents = pd.read_sql("SELECT loc, rent AS value FROM UserRent WHERE userid='" + request.args.get('userid') + "';", con=uEng)
+        inputs = pd.read_sql("SELECT * FROM Inputs WHERE userid='" + userid + "';", con=uEng)
+        stocks = pd.read_sql("SELECT ticker, shares FROM UserStocks WHERE userid='" + userid + "';", con=uEng)
+        res = pd.read_sql("SELECT loc, price AS value FROM UserRes WHERE userid='" + userid + "';", con=uEng)
+        rents = pd.read_sql("SELECT loc, rent AS value FROM UserRent WHERE userid='" + userid + "';", con=uEng)
         
         if inputs.empty:
                 wages['industryCode'] = ''
@@ -226,6 +229,11 @@ def getInputs():
 def submitBudget():
         data = request.get_json(force=True)
         response = {}
+        check = uEng.execute("SELECT * FROM BudgetCategories WHERE userid='" + data['userid'].replace("'", "''") +
+            " AND budgetid='" + data['budgetid'].replace("'", "''") + "';")
+        b = check.fetchone()
+        if b:
+            return make_response("Budget already exists", 400)
         response['budgetid'] = data['budgetid']
         budget = {'catname': [], 'weight': []}
         for catname, weight in data['categories'].items():
@@ -248,7 +256,7 @@ def submitBudget():
 def getBudget():
         response = {}
         budget = pd.read_sql("SELECT budgetid, catname, weight FROM BudgetCategories WHERE userid='"
-                + request.args.get('userid') + "' AND budgetid='" + request.args.get('budgetid') + "';", con=uEng)
+                + request.args.get('userid').replace("'", "''") + "' AND budgetid='" + request.args.get('budgetid').replace("'", "''") + "';", con=uEng)
         response['name'] = request.args.get('budgetid')
         response['categories'] = {catname:weight for catname, weight in zip(budget['catname'].astype(str).tolist(), budget['weight'].astype(float).tolist())}
         return make_response(response, 200)
@@ -263,7 +271,7 @@ def getBudget():
 @app.route('/getAllBudgets', methods=['GET'])
 def getAllBudgets():
         response = {}
-        budgets = pd.read_sql("SELECT DISTINCT budgetid FROM BudgetCategories WHERE userid='" + request.args.get('userid') + "';", con=uEng)
+        budgets = pd.read_sql("SELECT DISTINCT budgetid FROM BudgetCategories WHERE userid='" + request.args.get('userid').replace("'", "''") + "';", con=uEng)
         if budgets.empty:
                 response['budgets'] = []
         else:

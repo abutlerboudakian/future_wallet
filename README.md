@@ -23,7 +23,13 @@ Team Members:
 2. Create a configuration file called config.xml in the config directory. It contains information about how to build the installer binaries and online repositories. For more information about the file format and available settings, see Configuration File (https://doc.qt.io/qtinstallerframework/ifw-globalconfig.html).
 3. Create a package information file called package.xml in the config\meta directory. It contains settings for deployment and the installation process. For more information, see Meta Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html#meta-directory).
 4. Create installer content and copy it to the package directory. For more information, see Data Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html#data-directory).
-5. At this point you should have the following directory structure:
+5. To add dependencies, go to Qt\5.14.1\mingw73_32\bin, and run the following command line:
+```
+   Qt\5.14.1\mingw73_32\bin>windeployqt.exe <location of application content>
+```
+   After that, add all .dll files from Qt\5.14.1\mingw73_32\bin to the location of application content.
+
+6. At this point you should have the following directory structure:
 ```
    FutureWalletInstaller  --> config -> config.xml & package.xml
                          |          
@@ -32,7 +38,7 @@ Team Members:
                                                         --> meta --> license.txt & package.xml
 ```                                                        
                                                         
-6. Use the binarycreator tool to create the installer. 
+7. Go to Qt\Tools\QInstallerFramework\3.2\bin and use the binarycreator tool to create the installer. 
 ```
  <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file>  <installer_name>
  ```
