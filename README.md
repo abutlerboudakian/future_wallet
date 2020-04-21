@@ -30,3 +30,21 @@ We had to separate the tests because I couldn't figure out how Qt included the Q
 Or you can just run [MakeAndRunTest.bat](./Application/Test/MakeAndRunTest.bat) in teh [Test](./Application/Test) directory assuming you have the environment variables set up, and the same make version as the developers.
 
 [//]: # (For Windows User dev team, make is C:\Qt\Tools\mingw730_64\bin\mingw32-make.exe)
+
+## Create Future Wallet Instructions
+
+If FutureWalletInstaller.exe/FutureWalletInstaller.app does not already exist in your repo navigate to /Application/fwInstaller
+
+If on windows, run:
+
+```
+ ..\..\bin\binarycreator.exe -c config\config.xml -p packages FutureWalletInstaller.exe
+ ```
+
+Otherwise if on Mac/Linux: 
+
+```
+../../bin/binarycreator -c config/config.xml -p packages FutureWalletInstaller
+```
+
+This will create a .exe file or a .app file respective to Windows or Mac/Linux OS. Run installer to get an instance of the Future Wallet app on your machine. Should be connected to RPI VPN for the current version of Future Wallet.
