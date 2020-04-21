@@ -77,13 +77,6 @@
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QPushButton" name="metricsLine">
-             <property name="text">
-              <string>View as Line Graph</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
          <item>

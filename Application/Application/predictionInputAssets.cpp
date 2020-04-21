@@ -118,6 +118,7 @@ QJsonObject predictionInputAssets::toJSON()
     data.insert("rents", rentals);
 
     data.insert("rm", ui->Metal->text().toDouble());
+    data.insert("years", ui->Years->text().toDouble());
 
     return data;
 }
@@ -168,8 +169,8 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             {
                 QString location = it_loc.value().toString();
                 double value = it_value.value().toDouble();
-                ui->ResidenceData0->setText(location);
-                ui->ResidenceData1->setText(QString::number(value));
+                ui->ResidenceData1->setText(location);
+                ui->ResidenceData0->setText(QString::number(value));
             }
             for ( it++; it != resList.end(); it++ )
             {
@@ -203,8 +204,8 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             {
                 QString location = it_loc.value().toString();
                 double value = it_value.value().toDouble();
-                ui->RentalData0->setText(location);
-                ui->RentalData1->setText(QString::number(value));
+                ui->RentalData1->setText(location);
+                ui->RentalData0->setText(QString::number(value));
             }
             for ( it++; it != rentList.end(); it++ )
             {
@@ -220,7 +221,7 @@ void predictionInputAssets::fromJson(QJsonObject savedData)
             }
         }
     }
-    ui->Years->setText(QString::number(savedData["years"].toInt()));
+    ui->Years->setText(QString::number((savedData["years"]).toInt()));
 }
 
 /* Function to clear all user inputs and reset the page to default

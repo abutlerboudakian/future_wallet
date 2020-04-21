@@ -180,7 +180,8 @@ void predictionInputInvest::fromJson(QJsonObject savedData)
         {
             QString name = it.key();
             double shares = it.value().toDouble();
-            addStock(name, shares);
+            ui->StockData0->setCurrentIndex(ui->StockData0->findText(name));
+            ui->StockData1->setText(QString::number(shares));
             for ( it++; it != stocksList.end(); it++ )
             {
                 QString name = it.key();
@@ -316,7 +317,7 @@ void predictionInputInvest::addStock(QString name, double shares)
     Shares->setValidator(validDouble);
 
     // Set default value for stock name and shares
-    int index = StockName->findData(name);
+    int index = StockName->findText(name);
     StockName->setCurrentIndex((index < 0 ? 0 : index));
     QString str_shares = QString::number(shares);
     Shares->setText(str_shares);

@@ -1,11 +1,21 @@
-
+# Import Statements
 from modelpack import WageModel, InvestmentModel, AssetModel, ModelType
 from datasetbuilder import DatasetBuilder
 
+# Class definition
 class ModelFactory:
-	def __init__(self):
-		pass
 
+	'''
+		@params:
+			mType -	ModelType to create
+			**kwargs:
+				train -		Flag to enable or disable training
+				tickers -	List of tickers to train for stock models
+		@requires:	mType is a valid ModelType
+		@modifies:	None
+		@effects:	Creates and returns a model based off of the mType provided
+		@returns:	New BaseModel
+	'''
 	def createModel(self, mType, **kwargs):
 		if mType == ModelType.WAGES:
 			if 'train' in kwargs and kwargs['train'] == True:
@@ -36,6 +46,10 @@ class ModelFactory:
 		else:
 			raise 'Invalid model type specified. ' + mType
 
-
+	'''
+		@modifies:	None
+		@effects:	Creates all three aggregate modeltypes and returns them packed in a tuple
+		@returns:	Tuple containing WageModel, InvestmentModel, AssetModel
+	'''
 	def createAllModels(self):
 		return (WageModel(DatasetBuilder(ModelType.WAGES)), InvestmentModel(DatasetBuilder(ModelType.INVESTS)), AssetModel(DatasetBuilder(ModelType.ASSETS)))

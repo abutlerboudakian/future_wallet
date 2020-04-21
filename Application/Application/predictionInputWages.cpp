@@ -126,7 +126,7 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     it = savedData.find("hourly");
     if ( it != savedData.end() && it.value().toBool() == false )
     {
-        int index = ui->IncomeType->findData("Salary");
+        int index = ui->IncomeType->findText("Salary");
         ui->IncomeType->setCurrentIndex(index);
     }
 
@@ -134,7 +134,7 @@ void predictionInputWages::fromJson(QJsonObject savedData)
     it = savedData.find("industryCode");
     if ( it != savedData.end() )
     {
-        int index = ui->Industry->findData(it.value().toString());
+        int index = ui->Industry->findText(it.value().toString());
         ui->Industry->setCurrentIndex(index);
     }
 }
