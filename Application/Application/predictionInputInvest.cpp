@@ -275,6 +275,10 @@ void predictionInputInvest::addStock()
     connect(Remove, SIGNAL(released()), this, SLOT(removeStock()));
 }
 
+// Function modifies the ui to add a new stock field
+/* @modifies this->ui
+ * @effect this->ui->Stocks has a new stock field
+ */
 void predictionInputInvest::addStock(QString name, double shares)
 {
     // Constructs a stock field
