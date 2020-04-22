@@ -22,8 +22,6 @@ class AccountManagement;
 
 class MainApplication;
 #include "mainapplication.h"
-class Menu;
-#include "Menu.h"
 
 enum Views
 {
@@ -91,7 +89,6 @@ class Controller
   private:
     QStackedWidget * Views;
     MainApplication * main;
-    Menu * menubar;
 
     // Template Method Creators for the charts
     PieGUI * PieCreator;
