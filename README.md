@@ -49,6 +49,11 @@ To set up the server, you will need to install python3, all dependencies, and th
 Then, you will need to create a service on the system for the application using systemctl.
 Once that is complete, you need to create another configuration file in nginx's sites-available folder.
 
+FutureWallet's SQL Server runs on Microsoft SQL Server 2019, which can be installed on the same machine as a virtual machine
+or can be installed on a separate Windows installation.
+To collect the data that has been used for training, run Driver.py in the Scrapers folder.
+Training of the neural networks for the model can be done through modeldriver.py in the Models folder.
+
 ## Test Build Instructions
 Note that Qt and some executable make are required to build the unit tests.
 In order to run the unit tests for the BudgetData and Requests classes, do the following:
