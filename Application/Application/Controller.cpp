@@ -265,6 +265,7 @@ void Controller::logout()
         delete this->budget;
         this->metrics = nullptr;
         this->budget = nullptr;
+        ((DashBoard*)this->Views->widget(Views::Dashboard))->clearBudget();
         this->switchToLogin();
 
         ((predictionInputWages*)this->Views->widget(Views::WagePredict))->clear();

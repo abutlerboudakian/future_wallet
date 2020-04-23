@@ -26,6 +26,7 @@ public:
     void updateMetrics();
     void updateMessage(QString userId);
     void updateBudget(QString budgetId);
+    void clearBudget();
 
 private:
     Ui::DashBoard *ui;

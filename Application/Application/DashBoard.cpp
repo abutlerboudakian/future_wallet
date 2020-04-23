@@ -46,6 +46,15 @@ void DashBoard::updateBudget(QString budgetId)
     ui->budgets->setText(controller->getBudgetData(budgetId)->getBudgetString());
 }
 
+/* Function used to clear the budget breakdown
+ * @modifies this->ui->Budget
+ * @effect this->ui->Budget = ""
+ */
+void DashBoard::clearBudget()
+{
+    ui->budgets->setText(QString(""));
+}
+
 /* Function used to update the metric in display
  * @modifies this->ui->metrics, this->metrics
  * @effects this->ui->metrics now contains the recent metric information
