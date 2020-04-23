@@ -181,7 +181,8 @@ class WageModel(BaseModel):
 		today = datetime.now()
 		predTimestamp = (today.replace(year=today.year + years)).timestamp()
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, income, lat/90, lon/180]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, income, lat/90, lon/180]]))[0][0])
+		return prediction - income if prediction > 0 else 0
 
 # Class definition for Investment Model
 class InvestmentModel(BaseModel):
@@ -416,7 +417,8 @@ class SavingsModel(BaseModel):
 	'''
 	def predict(self, timestamp, predTimestamp, value):
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		return prediction if prediction > 0 else 0
 
 class CDModel(BaseModel):
 
@@ -463,7 +465,8 @@ class CDModel(BaseModel):
 	'''
 	def predict(self, timestamp, predTimestamp, value):
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		return prediction if prediction > 0 else 0
 
 class StockModel(BaseModel):
 
@@ -510,7 +513,8 @@ class StockModel(BaseModel):
 	'''
 	def predict(self, timestamp, predTimestamp, value):
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		return prediction if prediction > 0 else 0
 
 class BondModel(BaseModel):
 
@@ -557,7 +561,8 @@ class BondModel(BaseModel):
 	'''
 	def predict(self, timestamp, predTimestamp, value):
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		return prediction if prediction > 0 else 0
 
 class TBModel(BaseModel):
 
@@ -604,7 +609,8 @@ class TBModel(BaseModel):
 	'''
 	def predict(self, timestamp, predTimestamp, value):
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, value]]))[0][0])
+		return prediction if prediction > 0 else 0
 
 class ResidenceModel(BaseModel):
 
@@ -653,7 +659,8 @@ class ResidenceModel(BaseModel):
 	'''
 	def predict(self, timestamp, predTimestamp, value, lat, lon):
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, value, lat/90, lon/180]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, value, lat/90, lon/180]]))[0][0])
+		return prediction if prediction > 0 else 0
 
 class RentModel(BaseModel):
 
@@ -702,7 +709,8 @@ class RentModel(BaseModel):
 	'''
 	def predict(self, timestamp, predTimestamp, value, lat, lon):
 		deltaTime = 1000*(predTimestamp - timestamp) / predTimestamp
-		return float(self.model.predict(np.asarray([[deltaTime, value, lat/90, lon/180]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[deltaTime, value, lat/90, lon/180]]))[0][0])
+		return prediction if prediction > 0 else 0
 
 class RMModel(BaseModel):
 
@@ -795,4 +803,5 @@ class RMModel(BaseModel):
 	def predict(self, timestamp, predTimestamp, value):
 		timestamp = (timestamp - self.mean[0]) / self.std[0]
 		predTimestamp = (predTimestamp - self.mean[1]) / self.std[1]
-		return float(self.model.predict(np.asarray([[timestamp, predTimestamp, value]]))[0][0])
+		prediction = float(self.model.predict(np.asarray([[timestamp, predTimestamp, value]]))[0][0])
+		return prediction if prediction > 0 else 0

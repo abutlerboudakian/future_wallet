@@ -78,10 +78,12 @@ def submitInputs():
         rents = []
         for r in assets_data['res']:
                 location = fips[fips['ZIP'] == r['loc']]
-                res.append((float(r['value']), float(location['Lat'].tolist()[0]), float(location['Long'].tolist()[0])))
+                if not location.empty:
+                    res.append((float(r['value']), float(location['Lat'].tolist()[0]), float(location['Long'].tolist()[0])))
         for r in assets_data['rents']:
                 location = fips[fips['ZIP'] == r['loc']]
-                res.append((float(r['value']), float(location['Lat'].tolist()[0]), float(location['Long'].tolist()[0])))
+                if not location.empty:
+                    res.append((float(r['value']), float(location['Lat'].tolist()[0]), float(location['Long'].tolist()[0])))
         response['assets'] = assets.predict(res, rents, float(assets_data['rm']), int(data['years']))
         response['years'] = data['years']
 
