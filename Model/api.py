@@ -93,7 +93,7 @@ def submitInputs():
         uEng.execute("DELETE FROM UserRent WHERE userid='" + userid + "';")
 
         uEng.execute("INSERT INTO Inputs VALUES ('" + userid + "', '" 
-                + wages_data['industryCode'] + "', '"
+                + wages_data['industryCode'].replace("'", "''") + "', '"
                 + wages_data['loc'] + "', "
                 + str(wages_data['income']) + ", " 
                 + str(int(wages_data['hourly'])) + ", " 
@@ -136,7 +136,7 @@ def storeInputs():
         uEng.execute("DELETE FROM UserRent WHERE userid='" + userid + "';")
 
         uEng.execute("INSERT INTO Inputs VALUES ('" + userid + "', '"
-                + wages_data['industryCode'] + "', '"
+                + wages_data['industryCode'].replace("'", "''") + "', '"
                 + wages_data['loc'] + "', "
                 + str(wages_data['income']) + ", "
                 + str(int(wages_data['hourly'])) + ", "
@@ -232,7 +232,7 @@ def submitBudget():
         data = request.get_json(force=True)
         response = {}
         check = uEng.execute("SELECT * FROM BudgetCategories WHERE userid='" + data['userid'].replace("'", "''") +
-            " AND budgetid='" + data['budgetid'].replace("'", "''") + "';")
+            "' AND budgetid='" + data['budgetid'].replace("'", "''") + "';")
         b = check.fetchone()
         if b:
             return make_response("Budget already exists", 400)
@@ -342,31 +342,36 @@ def register():
 @app.route('/update', methods=['POST'])
 def update():
         data = request.get_json(force=True)
+        userid = data['userid'].replace("'", "''")
         if 'userid' in data['updates'] and 'password' in data['updates']:
+            updUserid = data['updates']['userid'].replace("'", "''")
+            password = data['updates']['password'].replace("'", "''")
             uEng.execute("UPDATE Users SET userid='"
-                    + data['updates']['userid']
+                    + updUserid
                     + "', password='"
-                    + data['updates']['password']
+                    + password
                     + "' WHERE userid='"
-                    + data['userid'] + "';")
-            uEng.execute("UPDATE Inputs SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE UserStocks SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE UserRes SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE UserRent SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE BudgetCategories SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
+                    + userid + "';")
+            uEng.execute("UPDATE Inputs SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE UserStocks SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE UserRes SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE UserRent SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE BudgetCategories SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
         elif 'userid' in data['updates']:
+            updUserid = data['updates']['userid'].replace("'", "''")
             uEng.execute("UPDATE Users SET userid='"
-                    + data['updates']['userid']
-                    + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE Inputs SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE UserStocks SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE UserRes SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE UserRent SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
-            uEng.execute("UPDATE BudgetCategories SET userid='" + data['updates']['userid'] + "' WHERE userid='" + data['userid'] + "';")
+                    + updUserid
+                    + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE Inputs SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE UserStocks SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE UserRes SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE UserRent SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
+            uEng.execute("UPDATE BudgetCategories SET userid='" + updUserid + "' WHERE userid='" + userid + "';")
         elif 'password' in data['updates']:
+            password = data['updates']['password'].replace("'", "''")
             uEng.execute("UPDATE Users SET password='"
-                    + data['updates']['password']
-                    + "' WHERE userid='" + data['userid'] + "';")
+                    + password
+                    + "' WHERE userid='" + userid + "';")
         else:
             return make_response('No Updates Provided', 400)
         return make_response('Account Updated', 200)
