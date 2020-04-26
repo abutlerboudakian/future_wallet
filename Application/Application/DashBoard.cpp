@@ -43,7 +43,15 @@ void DashBoard::updateMessage(QString userId)
  */
 void DashBoard::updateBudget(QString budgetId)
 {
-    ui->budgets->setText(controller->getBudgetData(budgetId)->getBudgetString());
+    const BudgetData * loadedBudget = controller->getBudgetData(budgetId);
+    if (loadedBudget->isEmpty())
+    {   // No budget data retrieved, so empty it
+        this->clearBudget();
+    }
+    else
+    {
+        ui->budgets->setText(loadedBudget->getBudgetString());
+    }
 }
 
 /* Function used to clear the budget breakdown
