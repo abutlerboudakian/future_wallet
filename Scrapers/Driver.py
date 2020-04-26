@@ -1,10 +1,10 @@
 '''
-	Driver.py:
-		Driver module to control scrapers and manage database population.
-		Takes DB connection username and password as system args 1 and 2.
+    Driver.py:
+        Driver module to control scrapers and manage database population.
+        Takes DB connection username and password as system args 1 and 2.
 
-	Authors:
-		Andrew Butler-Boudakian
+    Authors:
+        Andrew Butler-Boudakian
 '''
 
 # Import Statements
@@ -16,11 +16,11 @@ from . Model import dbutil
 import Scrapers
 
 '''
-	@params:	headless(optional) - Determines whether chromedriver is a headless instance or not, enabled by default
-	@requires:	chromedriver.exe is available in the current directory
-	@modifies:	None
-	@effects:	Creates a new chromedriver object (headless or not) and returns a reference to it.
-	@returns:	New chromedriver object
+    @params:    headless(optional) - Determines whether chromedriver is a headless instance or not, enabled by default
+    @requires:  chromedriver.exe is available in the current directory
+    @modifies:  None
+    @effects:   Creates a new chromedriver object (headless or not) and returns a reference to it.
+    @returns:   New chromedriver object
 '''
 def initChromeDriver(headless=True):
   if headless:
@@ -34,39 +34,39 @@ def initChromeDriver(headless=True):
     return driver
 
 if __name__ == "__main__":
-	engine = dbutil.connect_engine('modeldata')
+    engine = dbutil.connect_engine('modeldata')
 
-	driver = initChromeDriver()
+    driver = initChromeDriver()
 
-	with engine.connect() as conn:
-		sources = pd.read_sql(sql='SELECT * FROM Sources;', con=conn)
+    with engine.connect() as conn:
+        sources = pd.read_sql(sql='SELECT * FROM Sources;', con=conn)
 
-		for row in sources.itertuples():
-			if(not row.Pushed):
-				args = []
-				if row.Link is not None:
-					links = row.Link.split('|')
-					args.extend(links)
-				if row.Driver == 1:
-					args.append(driver)
+        for row in sources.itertuples():
+            if(not row.Pushed):
+                args = []
+                if row.Link is not None:
+                    links = row.Link.split('|')
+                    args.extend(links)
+                if row.Driver == 1:
+                    args.append(driver)
 
-				print('Getting ' + row.DestTable)
-				if len(args) > 0:
-					data = getattr(Scrapers, row.Name)(*args)
-				else:
-					data = getattr(Scrapers, row.Name)()
-				table = row.DestTable
+                print('Getting ' + row.DestTable)
+                if len(args) > 0:
+                    data = getattr(Scrapers, row.Name)(*args)
+                else:
+                    data = getattr(Scrapers, row.Name)()
+                table = row.DestTable
 
-				if isinstance(data, tuple):
-					tables = table.split('|')
-					for i in range(0, len(tables)):
-						print(data[i].columns)
-						data[i].to_sql(tables[i], con=conn, if_exists='append', index=False)
-				else:
-					data.to_sql(table, con=conn, if_exists='append', index=False)
-				conn.execute('UPDATE Sources SET Pushed = 1 WHERE DestTable = \'' + row.DestTable + '\'')
-				print('' + row.DestTable + ' pushed successfully!')
+                if isinstance(data, tuple):
+                    tables = table.split('|')
+                    for i in range(0, len(tables)):
+                        print(data[i].columns)
+                        data[i].to_sql(tables[i], con=conn, if_exists='append', index=False)
+                else:
+                    data.to_sql(table, con=conn, if_exists='append', index=False)
+                conn.execute('UPDATE Sources SET Pushed = 1 WHERE DestTable = \'' + row.DestTable + '\'')
+                print('' + row.DestTable + ' pushed successfully!')
 
 
-	driver.quit()
-	engine.dispose()
+    driver.quit()
+    engine.dispose()
