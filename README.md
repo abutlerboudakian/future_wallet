@@ -68,7 +68,7 @@ python -m flask run &
 ./TestBuild/RequestsTest.exe
 ```
 Make sure to run the flask app (mock endpoints) in a separate shell or in the background.
-We had to separate the tests because I couldn't figure out how Qt included the QApplication in the main function that they abstractly generate. The Requests class requires the QApplication class for the QEventLoop objects.
+We had to separate the tests because we couldn't figure out how Qt included the QApplication in the main function that they abstractly generate. The Requests class requires the QApplication class for the QEventLoop objects.
 
 Or you can just run [MakeAndRunTest.bat](./Application/Test/MakeAndRunTest.bat) in the [Test](./Application/Test) directory assuming you have the environment variables set up, and the same make version as the developers.
 
