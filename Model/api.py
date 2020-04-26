@@ -62,9 +62,10 @@ def submitInputs():
                                 'apikey': 'BYK3GWD7674OE5J5'})
 
                 stockData = json.loads(stockData.content)
-                stocks.append((ticker,
-                        float(stockData['Time Series (Daily)'][list(stockData['Time Series (Daily)'].keys())[0]]['4. close']),
-                        float(shares)))
+                if 'Time Series (Daily)' in stockData:
+                    stocks.append((ticker,
+                            float(stockData['Time Series (Daily)'][list(stockData['Time Series (Daily)'].keys())[0]]['4. close']),
+                            float(shares)))
         response['invests'] = invests.predict(float(invests_data['savings']),
                 float(invests_data['cd']),
                 stocks,
