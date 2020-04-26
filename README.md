@@ -78,3 +78,9 @@ We had to separate the tests because we couldn't figure out how Qt included the 
 Or you can just run [MakeAndRunTest.bat](./Application/Test/MakeAndRunTest.bat) in the [Test](./Application/Test) directory assuming you have the environment variables set up, and the same make version as the developers.
 
 [//]: # (For Windows User dev team, make is C:\Qt\Tools\mingw730_64\bin\mingw32-make.exe)
+
+## Coding Standards
+- Variables will be **camelCase**
+- **Spaces** will be used instead of **tabs** for indentation
+- All methods will have POS (Principles of Software) specification or have a short description (if a POS specification does not make sense).
+-- e.g. @param, @requires, @modifies, @effects, @throws, etc.
