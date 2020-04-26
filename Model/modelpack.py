@@ -76,8 +76,8 @@ class BaseModel(ABC):
             while True:     
                 if data['X'].empty or data['Y'].empty:
                     break
-                x_train, x_test, y_train, y_test = train_test_split(data['X'], data['Y'], test_size=0.1)
-                self.model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=batchsize, epochs=e+1, initial_epoch=e)
+                xTrain, xTest, yTrain, yTest = train_test_split(data['X'], data['Y'], test_size=0.1)
+                self.model.fit(xTrain, yTrain, validation_data=(xTest, yTest), batch_size=batchsize, epochs=e+1, initial_epoch=e)
                 if not small:
                     data = self.dsb.getData(batchsize)
                 else:
@@ -750,8 +750,8 @@ class RMModel(BaseModel):
             while True:     
                 if data['X'].empty or data['Y'].empty:
                     break
-                x_train, x_test, y_train, y_test = train_test_split(data['X'], data['Y'], test_size=0.1)
-                self.model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=batchsize, epochs=e+1, initial_epoch=e)
+                xTrain, xTest, yTrain, yTest = train_test_split(data['X'], data['Y'], test_size=0.1)
+                self.model.fit(xTrain, yTrain, validation_data=(xTest, yTest), batch_size=batchsize, epochs=e+1, initial_epoch=e)
                 if not small:
                     data = self.dsb.getData(batchsize)
                     means.append(data['means'])
