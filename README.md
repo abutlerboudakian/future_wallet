@@ -23,6 +23,7 @@ FutureWallet is a desktop application used for income prediction and budgeting t
 1. In the directory you installed the Future Wallet App in, launch the **management tool.exe**.
 2. Select the **remove all components** option and let the uninstaller run.
 
+## Making Installer Executable
 ### Devlopment Instructions for Compiling the Future Wallet App Installer executable
 1. Create a package directory for the installable components. For more information, see Package Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html).
 2. Create a configuration file called config.xml in the config directory. It contains information about how to build the installer binaries and online repositories. For more information about the file format and available settings, see Configuration File (https://doc.qt.io/qtinstallerframework/ifw-globalconfig.html).
