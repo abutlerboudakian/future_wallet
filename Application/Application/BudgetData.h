@@ -33,7 +33,7 @@ public:
     QString getBudgetString() const;
     const ChartMap * getBudgetChartMap() const;
 
-    bool isEmpty();
+    bool isEmpty() const;
 
 
 private:

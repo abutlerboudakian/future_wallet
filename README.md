@@ -6,6 +6,11 @@ Team Members:
   * Arron Look
   * Wendi Zheng
   
+## Description
+FutureWallet is a desktop application used for income prediction and budgeting that income prediction.
+
+**NOTICE** : Currently, in order to use the client application after installation, the server must still be running (on RPI Campus) under the host name butlea2.cs.rpi.edu and the user must be located on RPI campus or connected to the RPI campus via a vpn. If you deploy the server, train the models, and store the data on a separate server, change the **location** variable in Requests.h to that host name, recompile the installer, and reinstall your version of the client.
+
 ## Installer
 ### Using the Installer for Windows to use the application.
 #### Installing Future Wallet App
@@ -68,7 +73,7 @@ python -m flask run &
 ./TestBuild/RequestsTest.exe
 ```
 Make sure to run the flask app (mock endpoints) in a separate shell or in the background.
-We had to separate the tests because I couldn't figure out how Qt included the QApplication in the main function that they abstractly generate. The Requests class requires the QApplication class for the QEventLoop objects.
+We had to separate the tests because we couldn't figure out how Qt included the QApplication in the main function that they abstractly generate. The Requests class requires the QApplication class for the QEventLoop objects.
 
 Or you can just run [MakeAndRunTest.bat](./Application/Test/MakeAndRunTest.bat) in the [Test](./Application/Test) directory assuming you have the environment variables set up, and the same make version as the developers.
 

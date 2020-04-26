@@ -154,7 +154,7 @@ const double BudgetData::getDollar() const
 
 /* Function to check if the budget has no categories
  */
-bool BudgetData::isEmpty()
+bool BudgetData::isEmpty() const
 {
     return this->data->empty();
 }
