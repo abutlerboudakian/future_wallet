@@ -55,9 +55,53 @@ Then, you will need to create a service on the system for the application using 
 Once that is complete, you need to create another configuration file in nginx's sites-available folder.
 
 FutureWallet's SQL Server runs on Microsoft SQL Server 2019, which can be installed on the same machine as a virtual machine
-or can be installed on a separate Windows installation.
+or can be installed on a separate Windows installation. The Server runs as a named instance, called FUTUREWALLETDB.
+
+There are 2 separate databases on the SQL server instance: `accountdata` and `modeldata`
+
+The schema for `accountdata` is as follows:
+```
+Users(userid varchar(MAX), password varchar(MAX))
+BudgetCategories(userid varchar(MAX), budgetid varchar(MAX), catname varchar(MAX), weight float)
+Inputs(userid varchar(MAX), industryCode varchar(MAX), loc varchar(MAX), income float, hourly bit, hourspw float, savings float, cd float, bonds float, tbonds float, rm float, years int)
+UserStocks(userid varchar(MAX), ticker varchar(MAX), shares float)
+UserRes(userid varchar(MAX), loc varchar(MAX), price float)
+UserRent(userid varchar(MAX), loc varchar(MAX), rent float)
+```
+
+The schema for `modeldata` is as follows:
+```
+Bonds(Timestamp datetime, Rate float)
+CBPIncome(Timestamp datetime, StateCode varchar(MAX), CountyCode varchar(MAX), IndustryCode varchar(MAX), NumEmployees int, AnnualPayroll money, NumEstablishments int)
+CDs(Timestamp datetime, Rate float)
+CPI(Timestamp datetime, Label varchar(MAX), Value float)
+FIPS(TimestampBegin datetime, TimestampEnd datetime, StateCode varchar(MAX), CountyCode varchar(MAX), ZIP varchar(MAX), Name varchar(MAX), Lat float, Long float)
+HI(Timestamp datetime, ZIP varchar(MAX), [Index] float)
+JSAs(Timestamp datetime, NationalRate float, RateCap float)
+NAICS(IndustryCode varchar(MAX), Name varchar(MAX), Description varchar(MAX))
+NJSAs(Timestamp datetime, NationalRate float, RateCap float)
+RMI(Timestamp datetime, Price float)
+Sources(Name varchar(MAX), Link varchar(MAX), Driver bit, DestTable varchar(MAX), Pushed bit)
+Stocks(Timestamp datetime, Ticker varchar(MAX), Market varchar(MAX), [Open] money, [close] money, High money, Low money, Volume money)
+TBonds(Timestamp datetime, [12MAT] float, [1MoLIBOR] float, PrimeRate float)
+ZillowRent(Timestamp datetime, RegionID int, ZIPCode varchar(MAX), City varchar(MAX), State varchar(MAX), Metro varchar(MAX), County varchar(MAX), Rent float)
+```
+
 To collect the data that has been used for training, run Driver.py in the Scrapers folder.
+Some additional files and directories must be present during runtime for all data to be acquired properly:
+
+`parseNAICSCodeCSV` requires an absolute path to `NAICSCode.csv` in `Link` under `Sources` table in `modeldata` database
+`parseStockData` requires an absolute path to `Stocks`, a directory containing all stock data from `https://www.kaggle.com/borismarjanovic/price-volume-data-for-all-us-stocks-etfs` in `Link` under `Sources` table in `modeldata` database
+
+
 Training of the neural networks for the model can be done through modeldriver.py in the Models folder.
+
+Database connection for runtime and model training is managed through `dbutil.py`.
+To configure credentials for DB access, set your environment variables to the following:
+```
+FWUSER=username
+FWPASS=password
+```
 
 ## Test Build Instructions
 Note that Qt and some executable make are required to build the unit tests.
