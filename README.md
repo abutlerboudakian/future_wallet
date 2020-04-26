@@ -6,6 +6,11 @@ Team Members:
   * Arron Look
   * Wendi Zheng
   
+## Description
+FutureWallet is a desktop application used for income prediction and budgeting that income prediction.
+
+**NOTICE** : Currently, in order to use the client application after installation, the server must still be running (on RPI Campus) under the host name butlea2.cs.rpi.edu and the user must be located on RPI campus or connected to the RPI campus via a vpn. If you deploy the server, train the models, and store the data on a separate server, change the **location** variable in Requests.h to that host name, recompile the installer, and reinstall your version of the client.
+
 ## Installer
 ### Using the Installer for Windows to use the application.
 #### Installing Future Wallet App
