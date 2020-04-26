@@ -23,6 +23,7 @@ FutureWallet is a desktop application used for income prediction and budgeting t
 1. In the directory you installed the Future Wallet App in, launch the **management tool.exe**.
 2. Select the **remove all components** option and let the uninstaller run.
 
+## Making Installer Executable
 ### Devlopment Instructions for Compiling the Future Wallet App Installer executable
 1. Create a package directory for the installable components. For more information, see Package Directory (https://doc.qt.io/qtinstallerframework/ifw-component-description.html).
 2. Create a configuration file called config.xml in the config directory. It contains information about how to build the installer binaries and online repositories. For more information about the file format and available settings, see Configuration File (https://doc.qt.io/qtinstallerframework/ifw-globalconfig.html).
@@ -122,3 +123,9 @@ We had to separate the tests because we couldn't figure out how Qt included the 
 Or you can just run [MakeAndRunTest.bat](./Application/Test/MakeAndRunTest.bat) in the [Test](./Application/Test) directory assuming you have the environment variables set up, and the same make version as the developers.
 
 [//]: # (For Windows User dev team, make is C:\Qt\Tools\mingw730_64\bin\mingw32-make.exe)
+
+## Coding Standards
+- Variables will be **camelCase**
+- **Spaces** will be used instead of **tabs** for indentation
+- All methods will have POS (Principles of Software) specification or have a short description (if a POS specification does not make sense).
+-- e.g. @param, @requires, @modifies, @effects, @throws, etc.
